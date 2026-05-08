@@ -1,125 +1,49 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
+using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
 
-namespace ReportDataMaker.Services
+namespace ReportDataMaker.Services;
+
+/// <summary>模板加载服务实现，提供从文件和JSON加载模板的功能</summary>
+public class TemplateLoaderService : ITemplateLoaderService
 {
-    public class TemplateLoaderService
+    private readonly IDialogService _dialogService;
+
+    /// <summary>初始化模板加载服务</summary>
+    /// <param name="dialogService">对话框服务</param>
+    public TemplateLoaderService(IDialogService dialogService)
     {
-        private static readonly Dictionary<string, string> DataPathMap = new Dictionary<string, string>
-        {
-            ["PatientName"] = "Patient.Name",
-            ["Gender"] = "Patient.Gender",
-            ["Age"] = "Patient.Age",
-            ["SampleType"] = "Report.SampleType",
-            ["ReportDate"] = "Report.ReportDate",
-            ["Technician"] = "Report.Technician",
-            ["Reviewer"] = "Report.Reviewer",
-            ["Department"] = "Report.Department",
-            ["VisitDate"] = "Report.ReportDate",
-            ["ChiefComplaint"] = "Report.ChiefComplaint",
-            ["PresentIllness"] = "Report.PresentIllness",
-            ["Diagnosis"] = "Report.Diagnosis",
-            ["Treatment"] = "Report.Treatment",
-            ["DoctorName"] = "Report.Technician"
-        };
+        _dialogService = dialogService;
+    }
 
-        public ReportTemplateDefinition LoadTemplate(string filePath)
-        {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException($"Template file not found: {filePath}");
-            }
+    /// <summary>从文件加载模板定义</summary>
+    /// <param name="filePath">文件路径</param>
+    /// <returns>外部模板定义</returns>
+    public ExternalTemplateDefinition LoadFromFile(string filePath)
+    {
+        if (!File.Exists(filePath))
+            throw new FileNotFoundException("模板文件不存在", filePath);
+        var json = File.ReadAllText(filePath);
+        return LoadFromJson(json);
+    }
 
-            var jsonContent = File.ReadAllText(filePath);
-            var template = JsonConvert.DeserializeObject<ReportTemplateDefinition>(jsonContent);
-            template.FilePath = filePath;
+    /// <summary>从JSON字符串加载模板定义</summary>
+    /// <param name="json">JSON字符串</param>
+    /// <returns>外部模板定义</returns>
+    public ExternalTemplateDefinition LoadFromJson(string json)
+    {
+        var template = JsonConvert.DeserializeObject<ExternalTemplateDefinition>(json);
+        if (template == null)
+            throw new InvalidOperationException("无法解析模板 JSON");
+        return template;
+    }
 
-            return template;
-        }
-
-        public bool IsExternalTemplateFormat(string jsonContent)
-        {
-            return jsonContent.Contains("\"$type\"");
-        }
-
-        public ExternalTemplateDefinition LoadExternalTemplate(string filePath)
-        {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException($"Template file not found: {filePath}");
-            }
-
-            var jsonContent = File.ReadAllText(filePath);
-            return LoadExternalTemplateFromContent(jsonContent);
-        }
-
-        public ExternalTemplateDefinition LoadExternalTemplateFromContent(string jsonContent)
-        {
-            var settings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
-                Converters = new JsonConverter[]
-                {
-                    new ExternalElementConverter()
-                }
-            };
-
-            var template = JsonConvert.DeserializeObject<ExternalTemplateDefinition>(jsonContent, settings);
-            return template;
-        }
-
-        public void ClassifyElements(ExternalTemplateDefinition template, IReadOnlySet<string> adapterPaths)
-        {
-            if (template.Elements == null)
-            {
-                return;
-            }
-
-            foreach (var element in template.Elements)
-            {
-                if (element is ExternalLineElement)
-                {
-                    element.Group = ElementGroup.Fixed;
-                    continue;
-                }
-
-                if (element.IsDataBound)
-                {
-                    if (adapterPaths.Contains(element.DataPath ?? string.Empty))
-                    {
-                        element.Group = ElementGroup.DataAdapter;
-                    }
-                    else
-                    {
-                        element.Group = ElementGroup.Editable;
-                    }
-                }
-                else
-                {
-                    if (element is ExternalTextElement textElement && !string.IsNullOrEmpty(textElement.Text))
-                    {
-                        element.Group = ElementGroup.Fixed;
-                    }
-                    else
-                    {
-                        element.Group = ElementGroup.Fixed;
-                    }
-                }
-            }
-        }
-
-        public string MapDataPath(string flatDataPath)
-        {
-            if (DataPathMap.TryGetValue(flatDataPath, out var mappedPath))
-            {
-                return mappedPath;
-            }
-
-            return flatDataPath;
-        }
+    /// <summary>从服务器异步加载模板定义</summary>
+    /// <param name="templateId">模板标识</param>
+    /// <returns>外部模板定义</returns>
+    public Task<ExternalTemplateDefinition> LoadFromServerAsync(Guid templateId)
+    {
+        throw new NotImplementedException();
     }
 }

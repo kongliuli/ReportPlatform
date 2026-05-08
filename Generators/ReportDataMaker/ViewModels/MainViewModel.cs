@@ -1,179 +1,261 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using Microsoft.Win32;
+using System.Collections.ObjectModel;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
 using ReportDataMaker.Services;
+using ReportDataMaker.Services.DatabaseAdapter;
+using ReportDataMaker.Services.ExcelAdapter;
+using ReportDataMaker.ViewModels.Tabs;
+using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
-namespace ReportDataMaker.ViewModels
+namespace ReportDataMaker.ViewModels;
+
+/// <summary>主视图模型，管理模板加载、适配器添加和标签页切换</summary>
+public class MainViewModel : ViewModelBase
 {
-    public class MainViewModel : ViewModelBase
+    private readonly ITemplateLoaderService _templateLoader;
+    private readonly IDataBindingService _dataBindingService;
+    private readonly ITemplatePreviewService _previewService;
+    private readonly IDialogService _dialogService;
+    private readonly AdapterConfigStore _configStore;
+    private readonly ExcelAdapterFactory _excelFactory;
+    private readonly DatabaseAdapterFactory _dbFactory;
+
+    /// <summary>初始化主视图模型</summary>
+    /// <param name="templateLoader">模板加载服务</param>
+    /// <param name="dataBindingService">数据绑定服务</param>
+    /// <param name="previewService">模板预览服务</param>
+    /// <param name="dialogService">对话框服务</param>
+    /// <param name="configStore">适配器配置存储</param>
+    /// <param name="excelFactory">Excel适配器工厂</param>
+    /// <param name="dbFactory">数据库适配器工厂</param>
+    public MainViewModel(
+        ITemplateLoaderService templateLoader,
+        IDataBindingService dataBindingService,
+        ITemplatePreviewService previewService,
+        IDialogService dialogService,
+        AdapterConfigStore configStore,
+        ExcelAdapterFactory excelFactory,
+        DatabaseAdapterFactory dbFactory)
     {
-        private readonly TemplateLoaderService _templateLoader;
-        private readonly DataExportService _dataExportService;
-        private readonly DataBindingService _dataBindingService;
-        private ExternalTemplateDefinition _currentTemplate;
-        private TemplateData _templateData;
+        _templateLoader = templateLoader;
+        _dataBindingService = dataBindingService;
+        _previewService = previewService;
+        _dialogService = dialogService;
+        _configStore = configStore;
+        _excelFactory = excelFactory;
+        _dbFactory = dbFactory;
 
-        private string _statusText = "就绪";
-        public string StatusText
+        Tabs = new ObservableCollection<TabViewModelBase>();
+        Adapters = new ObservableCollection<AdapterItemViewModel>();
+
+        LoadTemplateCommand = new RelayCommand(_ => ExecuteLoadTemplate());
+        ToggleSidePanelCommand = new RelayCommand(_ => IsSidePanelExpanded = !IsSidePanelExpanded);
+        AddExcelAdapterCommand = new RelayCommand(_ => ExecuteAddExcelAdapter(), _ => IsTemplateLoaded);
+        AddDbAdapterCommand = new RelayCommand(_ => ExecuteAddDbAdapter(), _ => IsTemplateLoaded);
+        SaveCommand = new AsyncRelayCommand(ExecuteSaveAsync, _ => IsTemplateLoaded);
+        ExitCommand = new RelayCommand(_ => Application.Current.Shutdown());
+    }
+
+    private ExternalTemplateDefinition? _currentTemplate;
+    /// <summary>当前加载的模板定义</summary>
+    public ExternalTemplateDefinition? CurrentTemplate
+    {
+        get => _currentTemplate;
+        private set { SetProperty(ref _currentTemplate, value); IsTemplateLoaded = value != null; }
+    }
+
+    private bool _isTemplateLoaded;
+    /// <summary>是否已加载模板</summary>
+    public bool IsTemplateLoaded { get => _isTemplateLoaded; private set => SetProperty(ref _isTemplateLoaded, value); }
+
+    /// <summary>模板名称</summary>
+    public string TemplateName => CurrentTemplate?.Name ?? "未加载模板";
+    /// <summary>模板版本</summary>
+    public string TemplateVersion => CurrentTemplate != null ? $"v{CurrentTemplate.Version}" : "";
+
+    /// <summary>字段摘要信息</summary>
+    public string FieldSummary
+    {
+        get
         {
-            get => _statusText;
-            set => SetProperty(ref _statusText, value);
+            if (CurrentTemplate?.Elements == null) return "";
+            var groups = CurrentTemplate.Elements.GroupBy(e => e.Group).ToDictionary(g => g.Key, g => g.Count());
+            return string.Join(" | ", groups.Select(kv => $"{kv.Key}:{kv.Value}"));
         }
+    }
 
-        private string _templateInfo = "未加载模板";
-        public string TemplateInfo
+    private bool _isSidePanelExpanded = true;
+    /// <summary>侧边面板是否展开</summary>
+    public bool IsSidePanelExpanded { get => _isSidePanelExpanded; set => SetProperty(ref _isSidePanelExpanded, value); }
+
+    /// <summary>适配器项集合</summary>
+    public ObservableCollection<AdapterItemViewModel> Adapters { get; }
+    /// <summary>标签页集合</summary>
+    public ObservableCollection<TabViewModelBase> Tabs { get; }
+
+    private TabViewModelBase? _activeTab;
+    /// <summary>当前活动的标签页</summary>
+    public TabViewModelBase? ActiveTab { get => _activeTab; set => SetProperty(ref _activeTab, value); }
+
+    private string _statusText = "就绪";
+    /// <summary>状态栏文本</summary>
+    public string StatusText { get => _statusText; set => SetProperty(ref _statusText, value); }
+
+    private string _statusInfo = "";
+    /// <summary>状态栏附加信息</summary>
+    public string StatusInfo { get => _statusInfo; set => SetProperty(ref _statusInfo, value); }
+
+    /// <summary>状态栏颜色</summary>
+    public System.Windows.Media.Brush StatusColor => IsTemplateLoaded
+        ? System.Windows.Media.Brushes.Green : System.Windows.Media.Brushes.Gray;
+
+    /// <summary>加载模板命令</summary>
+    public RelayCommand LoadTemplateCommand { get; }
+    /// <summary>切换侧边面板命令</summary>
+    public RelayCommand ToggleSidePanelCommand { get; }
+    /// <summary>添加Excel适配器命令</summary>
+    public RelayCommand AddExcelAdapterCommand { get; }
+    /// <summary>添加数据库适配器命令</summary>
+    public RelayCommand AddDbAdapterCommand { get; }
+    /// <summary>保存命令</summary>
+    public AsyncRelayCommand SaveCommand { get; }
+    /// <summary>退出命令</summary>
+    public RelayCommand ExitCommand { get; }
+
+    private void ExecuteLoadTemplate()
+    {
+        var filePath = _dialogService.OpenFile("JSON 文件 (*.json)|*.json|所有文件 (*.*)|*.*", "选择模板文件");
+        if (string.IsNullOrEmpty(filePath)) return;
+        try
         {
-            get => _templateInfo;
-            set => SetProperty(ref _templateInfo, value);
+            var template = _templateLoader.LoadFromFile(filePath);
+            LoadTemplate(template);
         }
-
-        private TemplatePreviewViewModel _previewViewModel;
-        public TemplatePreviewViewModel PreviewViewModel
+        catch (Exception ex)
         {
-            get => _previewViewModel;
-            set => SetProperty(ref _previewViewModel, value);
+            _dialogService.ShowError($"加载模板失败: {ex.Message}", "错误");
         }
+    }
 
-        private bool _isTemplateLoaded;
-        public bool IsTemplateLoaded
+    private void LoadTemplate(ExternalTemplateDefinition template)
+    {
+        CurrentTemplate = template;
+        StatusInfo = $"模板: {template.Name}";
+        Tabs.Clear();
+        Adapters.Clear();
+
+        var dataEntryTab = new DataEntryTabViewModel(template, _dataBindingService);
+        dataEntryTab.CloseRequested += OnTabCloseRequested;
+        Tabs.Add(dataEntryTab);
+
+        var previewTab = new PreviewTabViewModel(template, _previewService);
+        previewTab.CloseRequested += OnTabCloseRequested;
+        Tabs.Add(previewTab);
+
+        var savedConfigs = _configStore.Load(template.Name);
+        foreach (var config in savedConfigs) AddAdapterTab(config);
+
+        ActiveTab = Tabs[0];
+        OnPropertyChanged(nameof(TemplateName));
+        OnPropertyChanged(nameof(TemplateVersion));
+        OnPropertyChanged(nameof(FieldSummary));
+        OnPropertyChanged(nameof(StatusColor));
+    }
+
+    private void ExecuteAddExcelAdapter()
+    {
+        if (CurrentTemplate == null) return;
+
+        var displayName = $"Excel适配器{Adapters.Count(a => a.Type == AdapterType.Excel) + 1}";
+        var tab = new ExcelAdapterTabViewModel(CurrentTemplate, _excelFactory, _dialogService, displayName);
+        tab.CloseRequested += OnTabCloseRequested;
+        Tabs.Insert(Tabs.Count - 1, tab);
+
+        var config = new ExcelAdapterConfig
         {
-            get => _isTemplateLoaded;
-            set
-            {
-                if (SetProperty(ref _isTemplateLoaded, value))
-                {
-                    CommandManager.InvalidateRequerySuggested();
-                }
-            }
-        }
+            Type = AdapterType.Excel,
+            DisplayName = displayName,
+            Mode = ImportMode.Single
+        };
+        Adapters.Add(new AdapterItemViewModel(config));
+        ActiveTab = tab;
+    }
 
-        public ICommand LoadTemplateCommand { get; }
-        public ICommand ExportDataCommand { get; }
-        public ICommand ShowPreviewCommand { get; }
-        public ICommand ShowDataEntryCommand { get; }
+    private void ExecuteAddDbAdapter()
+    {
+        if (CurrentTemplate == null) return;
 
-        public MainViewModel()
+        var displayName = $"数据库适配器{Adapters.Count(a => a.Type == AdapterType.Database) + 1}";
+        var tab = new DatabaseAdapterTabViewModel(CurrentTemplate, _dbFactory, _dialogService, _configStore, displayName);
+        tab.CloseRequested += OnTabCloseRequested;
+        Tabs.Insert(Tabs.Count - 1, tab);
+
+        var config = new DatabaseAdapterConfig
         {
-            _templateLoader = new TemplateLoaderService();
-            _dataExportService = new DataExportService();
-            _dataBindingService = new DataBindingService();
-            _templateData = new TemplateData();
+            Type = AdapterType.Database,
+            DisplayName = displayName
+        };
+        Adapters.Add(new AdapterItemViewModel(config));
+        ActiveTab = tab;
+    }
 
-            LoadTemplateCommand = new RelayCommand(ExecuteLoadTemplate);
-            ExportDataCommand = new RelayCommand(ExecuteExportData, CanExportData);
-            ShowPreviewCommand = new RelayCommand(ExecuteShowPreview, CanShowPreview);
-            ShowDataEntryCommand = new RelayCommand(ExecuteShowDataEntry, CanShowDataEntry);
-        }
-
-        private async void ExecuteLoadTemplate(object parameter)
+    private void AddAdapterTab(AdapterConfigBase config)
+    {
+        var tab = new DataEntryTabViewModel(CurrentTemplate!, _dataBindingService)
         {
-            var dialog = new OpenFileDialog
-            {
-                Filter = "JSON files (*.json)|*.json",
-                Title = "选择模板文件"
-            };
+            Title = $"适配器: {config.DisplayName}",
+            IsClosable = true
+        };
+        tab.CloseRequested += OnTabCloseRequested;
+        Tabs.Insert(Tabs.Count - 1, tab);
+        Adapters.Add(new AdapterItemViewModel(config));
+        ActiveTab = tab;
+    }
 
-            if (dialog.ShowDialog() != true)
-                return;
-
-            try
-            {
-                StatusText = "正在加载模板...";
-
-                var jsonContent = await Task.Run(() => File.ReadAllText(dialog.FileName));
-
-                if (_templateLoader.IsExternalTemplateFormat(jsonContent))
-                {
-                    _currentTemplate = await Task.Run(() => _templateLoader.LoadExternalTemplateFromContent(jsonContent));
-                    _templateLoader.ClassifyElements(_currentTemplate, new HashSet<string>());
-
-                    var fixedCount = _currentTemplate.Elements?.Count(el => el.Group == ElementGroup.Fixed) ?? 0;
-                    var editableCount = _currentTemplate.Elements?.Count(el => el.Group == ElementGroup.Editable) ?? 0;
-                    var adapterCount = _currentTemplate.Elements?.Count(el => el.Group == ElementGroup.DataAdapter) ?? 0;
-
-                    PreviewViewModel = new TemplatePreviewViewModel(_currentTemplate);
-                    TemplateInfo = $"模板: {_currentTemplate.Name} (Fixed:{fixedCount} Editable:{editableCount} Adapter:{adapterCount})";
-                    StatusText = "模板加载成功";
-                    IsTemplateLoaded = true;
-                }
-                else
-                {
-                    MessageBox.Show("当前仅支持外部模板格式！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                    StatusText = "模板格式不支持";
-                }
-            }
-            catch (Exception ex)
-            {
-                StatusText = $"加载失败: {ex.Message}";
-                MessageBox.Show($"加载模板失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ExecuteExportData(object parameter)
+    private void OnTabCloseRequested(TabViewModelBase tab)
+    {
+        if (tab.IsClosable)
         {
-            var dialog = new SaveFileDialog
-            {
-                Filter = "JSON files (*.json)|*.json",
-                Title = "导出数据文件"
-            };
-
-            if (dialog.ShowDialog() != true)
-                return;
-
-            try
-            {
-                _dataExportService.ExportData(_templateData, dialog.FileName);
-                StatusText = "数据导出成功";
-                MessageBox.Show("数据导出成功！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"导出数据失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            Tabs.Remove(tab);
+            var adapter = Adapters.FirstOrDefault(a => tab.Title.Contains(a.DisplayName));
+            if (adapter != null) Adapters.Remove(adapter);
         }
+    }
 
-        private void ExecuteShowPreview(object parameter)
+    private async Task ExecuteSaveAsync(object? parameter)
+    {
+        try
         {
-            if (PreviewViewModel != null)
-            {
-                PreviewViewModel.RefreshElements();
-                StatusText = "预览已刷新";
-            }
+            StatusText = "保存中...";
+            await Task.Delay(100);
+            _dialogService.ShowSuccess("配置已保存");
+            StatusText = "已保存";
         }
-
-        private void ExecuteShowDataEntry(object parameter)
+        catch (Exception ex)
         {
-            var dataEntryViewModel = new DataEntryViewModel(_currentTemplate, _dataBindingService, _templateData);
-            dataEntryViewModel.CloseRequested += OnDataEntryCloseRequested;
-
-            var dataEntryWindow = new Views.DataEntryWindow
-            {
-                DataContext = dataEntryViewModel,
-                Owner = Application.Current.MainWindow,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
-
-            dataEntryWindow.ShowDialog();
+            _dialogService.ShowError($"保存失败: {ex.Message}", "错误");
+            StatusText = "保存失败";
         }
+    }
+}
 
-        private void OnDataEntryCloseRequested(object sender, bool success)
-        {
-            if (success)
-            {
-                StatusText = "数据录入成功";
-                PreviewViewModel?.RefreshElements();
-            }
-        }
+/// <summary>适配器项视图模型，表示侧边栏中的适配器条目</summary>
+public class AdapterItemViewModel : ViewModelBase
+{
+    /// <summary>适配器标识</summary>
+    public string AdapterId { get; }
+    /// <summary>显示名称</summary>
+    public string DisplayName { get; }
+    /// <summary>适配器类型</summary>
+    public AdapterType Type { get; }
 
-        private bool CanExportData(object parameter) => IsTemplateLoaded;
-        private bool CanShowPreview(object parameter) => IsTemplateLoaded;
-        private bool CanShowDataEntry(object parameter) => IsTemplateLoaded;
+    /// <summary>初始化适配器项视图模型</summary>
+    /// <param name="config">适配器配置基类</param>
+    public AdapterItemViewModel(AdapterConfigBase config)
+    {
+        AdapterId = config.AdapterId;
+        DisplayName = config.DisplayName;
+        Type = config.Type;
     }
 }

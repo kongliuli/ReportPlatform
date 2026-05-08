@@ -1,0 +1,30 @@
+- [ ] FlatField 模型包含 DataPath, Label, DataType, Format, Options, IsRequired, MinValue, MaxValue, DecimalPlaces, ElementId
+- [ ] TemplateFieldSchema 包含 TemplateName, TemplateVersion, Fields, GeneratedAt
+- [ ] TemplateFlattenService 仅扁平化 ElementGroup.Editable 元素
+- [ ] TemplateFlattenService 正确处理 TableElement 的可编辑 Cell
+- [ ] TemplateFlattenService 跳过 Fixed 和 DataAdapter 元素
+- [ ] ExcelSchemaExporter 导出的 xlsx Row 1 为隐藏 DataPath 契约行
+- [ ] ExcelSchemaExporter 导出的 xlsx Row 2 为 Label 列头行
+- [ ] ExcelSchemaExporter 导出的 xlsx Row 3 为隐藏 DataType 行
+- [ ] ExcelSchemaExporter 导出的 xlsx Row 4 为示例数据行
+- [ ] ExcelSchemaExporter 包含填写说明 Sheet
+- [ ] ExcelContractReader 按契约行 DataPath 精确匹配
+- [ ] ExcelContractReader 支持单行导入模式
+- [ ] ExcelContractReader 支持批量导入模式
+- [ ] ExcelContractReader 契约行缺失时返回错误
+- [ ] ExcelDataValidator 校验 Number 类型（范围、精度）
+- [ ] ExcelDataValidator 校验 Date 类型（格式）
+- [ ] ExcelDataValidator 校验 Dropdown 类型（选项列表）
+- [ ] ExcelDataValidator 校验 Boolean 类型
+- [ ] ValidationReport 包含 IsValid, TotalRows, Errors
+- [ ] ValidationError 包含 Row, DataPath, Label, Value, ExpectedType, Message
+- [ ] ExcelAdapterConfig 继承 AdapterConfigBase
+- [ ] ExcelAdapterConfig 包含 FilePath, SheetName, ExportedSchema, Mode
+- [ ] ExcelTemplateSchema 包含 ContractRow, LabelRow, TypeRow, DataStartRow, Fields
+- [ ] ExcelAdapterFactory 整合所有组件
+- [ ] ExcelAdapterTabViewModel 包含 Export/Import/Validate/BrowseFile 命令
+- [ ] ExcelAdapterTab.xaml 包含模板导出、数据导入、校验结果三区域
+- [ ] MainViewModel 支持 Excel 适配器 Tab 创建
+- [ ] App.xaml.cs 注册 ExcelAdapterFactory
+- [ ] 导出的 xlsx 可在 Excel 中正常打开
+- [ ] 按契约导入数据与模板字段正确匹配
