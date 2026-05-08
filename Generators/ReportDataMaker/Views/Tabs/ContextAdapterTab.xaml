@@ -1,0 +1,136 @@
+<UserControl x:Class="ReportDataMaker.Views.Tabs.ContextAdapterTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:hc="https://handyorg.github.io/handycontrol">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="16">
+
+            <Border Style="{StaticResource BorderRegion}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="配置方案" Style="{StaticResource TextBlockSectionTitle}" />
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox Grid.Column="0" ItemsSource="{Binding AvailableProfiles}" SelectedItem="{Binding SelectedProfileName}" Margin="0,0,8,0"/>
+                        <Button Grid.Column="1" Content="新建" Command="{Binding NewProfileCommand}" Margin="0,0,8,0"/>
+                        <Button Grid.Column="2" Content="删除" Command="{Binding DeleteProfileCommand}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Grid Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Style="{StaticResource BorderRegion}" Margin="0,0,6,0">
+                    <StackPanel>
+                        <TextBlock Text="静态值" Style="{StaticResource TextBlockSectionTitle}" />
+                        <DataGrid ItemsSource="{Binding StaticValues}" AutoGenerateColumns="False" CanUserAddRows="False"
+                                  Margin="0,8,0,0" HeadersVisibility="Column" MinHeight="80">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="DataPath" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding DataPath, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Background="Transparent"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Value" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Background="Transparent"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <Button Content="+" Command="{Binding AddStaticValueCommand}" Margin="0,0,4,0"/>
+                            <Button Content="-" Command="{Binding RemoveStaticValueCommand}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource BorderRegion}" Grid.Column="1" Margin="6,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="动态规则" Style="{StaticResource TextBlockSectionTitle}" />
+                        <DataGrid ItemsSource="{Binding DynamicRules}" AutoGenerateColumns="False" CanUserAddRows="False"
+                                  Margin="0,8,0,0" HeadersVisibility="Column" MinHeight="80">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="DataPath" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding DataPath, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Background="Transparent"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Source" Width="80">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox ItemsSource="{Binding DataContext.SourceList, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                      SelectedItem="{Binding Source, UpdateSourceTrigger=PropertyChanged}"
+                                                      BorderThickness="0" Background="Transparent"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Format" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding Format, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Background="Transparent"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <Button Content="+" Command="{Binding AddDynamicRuleCommand}" Margin="0,0,4,0"/>
+                            <Button Content="-" Command="{Binding RemoveDynamicRuleCommand}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Style="{StaticResource BorderRegion}" Margin="0,0,6,0">
+                    <StackPanel>
+                        <TextBlock Text="未配置字段" Style="{StaticResource TextBlockSectionTitle}" />
+                        <Button Content="检测" Command="{Binding DetectUnconfiguredCommand}" Style="{StaticResource ButtonInfo}" HorizontalAlignment="Left" Margin="0,8,0,8"/>
+                        <ListBox ItemsSource="{Binding UnconfiguredFields}" MaxHeight="150"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource BorderRegion}" Grid.Column="1" Margin="6,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="预览" Style="{StaticResource TextBlockSectionTitle}" />
+                        <Button Content="预览" Command="{Binding PreviewCommand}" Style="{StaticResource ButtonInfo}" HorizontalAlignment="Left" Margin="0,8,0,8"/>
+                        <DataGrid ItemsSource="{Binding PreviewItems}" AutoGenerateColumns="False" CanUserAddRows="False"
+                                  HeadersVisibility="Column" MinHeight="80">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="DataPath" Binding="{Binding DataPath}" Width="*"/>
+                                <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*"/>
+                                <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                <Button Content="保存配置" Command="{Binding SaveCommand}" Style="{StaticResource ButtonWarning}" Margin="0,0,8,0"/>
+                <Button Content="应用填充" Command="{Binding ApplyCommand}" Style="{StaticResource ButtonSuccess}" Margin="0,0,8,0"/>
+                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center"/>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
