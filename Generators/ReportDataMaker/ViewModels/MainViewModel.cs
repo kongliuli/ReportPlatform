@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
 using ReportDataMaker.Services;
+using ReportDataMaker.Services.DatabaseAdapter;
 using ReportDataMaker.Services.ExcelAdapter;
 using ReportDataMaker.ViewModels.Tabs;
 using Xinglin.ReportEditor.Contracts.Enums;
@@ -17,6 +18,7 @@ public class MainViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
     private readonly AdapterConfigStore _configStore;
     private readonly ExcelAdapterFactory _excelFactory;
+    private readonly DatabaseAdapterFactory _dbFactory;
 
     public MainViewModel(
         ITemplateLoaderService templateLoader,
@@ -24,7 +26,8 @@ public class MainViewModel : ViewModelBase
         ITemplatePreviewService previewService,
         IDialogService dialogService,
         AdapterConfigStore configStore,
-        ExcelAdapterFactory excelFactory)
+        ExcelAdapterFactory excelFactory,
+        DatabaseAdapterFactory dbFactory)
     {
         _templateLoader = templateLoader;
         _dataBindingService = dataBindingService;
@@ -32,13 +35,15 @@ public class MainViewModel : ViewModelBase
         _dialogService = dialogService;
         _configStore = configStore;
         _excelFactory = excelFactory;
+        _dbFactory = dbFactory;
 
         Tabs = new ObservableCollection<TabViewModelBase>();
         Adapters = new ObservableCollection<AdapterItemViewModel>();
 
         LoadTemplateCommand = new RelayCommand(_ => ExecuteLoadTemplate());
         ToggleSidePanelCommand = new RelayCommand(_ => IsSidePanelExpanded = !IsSidePanelExpanded);
-        AddAdapterCommand = new RelayCommand(_ => ExecuteAddAdapter(), _ => IsTemplateLoaded);
+        AddExcelAdapterCommand = new RelayCommand(_ => ExecuteAddExcelAdapter(), _ => IsTemplateLoaded);
+        AddDbAdapterCommand = new RelayCommand(_ => ExecuteAddDbAdapter(), _ => IsTemplateLoaded);
         SaveCommand = new AsyncRelayCommand(ExecuteSaveAsync, _ => IsTemplateLoaded);
         ExitCommand = new RelayCommand(_ => Application.Current.Shutdown());
     }
@@ -86,7 +91,8 @@ public class MainViewModel : ViewModelBase
 
     public RelayCommand LoadTemplateCommand { get; }
     public RelayCommand ToggleSidePanelCommand { get; }
-    public RelayCommand AddAdapterCommand { get; }
+    public RelayCommand AddExcelAdapterCommand { get; }
+    public RelayCommand AddDbAdapterCommand { get; }
     public AsyncRelayCommand SaveCommand { get; }
     public RelayCommand ExitCommand { get; }
 
@@ -130,20 +136,38 @@ public class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(StatusColor));
     }
 
-    private void ExecuteAddAdapter()
+    private void ExecuteAddExcelAdapter()
     {
         if (CurrentTemplate == null) return;
 
-        var displayName = $"Excel适配器{Adapters.Count + 1}";
+        var displayName = $"Excel适配器{Adapters.Count(a => a.Type == AdapterType.Excel) + 1}";
         var tab = new ExcelAdapterTabViewModel(CurrentTemplate, _excelFactory, _dialogService, displayName);
         tab.CloseRequested += OnTabCloseRequested;
         Tabs.Insert(Tabs.Count - 1, tab);
 
         var config = new ExcelAdapterConfig
         {
-            Type = Xinglin.ReportEditor.Contracts.Enums.AdapterType.Excel,
+            Type = AdapterType.Excel,
             DisplayName = displayName,
             Mode = ImportMode.Single
+        };
+        Adapters.Add(new AdapterItemViewModel(config));
+        ActiveTab = tab;
+    }
+
+    private void ExecuteAddDbAdapter()
+    {
+        if (CurrentTemplate == null) return;
+
+        var displayName = $"数据库适配器{Adapters.Count(a => a.Type == AdapterType.Database) + 1}";
+        var tab = new DatabaseAdapterTabViewModel(CurrentTemplate, _dbFactory, _dialogService, _configStore, displayName);
+        tab.CloseRequested += OnTabCloseRequested;
+        Tabs.Insert(Tabs.Count - 1, tab);
+
+        var config = new DatabaseAdapterConfig
+        {
+            Type = AdapterType.Database,
+            DisplayName = displayName
         };
         Adapters.Add(new AdapterItemViewModel(config));
         ActiveTab = tab;

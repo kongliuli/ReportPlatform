@@ -2,6 +2,7 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Services;
+using ReportDataMaker.Services.DatabaseAdapter;
 using ReportDataMaker.Services.ExcelAdapter;
 using ReportDataMaker.ViewModels;
 
@@ -17,17 +18,16 @@ public partial class App : Application
 
         var services = new ServiceCollection();
 
-        // 基础设施
         services.AddSingleton<IDialogService, DialogService>();
 
-        // 业务服务
         services.AddSingleton<ITemplateLoaderService, TemplateLoaderService>();
         services.AddSingleton<ITemplatePreviewService, TemplatePreviewService>();
         services.AddSingleton<IDataBindingService, DataBindingService>();
         services.AddSingleton<AdapterConfigStore>();
         services.AddSingleton<ExcelAdapterFactory>();
+        services.AddSingleton<DatabaseProviderRegistry>(sp => DatabaseProviderRegistry.CreateDefault());
+        services.AddSingleton<DatabaseAdapterFactory>();
 
-        // ViewModels
         services.AddTransient<MainViewModel>();
         services.AddTransient<TemplateLoadViewModel>();
         services.AddTransient<SidePanelViewModel>();

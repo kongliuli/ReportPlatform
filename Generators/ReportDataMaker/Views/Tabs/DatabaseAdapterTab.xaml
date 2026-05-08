@@ -1,0 +1,169 @@
+<UserControl x:Class="ReportDataMaker.Views.Tabs.DatabaseAdapterTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:hc="https://handyorg.github.io/handycontrol">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="16">
+
+            <Border Style="{StaticResource BorderRegion}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="连接配置" Style="{StaticResource TextBlockSectionTitle}" />
+
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Label"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="数据库类型" VerticalAlignment="Center" Margin="0,0,8,8"/>
+                        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Providers}" SelectedItem="{Binding SelectedProviderInfo}" DisplayMemberPath="DisplayName" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="连接字符串" VerticalAlignment="Top" Margin="0,0,8,8"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ConnectionString}" AcceptsReturn="True" TextWrapping="Wrap" Height="60" Margin="0,0,0,8"/>
+
+                        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                            <Button Content="测试连接" Command="{Binding TestConnectionCommand}" Style="{StaticResource ButtonPrimary}"/>
+                            <TextBlock Text="{Binding ConnectionStatus}" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource BorderRegion}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="查询构建" Style="{StaticResource TextBlockSectionTitle}" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,8">
+                        <RadioButton Content="SQL 语句" IsChecked="{Binding IsRawSqlMode}" Margin="0,0,16,0"/>
+                        <RadioButton Content="可视化构建" IsChecked="{Binding IsVisualBuilderMode}"/>
+                    </StackPanel>
+
+                    <TextBox Text="{Binding RawSql}" AcceptsReturn="True" TextWrapping="Wrap" Height="120"
+                             FontFamily="Consolas" Margin="0,0,0,8"
+                             Visibility="{Binding IsRawSqlMode, Converter={StaticResource Boolean2VisibilityConverter}}"/>
+
+                    <StackPanel Visibility="{Binding IsVisualBuilderMode, Converter={StaticResource Boolean2VisibilityConverter}}">
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="主表" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding Tables}" SelectedItem="{Binding SelectedTable}" DisplayMemberPath="Name"/>
+                        </Grid>
+
+                        <TextBlock Text="关联 (JOIN)" Margin="0,4,0,4"/>
+                        <ItemsControl ItemsSource="{Binding Joins}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,2,0,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ComboBox SelectedItem="{Binding Type}" ItemsSource="{Binding JoinTypes, RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.JoinTypeList}"/>
+                                        <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                                            <Run Text="{Binding LeftTable}"/>.<Run Text="{Binding LeftColumn}"/> = <Run Text="{Binding RightTable}"/>.<Run Text="{Binding RightColumn}"/>
+                                        </TextBlock>
+                                        <Button Grid.Column="2" Content="✕" Command="{Binding DataContext.RemoveJoinCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Padding="4,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Button Content="+ 添加 JOIN" Command="{Binding AddJoinCommand}" Margin="0,4,0,8"/>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="WHERE" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBox Grid.Column="1" Text="{Binding WhereClause}"/>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="ORDER BY" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBox Grid.Column="1" Text="{Binding OrderBy}"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <Button Content="执行预览 (前10行)" Command="{Binding ExecutePreviewCommand}" Style="{StaticResource ButtonInfo}" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource BorderRegion}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="参数定义" Style="{StaticResource TextBlockSectionTitle}" />
+
+                    <DataGrid ItemsSource="{Binding Parameters}" AutoGenerateColumns="False" CanUserAddRows="False"
+                              Margin="0,8,0,0" HeadersVisibility="Column" MinHeight="60">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="标签" Binding="{Binding Label}" Width="*"/>
+                            <DataGridComboBoxColumn Header="类型" ItemsSource="{Binding FieldDataTypes, RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.FieldDataTypeList}" Width="80"/>
+                            <DataGridTextColumn Header="默认值" Binding="{Binding DefaultValue}" Width="*"/>
+                            <DataGridComboBoxColumn Header="来源" ItemsSource="{Binding ParameterSources, RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ParameterSourceList}" Width="80"/>
+                            <DataGridTemplateColumn Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="✕" Command="{Binding DataContext.RemoveParameterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Padding="4,0"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Content="+ 添加参数" Command="{Binding AddParameterCommand}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource BorderRegion}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="字段映射" Style="{StaticResource TextBlockSectionTitle}" />
+
+                    <Button Content="自动匹配" Command="{Binding AutoMatchCommand}" Style="{StaticResource ButtonInfo}" Margin="0,8,0,8" HorizontalAlignment="Left"/>
+
+                    <DataGrid ItemsSource="{Binding DbFieldMappings}" AutoGenerateColumns="False" CanUserAddRows="False"
+                              Margin="0,0,0,0" HeadersVisibility="Column" MinHeight="80">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="查询结果列" Binding="{Binding ColumnName}" Width="*"/>
+                            <DataGridComboBoxColumn Header="模板字段" ItemsSource="{Binding TemplateDataPaths, RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.TemplateDataPathList}" Width="*"/>
+                            <DataGridTextColumn Header="转换" Binding="{Binding Transform}" Width="80"/>
+                            <DataGridTemplateColumn Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="✕" Command="{Binding DataContext.RemoveMappingCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Padding="4,0"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Content="+ 添加映射" Command="{Binding AddMappingCommand}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource BorderRegion}" Margin="0,0,0,12" Visibility="{Binding HasPreviewData, Converter={StaticResource Boolean2VisibilityConverter}}">
+                <StackPanel>
+                    <TextBlock Text="预览结果" Style="{StaticResource TextBlockSectionTitle}" />
+                    <TextBox Text="{Binding PreviewData}" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                             Height="150" FontFamily="Consolas" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                <Button Content="保存配置" Command="{Binding SaveConfigCommand}" Style="{StaticResource ButtonWarning}" Margin="0,0,8,0"/>
+                <Button Content="执行查询并填充" Command="{Binding ExecuteQueryCommand}" Style="{StaticResource ButtonSuccess}"/>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
