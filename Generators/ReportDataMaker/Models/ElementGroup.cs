@@ -1,9 +1,9 @@
-namespace ReportDataMaker.Models
+namespace ReportDataMaker.Models;
+
+public class ElementGroup
 {
-    public enum ElementGroup
-    {
-        Fixed,
-        Editable,
-        DataAdapter
-    }
+    public const string Fixed = "Fixed";
+    public const string Context = "Context";
+    public const string Editable = "Editable";
+    public const string DataAdapter = "DataAdapter";
 }

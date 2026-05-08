@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 
-namespace ReportDataMaker.Models
+namespace ReportDataMaker.Models;
+
+public interface IDataAdapter
 {
-    public interface IDataAdapter
-    {
-        string AdapterName { get; }
-        IReadOnlyList<string> TargetDataPaths { get; }
-        Dictionary<string, object> ReadData(IReadOnlyDictionary<string, object> parameters);
-    }
+    string AdapterName { get; }
+    IReadOnlyList<string> TargetDataPaths { get; }
+    Dictionary<string, object> ReadData(IReadOnlyDictionary<string, object> parameters);
 }

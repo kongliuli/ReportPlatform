@@ -1,47 +1,37 @@
-using System.Collections.Generic;
+namespace ReportDataMaker.Models;
 
-namespace ReportDataMaker.Models
+public class TemplateData
 {
-    public class TemplateData
-    {
-        public PatientData Patient { get; set; }
-        public ReportData Report { get; set; }
-        public List<TestItemData> TestItems { get; set; }
+    public PatientData Patient { get; set; } = new();
+    public ReportData Report { get; set; } = new();
+    public List<TestItemData> TestItems { get; set; } = new();
+}
 
-        public TemplateData()
-        {
-            Patient = new PatientData();
-            Report = new ReportData();
-            TestItems = new List<TestItemData>();
-        }
-    }
+public class PatientData
+{
+    public string Name { get; set; } = string.Empty;
+    public string Gender { get; set; } = string.Empty;
+    public string Age { get; set; } = string.Empty;
+}
 
-    public class PatientData
-    {
-        public string Name { get; set; }
-        public string Gender { get; set; }
-        public string Age { get; set; }
-    }
+public class ReportData
+{
+    public string SampleType { get; set; } = string.Empty;
+    public string ReportDate { get; set; } = string.Empty;
+    public string Technician { get; set; } = string.Empty;
+    public string Reviewer { get; set; } = string.Empty;
+    public string Department { get; set; } = string.Empty;
+    public string ChiefComplaint { get; set; } = string.Empty;
+    public string PresentIllness { get; set; } = string.Empty;
+    public string Treatment { get; set; } = string.Empty;
+    public string Complaint { get; set; } = string.Empty;
+    public string History { get; set; } = string.Empty;
+    public string Diagnosis { get; set; } = string.Empty;
+}
 
-    public class ReportData
-    {
-        public string SampleType { get; set; }
-        public string ReportDate { get; set; }
-        public string Technician { get; set; }
-        public string Reviewer { get; set; }
-        public string Department { get; set; }
-        public string ChiefComplaint { get; set; }
-        public string PresentIllness { get; set; }
-        public string Treatment { get; set; }
-        public string Complaint { get; set; }
-        public string History { get; set; }
-        public string Diagnosis { get; set; }
-    }
-
-    public class TestItemData
-    {
-        public string Result { get; set; }
-        public string ReferenceRange { get; set; }
-        public string Method { get; set; }
-    }
+public class TestItemData
+{
+    public string Result { get; set; } = string.Empty;
+    public string ReferenceRange { get; set; } = string.Empty;
+    public string Method { get; set; } = string.Empty;
 }

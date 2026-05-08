@@ -1,20 +1,18 @@
-namespace ReportDataMaker.Models
+using System.Collections.Generic;
+
+namespace ReportDataMaker.Models;
+
+public class TextElement
 {
-    public class TextElement : ElementBase
-    {
-        public string Text { get; set; }
-        public string RichText { get; set; }
-        public bool IsRichText { get; set; }
-        public string FontFamily { get; set; }
-        public double FontSize { get; set; }
-        public string FontWeight { get; set; }
-        public string FontStyle { get; set; }
-        public string ForegroundColor { get; set; }
-        public string BackgroundColor { get; set; }
-        public string TextAlignment { get; set; }
-        public string VerticalAlignment { get; set; }
-        public string TextDecoration { get; set; }
-        public string DataBindingPath { get; set; }
-        public string FormatString { get; set; }
-    }
+    public string? Id { get; set; }
+    public double X { get; set; }
+    public double Y { get; set; }
+    public double Width { get; set; }
+    public double Height { get; set; }
+    public string? Text { get; set; }
+    public string? Label { get; set; }
+    public double FontSize { get; set; }
+    public string? FontWeight { get; set; }
+    public string? TextColor { get; set; }
+    public string? Align { get; set; }
 }
