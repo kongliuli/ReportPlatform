@@ -7,6 +7,7 @@ using ReportDataMaker.Services;
 using ReportDataMaker.Services.ContextAdapter;
 using ReportDataMaker.Services.DatabaseAdapter;
 using ReportDataMaker.Services.ExcelAdapter;
+using ReportDataMaker.Services.PdfExport;
 using ReportDataMaker.ViewModels.Tabs;
 using Xinglin.ReportEditor.Contracts.Enums;
 using Xinglin.ReportEditor.Contracts.Models.Adapters;
@@ -24,6 +25,10 @@ public class MainViewModel : ViewModelBase
     private readonly ExcelAdapterFactory _excelFactory;
     private readonly DatabaseAdapterFactory _dbFactory;
     private readonly ContextAdapterFactory _contextFactory;
+    private readonly IPdfExportService _pdfExportService;
+    private readonly BatchExportService _batchExportService;
+    private readonly ExportHistoryStore _exportHistoryStore;
+    private readonly DataBindingService _concreteDataBindingService;
 
     /// <summary>初始化主视图模型</summary>
     /// <param name="templateLoader">模板加载服务</param>
@@ -41,7 +46,11 @@ public class MainViewModel : ViewModelBase
         AdapterConfigStore configStore,
         ExcelAdapterFactory excelFactory,
         DatabaseAdapterFactory dbFactory,
-        ContextAdapterFactory contextFactory)
+        ContextAdapterFactory contextFactory,
+        IPdfExportService pdfExportService,
+        BatchExportService batchExportService,
+        ExportHistoryStore exportHistoryStore,
+        DataBindingService concreteDataBindingService)
     {
         _templateLoader = templateLoader;
         _dataBindingService = dataBindingService;
@@ -51,6 +60,10 @@ public class MainViewModel : ViewModelBase
         _excelFactory = excelFactory;
         _dbFactory = dbFactory;
         _contextFactory = contextFactory;
+        _pdfExportService = pdfExportService;
+        _batchExportService = batchExportService;
+        _exportHistoryStore = exportHistoryStore;
+        _concreteDataBindingService = concreteDataBindingService;
 
         Tabs = new ObservableCollection<TabViewModelBase>();
         Adapters = new ObservableCollection<AdapterItemViewModel>();
@@ -60,6 +73,9 @@ public class MainViewModel : ViewModelBase
         AddExcelAdapterCommand = new RelayCommand(_ => ExecuteAddExcelAdapter(), _ => IsTemplateLoaded);
         AddDbAdapterCommand = new RelayCommand(_ => ExecuteAddDbAdapter(), _ => IsTemplateLoaded);
         EditContextCommand = new RelayCommand(_ => ExecuteEditContext(), _ => IsTemplateLoaded);
+        ExportPdfCommand = new RelayCommand(_ => ExecuteExportPdf(), _ => IsTemplateLoaded);
+        BatchExportCommand = new RelayCommand(_ => ExecuteBatchExport(), _ => IsTemplateLoaded);
+        PrintPreviewCommand = new RelayCommand(_ => ExecutePrintPreview(), _ => IsTemplateLoaded);
         SaveCommand = new AsyncRelayCommand(ExecuteSaveAsync, _ => IsTemplateLoaded);
         ExitCommand = new RelayCommand(_ => Application.Current.Shutdown());
     }
@@ -127,6 +143,9 @@ public class MainViewModel : ViewModelBase
     public RelayCommand AddDbAdapterCommand { get; }
     /// <summary>编辑上下文命令</summary>
     public RelayCommand EditContextCommand { get; }
+    public RelayCommand ExportPdfCommand { get; }
+    public RelayCommand BatchExportCommand { get; }
+    public RelayCommand PrintPreviewCommand { get; }
     /// <summary>保存命令</summary>
     public AsyncRelayCommand SaveCommand { get; }
     /// <summary>退出命令</summary>
@@ -176,6 +195,10 @@ public class MainViewModel : ViewModelBase
         var previewTab = new PreviewTabViewModel(template, _previewService);
         previewTab.CloseRequested += OnTabCloseRequested;
         Tabs.Add(previewTab);
+
+        var exportTab = new ExportTabViewModel(template, _pdfExportService, _batchExportService, _exportHistoryStore, _dialogService, _concreteDataBindingService);
+        exportTab.CloseRequested += OnTabCloseRequested;
+        Tabs.Add(exportTab);
 
         var savedConfigs = _configStore.Load(template.Name);
         foreach (var config in savedConfigs) AddAdapterTab(config);
@@ -233,6 +256,27 @@ public class MainViewModel : ViewModelBase
         tab.CloseRequested += OnTabCloseRequested;
         Tabs.Insert(Tabs.Count - 1, tab);
         ActiveTab = tab;
+    }
+
+    private void ExecuteExportPdf()
+    {
+        if (CurrentTemplate == null) return;
+        var existingTab = Tabs.OfType<ExportTabViewModel>().FirstOrDefault();
+        if (existingTab != null) { ActiveTab = existingTab; return; }
+        var tab = new ExportTabViewModel(CurrentTemplate, _pdfExportService, _batchExportService, _exportHistoryStore, _dialogService, _concreteDataBindingService);
+        tab.CloseRequested += OnTabCloseRequested;
+        Tabs.Add(tab);
+        ActiveTab = tab;
+    }
+
+    private void ExecuteBatchExport()
+    {
+        ExecuteExportPdf();
+    }
+
+    private void ExecutePrintPreview()
+    {
+        ExecuteExportPdf();
     }
 
     private void AddAdapterTab(AdapterConfigBase config)

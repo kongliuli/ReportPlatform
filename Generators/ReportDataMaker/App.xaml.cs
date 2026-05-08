@@ -5,6 +5,7 @@ using ReportDataMaker.Services;
 using ReportDataMaker.Services.ContextAdapter;
 using ReportDataMaker.Services.DatabaseAdapter;
 using ReportDataMaker.Services.ExcelAdapter;
+using ReportDataMaker.Services.PdfExport;
 using ReportDataMaker.ViewModels;
 using Xinglin.ReportEditor.Contracts.Enums;
 
@@ -37,6 +38,11 @@ public partial class App : Application
         services.AddSingleton<ContextProfileStore>();
         services.AddSingleton<ContextAdapterService>();
         services.AddSingleton<ContextAdapterFactory>();
+
+        services.AddSingleton<IPdfExportService, PdfExportService>();
+        services.AddSingleton<BatchExportService>();
+        services.AddSingleton<ExportHistoryStore>();
+        services.AddSingleton<DataBindingService>(sp => (DataBindingService)sp.GetRequiredService<IDataBindingService>());
 
         services.AddTransient<MainViewModel>();
         services.AddTransient<TemplateLoadViewModel>();

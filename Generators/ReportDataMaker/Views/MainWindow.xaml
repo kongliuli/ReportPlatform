@@ -31,6 +31,9 @@
         <DataTemplate DataType="{x:Type vmtabs:ContextAdapterTabViewModel}">
             <tabs:ContextAdapterTab/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vmtabs:ExportTabViewModel}">
+            <tabs:ExportTab/>
+        </DataTemplate>
     </Window.Resources>
 
     <Grid>
@@ -54,6 +57,11 @@
             </MenuItem>
             <MenuItem Header="上下文">
                 <MenuItem Header="编辑上下文配置" Command="{Binding EditContextCommand}"/>
+            </MenuItem>
+            <MenuItem Header="导出">
+                <MenuItem Header="导出 PDF" Command="{Binding ExportPdfCommand}"/>
+                <MenuItem Header="批量导出..." Command="{Binding BatchExportCommand}"/>
+                <MenuItem Header="打印预览" Command="{Binding PrintPreviewCommand}"/>
             </MenuItem>
             <MenuItem Header="视图">
                 <MenuItem Header="切换侧边栏" Command="{Binding ToggleSidePanelCommand}"/>
