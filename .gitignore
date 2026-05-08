@@ -55,3 +55,12 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Deploy output (Docker containerized deployment artifacts)
+deploy/
+!deploy/.env.example
+!deploy/docker-compose.yml
+!deploy/docker-compose.override.yml
+!deploy/editor-server/Dockerfile
+!deploy/nginx/nginx.conf
+!deploy/README.md

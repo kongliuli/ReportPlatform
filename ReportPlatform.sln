@@ -1,0 +1,91 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{A73F2606-6D4C-3EEE-1759-0E59DCFEF523}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Editor", "Editor", "{28251423-8E50-9DF4-F913-DC1FAAA673F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generators", "Generators", "{AD7C8182-B466-96AE-CF31-8AA8EF11C5DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xinglin.WebReportEditor.Contracts", "Contracts\Xinglin.WebReportEditor.Contracts.csproj", "{014360DE-3FAF-AA5F-5DE7-21A236515BC6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6997BCD9-4B61-4781-EBF9-298EDE4E942A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xinglin.WebReportEditor.Core", "Editor\Core\Xinglin.WebReportEditor.Core.csproj", "{B95B3A38-E1B1-70E4-631F-E9AF31150950}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{DED1FE21-033F-91AE-C2F1-A485584BBFFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xinglin.WebReportEditor.Server", "Editor\Server\Xinglin.WebReportEditor.Server.csproj", "{94B86ABD-4F85-3FC9-C4EB-1357F78F35FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportDataMaker", "Generators\ReportDataMaker\ReportDataMaker.csproj", "{5862B40E-D491-045C-209A-ABD039C120CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReportDataMaker (1)", "ReportDataMaker (1)", "{466F538D-3EFC-2F9B-2492-B2C8EFF955BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportDataMaker_b4hen4z2_wpftmp", "Generators\ReportDataMaker\ReportDataMaker_b4hen4z2_wpftmp.csproj", "{2CA36ED0-5C0F-CAA0-DAB1-63638816D2A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportDataMaker_h0dh3zis_wpftmp", "Generators\ReportDataMaker\ReportDataMaker_h0dh3zis_wpftmp.csproj", "{A39D7923-0AEC-BD86-E5CB-8BA29B940598}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportDataMaker_jht0vga5_wpftmp", "Generators\ReportDataMaker\ReportDataMaker_jht0vga5_wpftmp.csproj", "{2D2F03B6-8391-5774-24B1-1045AAC69BE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportDataMaker_kgmzzlnw_wpftmp", "Generators\ReportDataMaker\ReportDataMaker_kgmzzlnw_wpftmp.csproj", "{0CF87E87-344E-0DCE-71A3-2A4232DC954E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{014360DE-3FAF-AA5F-5DE7-21A236515BC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{014360DE-3FAF-AA5F-5DE7-21A236515BC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{014360DE-3FAF-AA5F-5DE7-21A236515BC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{014360DE-3FAF-AA5F-5DE7-21A236515BC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B95B3A38-E1B1-70E4-631F-E9AF31150950}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B95B3A38-E1B1-70E4-631F-E9AF31150950}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B95B3A38-E1B1-70E4-631F-E9AF31150950}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B95B3A38-E1B1-70E4-631F-E9AF31150950}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B86ABD-4F85-3FC9-C4EB-1357F78F35FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B86ABD-4F85-3FC9-C4EB-1357F78F35FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B86ABD-4F85-3FC9-C4EB-1357F78F35FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B86ABD-4F85-3FC9-C4EB-1357F78F35FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5862B40E-D491-045C-209A-ABD039C120CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5862B40E-D491-045C-209A-ABD039C120CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5862B40E-D491-045C-209A-ABD039C120CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5862B40E-D491-045C-209A-ABD039C120CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CA36ED0-5C0F-CAA0-DAB1-63638816D2A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CA36ED0-5C0F-CAA0-DAB1-63638816D2A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CA36ED0-5C0F-CAA0-DAB1-63638816D2A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CA36ED0-5C0F-CAA0-DAB1-63638816D2A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A39D7923-0AEC-BD86-E5CB-8BA29B940598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A39D7923-0AEC-BD86-E5CB-8BA29B940598}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A39D7923-0AEC-BD86-E5CB-8BA29B940598}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A39D7923-0AEC-BD86-E5CB-8BA29B940598}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D2F03B6-8391-5774-24B1-1045AAC69BE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D2F03B6-8391-5774-24B1-1045AAC69BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D2F03B6-8391-5774-24B1-1045AAC69BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D2F03B6-8391-5774-24B1-1045AAC69BE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CF87E87-344E-0DCE-71A3-2A4232DC954E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CF87E87-344E-0DCE-71A3-2A4232DC954E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CF87E87-344E-0DCE-71A3-2A4232DC954E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CF87E87-344E-0DCE-71A3-2A4232DC954E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{014360DE-3FAF-AA5F-5DE7-21A236515BC6} = {A73F2606-6D4C-3EEE-1759-0E59DCFEF523}
+		{6997BCD9-4B61-4781-EBF9-298EDE4E942A} = {28251423-8E50-9DF4-F913-DC1FAAA673F1}
+		{B95B3A38-E1B1-70E4-631F-E9AF31150950} = {6997BCD9-4B61-4781-EBF9-298EDE4E942A}
+		{DED1FE21-033F-91AE-C2F1-A485584BBFFA} = {28251423-8E50-9DF4-F913-DC1FAAA673F1}
+		{94B86ABD-4F85-3FC9-C4EB-1357F78F35FE} = {DED1FE21-033F-91AE-C2F1-A485584BBFFA}
+		{5862B40E-D491-045C-209A-ABD039C120CF} = {AD7C8182-B466-96AE-CF31-8AA8EF11C5DF}
+		{466F538D-3EFC-2F9B-2492-B2C8EFF955BF} = {AD7C8182-B466-96AE-CF31-8AA8EF11C5DF}
+		{2CA36ED0-5C0F-CAA0-DAB1-63638816D2A7} = {466F538D-3EFC-2F9B-2492-B2C8EFF955BF}
+		{A39D7923-0AEC-BD86-E5CB-8BA29B940598} = {466F538D-3EFC-2F9B-2492-B2C8EFF955BF}
+		{2D2F03B6-8391-5774-24B1-1045AAC69BE0} = {466F538D-3EFC-2F9B-2492-B2C8EFF955BF}
+		{0CF87E87-344E-0DCE-71A3-2A4232DC954E} = {466F538D-3EFC-2F9B-2492-B2C8EFF955BF}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B872E9A-16EB-497F-A69D-EB9DCF1E5CCB}
+	EndGlobalSection
+EndGlobal
