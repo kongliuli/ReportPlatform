@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using ReportDataMaker.Models;
 using ReportDataMaker.Services;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace ReportDataMaker.ViewModels
 {

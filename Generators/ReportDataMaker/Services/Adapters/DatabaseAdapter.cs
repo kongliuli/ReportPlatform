@@ -4,8 +4,11 @@ using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 using IDataAdapter = ReportDataMaker.Models.IDataAdapter;
 
 namespace ReportDataMaker.Services.Adapters
@@ -16,8 +19,9 @@ namespace ReportDataMaker.Services.Adapters
         private readonly List<string> _targetPaths;
         private readonly DbProviderFactory _providerFactory;
 
+        public string AdapterId => _config?.Id ?? "database-adapter";
         public string AdapterName => "DatabaseAdapter";
-
+        public AdapterType Type => AdapterType.Database;
         public IReadOnlyList<string> TargetDataPaths => _targetPaths.AsReadOnly();
 
         public DatabaseAdapter(string configFilePath)
@@ -87,6 +91,30 @@ namespace ReportDataMaker.Services.Adapters
             }
 
             return result;
+        }
+
+        public Task<AdapterResult> ReadDataAsync()
+        {
+            var data = ReadData(new Dictionary<string, object>());
+            return Task.FromResult(new AdapterResult { Success = true, Data = data });
+        }
+
+        public Task<AdapterResult> ReadBatchDataAsync()
+        {
+            return Task.FromResult(new AdapterResult { Success = true });
+        }
+
+        public Task<ValidationResult> ValidateConfigAsync()
+        {
+            var errors = new List<string>();
+            if (string.IsNullOrEmpty(_config?.ConnectionString))
+                errors.Add("ConnectionString is required");
+            if (string.IsNullOrEmpty(_config?.Query))
+                errors.Add("Query is required");
+
+            return errors.Count > 0
+                ? Task.FromResult(ValidationResult.Fail(errors.ToArray()))
+                : Task.FromResult(ValidationResult.Success);
         }
 
         private void FillParameters(DbCommand command, IReadOnlyDictionary<string, object> parameters)

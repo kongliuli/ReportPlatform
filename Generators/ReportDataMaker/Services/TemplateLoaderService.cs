@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.Services
 {

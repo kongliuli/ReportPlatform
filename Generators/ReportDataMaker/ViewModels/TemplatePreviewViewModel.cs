@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace ReportDataMaker.ViewModels
 {
@@ -35,7 +36,7 @@ namespace ReportDataMaker.ViewModels
             );
         }
 
-        private ElementViewModel CreateElementViewModel(ExternalElementBase element)
+        private ElementViewModel CreateElementViewModel(ReportExternalElementBase element)
         {
             return element switch
             {

@@ -1,4 +1,5 @@
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace ReportDataMaker.ViewModels
 {
@@ -98,7 +99,7 @@ namespace ReportDataMaker.ViewModels
             }
         }
 
-        public AdapterElementViewModel(ExternalElementBase element) : base(element)
+        public AdapterElementViewModel(ReportExternalElementBase element) : base(element)
         {
         }
     }

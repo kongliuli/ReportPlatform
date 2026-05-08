@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace ReportDataMaker.Services
 {
@@ -33,7 +34,7 @@ namespace ReportDataMaker.Services
             }
         }
 
-        public void ApplyInlineBinding(ExternalElementBase element, ReportDataContext context)
+        public void ApplyInlineBinding(ReportExternalElementBase element, ReportDataContext context)
         {
             if (element == null || !element.IsDataBound || string.IsNullOrEmpty(element.DataPath) || context == null)
                 return;
@@ -42,7 +43,7 @@ namespace ReportDataMaker.Services
             ApplyValueToElement(element, value);
         }
 
-        private ExternalElementBase FindElementById(List<ExternalElementBase> elements, string elementId)
+        private ReportExternalElementBase FindElementById(List<ReportExternalElementBase> elements, string elementId)
         {
             if (elements == null)
                 return null;
@@ -63,7 +64,7 @@ namespace ReportDataMaker.Services
             return null;
         }
 
-        private void ApplyBindingToElement(ExternalElementBase element, DataBindingDefinition binding, object value)
+        private void ApplyBindingToElement(ReportExternalElementBase element, DataBindingDefinition binding, object value)
         {
             if (value == null && !string.IsNullOrEmpty(binding.DefaultValue))
             {
@@ -78,7 +79,7 @@ namespace ReportDataMaker.Services
             ApplyValueToElement(element, stringValue, binding.BindingType);
         }
 
-        private void ApplyValueToElement(ExternalElementBase element, object value, string bindingType = "text")
+        private void ApplyValueToElement(ReportExternalElementBase element, object value, string bindingType = "text")
         {
             if (element == null || value == null)
                 return;

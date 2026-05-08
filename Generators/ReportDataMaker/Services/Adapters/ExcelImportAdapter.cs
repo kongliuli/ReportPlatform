@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using ClosedXML.Excel;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 using IDataAdapter = ReportDataMaker.Models.IDataAdapter;
 
 namespace ReportDataMaker.Services.Adapters
@@ -12,8 +15,9 @@ namespace ReportDataMaker.Services.Adapters
     {
         private readonly List<string> _targetPaths = new List<string>();
 
+        public string AdapterId => "excel-import";
         public string AdapterName => "ExcelImportAdapter";
-
+        public AdapterType Type => AdapterType.Excel;
         public IReadOnlyList<string> TargetDataPaths => _targetPaths.AsReadOnly();
 
         public ExcelImportAdapter()
@@ -78,6 +82,22 @@ namespace ReportDataMaker.Services.Adapters
             }
 
             return result;
+        }
+
+        public Task<AdapterResult> ReadDataAsync()
+        {
+            var data = ReadData(new Dictionary<string, object>());
+            return Task.FromResult(new AdapterResult { Success = true, Data = data });
+        }
+
+        public Task<AdapterResult> ReadBatchDataAsync()
+        {
+            return Task.FromResult(new AdapterResult { Success = true });
+        }
+
+        public Task<ValidationResult> ValidateConfigAsync()
+        {
+            return Task.FromResult(ValidationResult.Success);
         }
 
         public void ExportTemplate(string filePath, IEnumerable<string> dataPaths)

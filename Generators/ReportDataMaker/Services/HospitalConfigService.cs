@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.Services
 {

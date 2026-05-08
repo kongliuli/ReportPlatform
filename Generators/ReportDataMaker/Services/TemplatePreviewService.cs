@@ -3,6 +3,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.Services
 {
@@ -26,7 +28,7 @@ namespace ReportDataMaker.Services
             }
         }
 
-        public UIElement RenderExternalElement(ExternalElementBase element)
+        public UIElement RenderExternalElement(ReportExternalElementBase element)
         {
             if (!element.IsVisible)
                 return null;
@@ -231,7 +233,7 @@ namespace ReportDataMaker.Services
             return textBlock;
         }
 
-        private UIElement RenderExternalDefault(ExternalElementBase element)
+        private UIElement RenderExternalDefault(ReportExternalElementBase element)
         {
             var widthPx = element.Width > 0 ? element.Width * MM_TO_PX : double.NaN;
 

@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace ReportDataMaker.Services
 {
@@ -26,7 +27,7 @@ namespace ReportDataMaker.Services
             _canvasRenderer = canvasRenderer;
         }
 
-        public FrameworkElement GenerateControl(ExternalElementBase element, Action<string> onValueChanged)
+        public FrameworkElement GenerateControl(ReportExternalElementBase element, Action<string> onValueChanged)
         {
             return element switch
             {
@@ -464,7 +465,7 @@ namespace ReportDataMaker.Services
             return CreateControlCard(container);
         }
 
-        private string GetLabelText(ExternalElementBase element)
+        private string GetLabelText(ReportExternalElementBase element)
         {
             var label = !string.IsNullOrEmpty(element.Label)
                 ? element.Label
@@ -478,7 +479,7 @@ namespace ReportDataMaker.Services
             return label;
         }
 
-        private static string GetElementDisplayText(ExternalElementBase element)
+        private static string GetElementDisplayText(ReportExternalElementBase element)
         {
             if (element is ExternalTextElement t && !string.IsNullOrEmpty(t.Text))
                 return t.Text;

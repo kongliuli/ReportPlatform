@@ -6,6 +6,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.Services
 {
@@ -53,7 +55,7 @@ namespace ReportDataMaker.Services
             return stats;
         }
 
-        private static UIElement RenderElement(ExternalElementBase element, object data)
+        private static UIElement RenderElement(ReportExternalElementBase element, object data)
         {
             return element switch
             {
@@ -474,7 +476,7 @@ namespace ReportDataMaker.Services
         private static UIElement RenderRepeatElement(ExternalRepeatElement element, object data) => new Border { Width = element.Width * MM_TO_PX, Height = element.Height * MM_TO_PX, Background = new SolidColorBrush(Color.FromArgb(20, 100, 116, 139)), BorderBrush = new SolidColorBrush(Color.FromRgb(148, 163, 184)), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(4), Child = new TextBlock { Text = $"[重复区域: {element.DataSource ?? "未配置"}]", FontSize = element.FontSize > 0 ? element.FontSize : 10, Foreground = ParseBrush(element.ForegroundColor ?? "#94A3B8"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center } };
         private static UIElement RenderHeaderElement(ExternalHeaderElement e, object d) => RenderContainerLike(e.Children, e, d);
         private static UIElement RenderFooterElement(ExternalFooterElement e, object d) => RenderContainerLike(e.Children, e, d);
-        private static UIElement RenderContainerLike(List<ExternalElementBase> children, ExternalElementBase e, object d)
+        private static UIElement RenderContainerLike(List<ReportExternalElementBase> children, ReportExternalElementBase e, object d)
         {
             var cv = new Canvas { Width = e.Width * MM_TO_PX, Height = e.Height * MM_TO_PX, Background = ParseBrush(e.BackgroundColor) };
             if (children != null) foreach (var ch in children) if (ch.IsVisible) try { var u = RenderElement(ch, d); if (u != null) { Canvas.SetLeft(u, ch.X * MM_TO_PX); Canvas.SetTop(u, ch.Y * MM_TO_PX); Canvas.SetZIndex(u, ch.ZIndex); cv.Children.Add(u); } } catch { }
@@ -499,7 +501,7 @@ namespace ReportDataMaker.Services
             return tb;
         }
 
-        private static UIElement RenderPlaceholder(ExternalElementBase element)
+        private static UIElement RenderPlaceholder(ReportExternalElementBase element)
         {
             var w = Math.Max(element.Width * MM_TO_PX, 20);
             var h = Math.Max(element.Height * MM_TO_PX, 14);
@@ -522,7 +524,7 @@ namespace ReportDataMaker.Services
 
         #region Helpers
 
-        private static TextBlock MakeTextBlock(string text, bool hasValue, double widthPx, ExternalElementBase element, FontWeight fw)
+        private static TextBlock MakeTextBlock(string text, bool hasValue, double widthPx, ReportExternalElementBase element, FontWeight fw)
         {
             // 可编辑元素：Label: value 格式（无值时显示占位横线）
             if (element.Group == ElementGroup.Editable && !string.IsNullOrEmpty(element.Label))

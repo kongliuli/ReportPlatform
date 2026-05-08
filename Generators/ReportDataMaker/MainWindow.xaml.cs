@@ -11,6 +11,8 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using ReportDataMaker.Models;
 using ReportDataMaker.Services;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker
 {
@@ -584,7 +586,7 @@ namespace ReportDataMaker
             return expander;
         }
 
-        private UIElement CreateFixedElementsContent(List<ExternalElementBase> elements)
+        private UIElement CreateFixedElementsContent(List<ReportExternalElementBase> elements)
         {
             var stackPanel = new StackPanel { Margin = new Thickness(8) };
 
@@ -627,7 +629,7 @@ namespace ReportDataMaker
             return stackPanel;
         }
 
-        private (UIElement content, int success, int fail) CreateEditableElementsContent(List<ExternalElementBase> elements)
+        private (UIElement content, int success, int fail) CreateEditableElementsContent(List<ReportExternalElementBase> elements)
         {
             var stackPanel = new StackPanel { Margin = new Thickness(8) };
 
@@ -695,7 +697,7 @@ namespace ReportDataMaker
             return (stackPanel, successCount, failCount);
         }
 
-        private UIElement CreateEditableElementsWithTablesContent(List<ExternalElementBase> elements, List<ExternalTableElement> tables)
+        private UIElement CreateEditableElementsWithTablesContent(List<ReportExternalElementBase> elements, List<ExternalTableElement> tables)
         {
             var stackPanel = new StackPanel { Margin = new Thickness(8) };
 
@@ -829,7 +831,7 @@ namespace ReportDataMaker
             };
         }
 
-        private UIElement CreateUnsupportedPlaceholder(ExternalElementBase element)
+        private UIElement CreateUnsupportedPlaceholder(ReportExternalElementBase element)
         {
             return new Border
             {
@@ -862,7 +864,7 @@ namespace ReportDataMaker
             };
         }
 
-        private UIElement CreateAdapterElementsContent(List<ExternalElementBase> elements)
+        private UIElement CreateAdapterElementsContent(List<ReportExternalElementBase> elements)
         {
             var stackPanel = new StackPanel { Margin = new Thickness(8) };
 
@@ -904,7 +906,7 @@ namespace ReportDataMaker
             return stackPanel;
         }
 
-        private string GetElementDisplayText(ExternalElementBase element)
+        private string GetElementDisplayText(ReportExternalElementBase element)
         {
             if (element is ExternalTextElement textEl && !string.IsNullOrEmpty(textEl.Text))
                 return textEl.Text;
@@ -917,7 +919,7 @@ namespace ReportDataMaker
             return "[未命名]";
         }
 
-        private string GetElementTypeName(ExternalElementBase element)
+        private string GetElementTypeName(ReportExternalElementBase element)
         {
             var name = element.GetType().Name;
             if (name.StartsWith("External"))

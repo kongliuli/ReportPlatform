@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.Services
 {
@@ -81,7 +83,7 @@ namespace ReportDataMaker.Services
 
                 if (result.Template.Elements == null)
                 {
-                    result.Template.Elements = new List<ExternalElementBase>();
+                    result.Template.Elements = new List<ReportExternalElementBase>();
                 }
 
                 // 分类并统计
@@ -158,7 +160,7 @@ namespace ReportDataMaker.Services
                 throw new InvalidOperationException("模板解析失败");
 
             if (template.Elements == null)
-                template.Elements = new List<ExternalElementBase>();
+                template.Elements = new List<ReportExternalElementBase>();
 
             var result = new TemplateLoadResult { Template = template };
             ClassifyElements(result);
@@ -271,7 +273,7 @@ namespace ReportDataMaker.Services
             }
         }
 
-        private static bool IsEditableInputType(ExternalElementBase element)
+        private static bool IsEditableInputType(ReportExternalElementBase element)
         {
             return element is ExternalNumberElement
                 || element is ExternalDateElement
@@ -285,7 +287,7 @@ namespace ReportDataMaker.Services
                 || element is ExternalTableElement;
         }
 
-        private static string GetShortTypeName(ExternalElementBase element)
+        private static string GetShortTypeName(ReportExternalElementBase element)
         {
             var name = element.GetType().Name;
             if (name.StartsWith("External"))

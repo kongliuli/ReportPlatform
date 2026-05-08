@@ -6,6 +6,8 @@ using System.Windows.Input;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
 using ReportDataMaker.Services;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.ViewModels
 {
@@ -63,7 +65,7 @@ namespace ReportDataMaker.ViewModels
             var sorted = _template.Elements?
                 .OrderBy(el => el.Y)
                 .ThenBy(el => el.X)
-                .ToList() ?? new System.Collections.Generic.List<ExternalElementBase>();
+                .ToList() ?? new System.Collections.Generic.List<ReportExternalElementBase>();
 
             FixedElements = new ObservableCollection<ElementViewModel>(
                 sorted.Where(el => el.Group == ElementGroup.Fixed)
@@ -81,7 +83,7 @@ namespace ReportDataMaker.ViewModels
             );
         }
 
-        private EditableElementViewModel CreateEditableViewModel(ExternalElementBase element)
+        private EditableElementViewModel CreateEditableViewModel(ReportExternalElementBase element)
         {
             return element switch
             {

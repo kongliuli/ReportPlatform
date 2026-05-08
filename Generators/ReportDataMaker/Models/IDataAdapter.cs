@@ -1,10 +1,9 @@
-using System.Collections.Generic;
+using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Models;
 
-public interface IDataAdapter
+public interface IDataAdapter : Xinglin.ReportEditor.Contracts.Models.Adapters.IDataAdapter
 {
-    string AdapterName { get; }
-    IReadOnlyList<string> TargetDataPaths { get; }
     Dictionary<string, object> ReadData(IReadOnlyDictionary<string, object> parameters);
 }

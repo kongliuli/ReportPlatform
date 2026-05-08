@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace ReportDataMaker.Services
 {
@@ -29,7 +30,8 @@ namespace ReportDataMaker.Services
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(ExternalElementBase) || objectType.IsSubclassOf(typeof(ExternalElementBase));
+            return objectType == typeof(ExternalElementBase) || objectType.IsSubclassOf(typeof(ExternalElementBase))
+                || objectType == typeof(ReportExternalElementBase) || objectType.IsSubclassOf(typeof(ReportExternalElementBase));
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -39,17 +41,14 @@ namespace ReportDataMaker.Services
             Type targetType;
             JsonSerializerSettings settings;
 
-            // 检测格式：新格式用 $type，旧格式用 Type
             var typeToken = jo["$type"];
             if (typeToken != null)
             {
-                // 新格式 (Xinglin.Core / template.element.*)
                 targetType = MapNewType(typeToken.ToString());
                 settings = CamelSettings;
             }
             else
             {
-                // 旧格式 (Type: "Text", "LabelInputBox", "Table" 等)
                 var oldTypeToken = jo["Type"] ?? jo["type"];
                 if (oldTypeToken != null)
                 {
@@ -57,46 +56,37 @@ namespace ReportDataMaker.Services
                 }
                 else
                 {
-                    targetType = typeof(ExternalElementBase);
+                    targetType = typeof(ExternalTextElement);
                 }
                 settings = PascalSettings;
             }
 
-            // 反序列化到目标类型
             var result = JsonConvert.DeserializeObject(jo.ToString(), targetType, settings);
 
-            // 旧格式属性转换
-            if (typeToken == null && result is ExternalElementBase baseEl)
+            if (typeToken == null && result is ReportExternalElementBase baseEl)
             {
                 ConvertOldFormatProperties(baseEl, jo);
             }
 
-            // 递归处理子元素(容器类型)
             RecursivelyConvertChildren(result, jo);
 
             return result;
         }
 
-        /// <summary>
-        /// 旧格式属性映射
-        /// </summary>
-        private void ConvertOldFormatProperties(ExternalElementBase element, JObject jo)
+        private void ConvertOldFormatProperties(ReportExternalElementBase element, JObject jo)
         {
-            // DataBindingPath → DataPath (旧 Text 元素)
             var dbp = jo["DataBindingPath"];
             if (dbp != null && !string.IsNullOrEmpty(dbp.ToString()))
             {
                 element.DataPath = dbp.ToString();
             }
 
-            // InputDataBindingPath → DataPath (旧 LabelInputBox 元素)
             var idbp = jo["InputDataBindingPath"];
             if (idbp != null && !string.IsNullOrEmpty(idbp.ToString()))
             {
                 element.DataPath = idbp.ToString();
             }
 
-            // LabelInputBox: 合并 LabelText + InputPlaceholder → Text
             if (element is ExternalTextElement textEl)
             {
                 var labelText = jo["LabelText"]?.ToString() ?? "";
@@ -113,21 +103,18 @@ namespace ReportDataMaker.Services
                         textEl.Text = $"[{placeholder}]";
                 }
 
-                // 保留标签文本用于输入面板显示
                 if (!string.IsNullOrEmpty(labelText) && string.IsNullOrEmpty(element.Label))
                 {
                     element.Label = labelText;
                 }
             }
 
-            // TableElement: 检查 CellData 是否有内容
             if (element is ExternalTableElement tableEl)
             {
                 var cells = jo["Cells"];
                 if (cells is JArray cellsArray && (tableEl.CellData == null || tableEl.CellData.Count == 0))
                 {
                     tableEl.CellData = new List<List<string>>();
-                    // 旧 Table 格式的 Cells 是扁平的，需要按行列重组
                     foreach (var cellToken in cellsArray)
                     {
                         if (cellToken is JObject cellObj)
@@ -145,7 +132,6 @@ namespace ReportDataMaker.Services
                     }
                 }
 
-                // 确保 Rows/Columns 设置
                 if (tableEl.Rows == 0) tableEl.Rows = tableEl.CellData?.Count ?? 0;
                 if (tableEl.Columns == 0 && tableEl.CellData?.Count > 0)
                     tableEl.Columns = tableEl.CellData[0].Count;
@@ -168,9 +154,9 @@ namespace ReportDataMaker.Services
             }
         }
 
-        private List<ExternalElementBase> ConvertChildrenArray(JArray childrenArray)
+        private List<ReportExternalElementBase> ConvertChildrenArray(JArray childrenArray)
         {
-            var children = new List<ExternalElementBase>();
+            var children = new List<ReportExternalElementBase>();
             var converter = new ExternalElementConverter(_isOldFormat);
 
             foreach (var childToken in childrenArray)
@@ -179,9 +165,9 @@ namespace ReportDataMaker.Services
                 {
                     var child = converter.ReadJson(
                         childObj.CreateReader(),
-                        typeof(ExternalElementBase),
+                        typeof(ReportExternalElementBase),
                         null,
-                        JsonSerializer.CreateDefault()) as ExternalElementBase;
+                        JsonSerializer.CreateDefault()) as ReportExternalElementBase;
 
                     if (child != null)
                         children.Add(child);
@@ -193,12 +179,9 @@ namespace ReportDataMaker.Services
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException("不支持序列化");
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// 新格式类型映射 ($type: "Xinglin.Core.Elements.XXXElement" 或 "template.element.xxx")
-        /// </summary>
         private static Type MapNewType(string typeString)
         {
             if (typeString.StartsWith("template.element."))
@@ -230,7 +213,7 @@ namespace ReportDataMaker.Services
                     "watermark" => typeof(ExternalWatermarkElement),
                     "icon" => typeof(ExternalIconElement),
                     "hyperlink" => typeof(ExternalHyperlinkElement),
-                    _ => typeof(ExternalElementBase)
+                    _ => typeof(ExternalTextElement)
                 };
             }
 
@@ -250,13 +233,10 @@ namespace ReportDataMaker.Services
                 "BarcodeElement" => typeof(ExternalBarcodeElement),
                 "SignatureElement" => typeof(ExternalSignatureElement),
                 "AutoNumberElement" => typeof(ExternalPageNumberElement),
-                _ => typeof(ExternalElementBase)
+                _ => typeof(ExternalTextElement)
             };
         }
 
-        /// <summary>
-        /// 旧格式类型映射 (Type: "Text", "LabelInputBox", "Table" 等)
-        /// </summary>
         private static Type MapOldType(string typeString)
         {
             return typeString.ToLower() switch
@@ -284,7 +264,7 @@ namespace ReportDataMaker.Services
                 "watermark" => typeof(ExternalWatermarkElement),
                 "icon" => typeof(ExternalIconElement),
                 "hyperlink" => typeof(ExternalHyperlinkElement),
-                _ => typeof(ExternalElementBase)
+                _ => typeof(ExternalTextElement)
             };
         }
     }

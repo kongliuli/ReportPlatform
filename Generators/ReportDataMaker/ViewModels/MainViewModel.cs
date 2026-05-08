@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
 using ReportDataMaker.Services;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.ViewModels
 {

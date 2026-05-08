@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
+using IDataAdapter = ReportDataMaker.Models.IDataAdapter;
 
 namespace ReportDataMaker.Services
 {
@@ -73,7 +77,9 @@ namespace ReportDataMaker.Services
 
         private class ConfigurableAdapter : IDataAdapter
         {
+            public string AdapterId => AdapterName;
             public string AdapterName { get; }
+            public AdapterType Type => AdapterType.Context;
             public IReadOnlyList<string> TargetDataPaths { get; }
 
             public ConfigurableAdapter(string name, List<string> targetPaths)
@@ -85,6 +91,21 @@ namespace ReportDataMaker.Services
             public Dictionary<string, object> ReadData(IReadOnlyDictionary<string, object> parameters)
             {
                 return new Dictionary<string, object>();
+            }
+
+            public Task<AdapterResult> ReadDataAsync()
+            {
+                return Task.FromResult(new AdapterResult { Success = true });
+            }
+
+            public Task<AdapterResult> ReadBatchDataAsync()
+            {
+                return Task.FromResult(new AdapterResult { Success = true });
+            }
+
+            public Task<ValidationResult> ValidateConfigAsync()
+            {
+                return Task.FromResult(ValidationResult.Success);
             }
         }
     }

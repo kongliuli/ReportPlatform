@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace ReportDataMaker.Models;
 

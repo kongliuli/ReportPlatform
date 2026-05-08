@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using ReportDataMaker.Models;
 using ReportDataMaker.Services;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace ReportDataMaker.ViewModels
 {
@@ -39,7 +40,7 @@ namespace ReportDataMaker.ViewModels
         public bool HasError => !string.IsNullOrEmpty(ValidationError);
 
         public EditableElementViewModel(
-            ExternalElementBase element,
+            ReportExternalElementBase element,
             DataBindingService dataBindingService,
             TemplateData templateData) : base(element)
         {

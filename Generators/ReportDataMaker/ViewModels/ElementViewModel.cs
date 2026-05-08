@@ -1,11 +1,13 @@
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.ViewModels
 {
     public class ElementViewModel : ViewModelBase
     {
-        public readonly ExternalElementBase _element;
+        public readonly ReportExternalElementBase _element;
 
         // 毫米转像素的转换系数 (96 DPI)
         private const double MM_TO_PX = 3.7795275591;
@@ -22,7 +24,7 @@ namespace ReportDataMaker.ViewModels
         public string ForegroundColor => _element.ForegroundColor;
         public string BackgroundColor => _element.BackgroundColor;
 
-        public ElementViewModel(ExternalElementBase element)
+        public ElementViewModel(ReportExternalElementBase element)
         {
             _element = element;
         }

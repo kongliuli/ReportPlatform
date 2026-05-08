@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using ClosedXML.Excel;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.Services
 {
@@ -83,7 +85,7 @@ namespace ReportDataMaker.Services
             workbook.SaveAs(filePath);
         }
 
-        private string GetSampleValue(ExternalElementBase element)
+        private string GetSampleValue(ReportExternalElementBase element)
         {
             return element switch
             {
@@ -97,7 +99,7 @@ namespace ReportDataMaker.Services
             };
         }
 
-        private string GetSampleLabel(ExternalElementBase element)
+        private string GetSampleLabel(ReportExternalElementBase element)
         {
             return !string.IsNullOrEmpty(element.Label) ? element.Label :
                    !string.IsNullOrEmpty(element.DataPath) ? element.DataPath : element.Id;
@@ -127,7 +129,7 @@ namespace ReportDataMaker.Services
 
                 // 读取表头映射
                 var headerRow = ws.Row(1);
-                var colMap = new Dictionary<int, ExternalElementBase>();
+                var colMap = new Dictionary<int, ReportExternalElementBase>();
 
                 for (int c = 1; c <= headerRow.LastCellUsed()?.Address.ColumnNumber; c++)
                 {
@@ -208,7 +210,7 @@ namespace ReportDataMaker.Services
             return applied;
         }
 
-        private void ApplyValue(ExternalElementBase element, string value)
+        private void ApplyValue(ReportExternalElementBase element, string value)
         {
             switch (element)
             {
