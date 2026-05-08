@@ -1,33 +1,42 @@
-using System;
-using System.Configuration;
-using System.Data;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+using ReportDataMaker.Infrastructure;
+using ReportDataMaker.Services;
+using ReportDataMaker.ViewModels;
 
 namespace ReportDataMaker;
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
 public partial class App : Application
 {
+    public static IServiceProvider Services { get; private set; } = null!;
+
     protected override void OnStartup(StartupEventArgs e)
     {
-        try
-        {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            base.OnStartup(e);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"启动应用程序时发生错误: {ex.Message}\n\n{ex.StackTrace}", "启动错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            Environment.Exit(1);
-        }
-    }
+        base.OnStartup(e);
 
-    private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-    {
-        var ex = e.ExceptionObject as Exception;
-        MessageBox.Show($"未处理的异常: {ex?.Message ?? "未知错误"}\n\n{ex?.StackTrace ?? ""}", "运行时错误", MessageBoxButton.OK, MessageBoxImage.Error);
+        var services = new ServiceCollection();
+
+        // 基础设施
+        services.AddSingleton<IDialogService, DialogService>();
+
+        // 业务服务
+        services.AddSingleton<ITemplateLoaderService, TemplateLoaderService>();
+        services.AddSingleton<ITemplatePreviewService, TemplatePreviewService>();
+        services.AddSingleton<IDataBindingService, DataBindingService>();
+        services.AddSingleton<AdapterConfigStore>();
+
+        // ViewModels
+        services.AddTransient<MainViewModel>();
+        services.AddTransient<TemplateLoadViewModel>();
+        services.AddTransient<SidePanelViewModel>();
+
+        Services = services.BuildServiceProvider();
+        ServiceLocator.Initialize(services);
+
+        var mainWindow = new Views.MainWindow
+        {
+            DataContext = Services.GetRequiredService<MainViewModel>()
+        };
+        mainWindow.Show();
     }
 }
-
