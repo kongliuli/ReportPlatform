@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
 using ReportDataMaker.Services;
+using ReportDataMaker.Services.ExcelAdapter;
 using ReportDataMaker.ViewModels.Tabs;
 using Xinglin.ReportEditor.Contracts.Enums;
 using Xinglin.ReportEditor.Contracts.Models.Adapters;
@@ -15,19 +16,22 @@ public class MainViewModel : ViewModelBase
     private readonly ITemplatePreviewService _previewService;
     private readonly IDialogService _dialogService;
     private readonly AdapterConfigStore _configStore;
+    private readonly ExcelAdapterFactory _excelFactory;
 
     public MainViewModel(
         ITemplateLoaderService templateLoader,
         IDataBindingService dataBindingService,
         ITemplatePreviewService previewService,
         IDialogService dialogService,
-        AdapterConfigStore configStore)
+        AdapterConfigStore configStore,
+        ExcelAdapterFactory excelFactory)
     {
         _templateLoader = templateLoader;
         _dataBindingService = dataBindingService;
         _previewService = previewService;
         _dialogService = dialogService;
         _configStore = configStore;
+        _excelFactory = excelFactory;
 
         Tabs = new ObservableCollection<TabViewModelBase>();
         Adapters = new ObservableCollection<AdapterItemViewModel>();
@@ -128,7 +132,21 @@ public class MainViewModel : ViewModelBase
 
     private void ExecuteAddAdapter()
     {
-        _dialogService.ShowInfo("适配器添加功能将在后续版本实现", "提示");
+        if (CurrentTemplate == null) return;
+
+        var displayName = $"Excel适配器{Adapters.Count + 1}";
+        var tab = new ExcelAdapterTabViewModel(CurrentTemplate, _excelFactory, _dialogService, displayName);
+        tab.CloseRequested += OnTabCloseRequested;
+        Tabs.Insert(Tabs.Count - 1, tab);
+
+        var config = new ExcelAdapterConfig
+        {
+            Type = Xinglin.ReportEditor.Contracts.Enums.AdapterType.Excel,
+            DisplayName = displayName,
+            Mode = ImportMode.Single
+        };
+        Adapters.Add(new AdapterItemViewModel(config));
+        ActiveTab = tab;
     }
 
     private void AddAdapterTab(AdapterConfigBase config)

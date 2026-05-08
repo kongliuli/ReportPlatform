@@ -1,0 +1,67 @@
+<UserControl x:Class="ReportDataMaker.Views.Tabs.ExcelAdapterTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:hc="https://handyorg.github.io/handycontrol">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+        <StackPanel>
+            <GroupBox Header="模板导出" Margin="0,0,0,16">
+                <StackPanel Margin="8">
+                    <TextBlock Margin="0,0,0,8">
+                        <Run Text="当前模板可编辑字段: "/>
+                        <Run Text="{Binding FieldCount, Mode=OneWay}" FontWeight="Bold"/>
+                        <Run Text=" 个"/>
+                    </TextBlock>
+                    <Button Content="导出 Excel 模板"
+                            Command="{Binding ExportCommand}"
+                            Style="{StaticResource ButtonPrimary}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="数据导入" Margin="0,0,0,16">
+                <StackPanel Margin="8">
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding ImportFilePath}" IsReadOnly="True" Margin="0,0,8,0"/>
+                        <Button Grid.Column="1" Content="浏览..." Command="{Binding BrowseFileCommand}"/>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <RadioButton Content="单行导入" IsChecked="True" Margin="0,0,16,0"
+                                     Checked="OnSingleModeChecked"/>
+                        <RadioButton Content="批量导入"
+                                     Checked="OnBatchModeChecked"/>
+                    </StackPanel>
+
+                    <TextBlock Margin="0,0,0,8">
+                        <Run Text="契约校验: "/>
+                        <Run Text="{Binding MatchedCount, Mode=OneWay}"/>
+                        <Run Text="/"/>
+                        <Run Text="{Binding FieldCount, Mode=OneWay}"/>
+                    </TextBlock>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="校验数据" Command="{Binding ValidateCommand}" Margin="0,0,8,0"/>
+                        <Button Content="导入" Command="{Binding ImportCommand}" Style="{StaticResource ButtonPrimary}"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="校验结果" Margin="0,0,0,16">
+                <ListView ItemsSource="{Binding ValidationErrors}" MaxHeight="200" Margin="8">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="行" Width="50" DisplayMemberBinding="{Binding Row}"/>
+                            <GridViewColumn Header="字段" Width="120" DisplayMemberBinding="{Binding Label}"/>
+                            <GridViewColumn Header="值" Width="100" DisplayMemberBinding="{Binding Value}"/>
+                            <GridViewColumn Header="类型" Width="80" DisplayMemberBinding="{Binding ExpectedType}"/>
+                            <GridViewColumn Header="错误信息" Width="250" DisplayMemberBinding="{Binding Message}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

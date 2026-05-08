@@ -2,6 +2,7 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Services;
+using ReportDataMaker.Services.ExcelAdapter;
 using ReportDataMaker.ViewModels;
 
 namespace ReportDataMaker;
@@ -24,6 +25,7 @@ public partial class App : Application
         services.AddSingleton<ITemplatePreviewService, TemplatePreviewService>();
         services.AddSingleton<IDataBindingService, DataBindingService>();
         services.AddSingleton<AdapterConfigStore>();
+        services.AddSingleton<ExcelAdapterFactory>();
 
         // ViewModels
         services.AddTransient<MainViewModel>();
