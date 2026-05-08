@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 二维码元素
-/// </summary>
 public class QrCodeElement : ExternalElementBase
 {
     public string? Value { get; set; }

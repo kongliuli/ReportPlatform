@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 超链接元素
-/// </summary>
 public class HyperlinkElement : ExternalElementBase
 {
     public string? Url { get; set; }

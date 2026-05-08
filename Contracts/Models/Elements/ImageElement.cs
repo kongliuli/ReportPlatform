@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 图片元素
-/// </summary>
 public class ImageElement : ExternalElementBase
 {
     public string? Src { get; set; }

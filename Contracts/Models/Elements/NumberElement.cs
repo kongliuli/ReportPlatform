@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 数字输入元素
-/// </summary>
 public class NumberElement : ExternalElementBase
 {
     public string? Value { get; set; }

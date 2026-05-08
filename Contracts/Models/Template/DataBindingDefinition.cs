@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Template;
 
-/// <summary>
-/// 数据绑定定义
-/// </summary>
 public class DataBindingDefinition
 {
     public string? Id { get; set; }
@@ -20,9 +17,6 @@ public class DataBindingDefinition
     public string? Transform { get; set; }
 }
 
-/// <summary>
-/// 绑定类型
-/// </summary>
 public enum BindingType
 {
     Text,

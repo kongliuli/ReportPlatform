@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 签名元素
-/// </summary>
 public class SignatureElement : ExternalElementBase
 {
     public string? Placeholder { get; set; }

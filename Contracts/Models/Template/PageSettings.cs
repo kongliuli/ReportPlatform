@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Template;
 
-/// <summary>
-/// 页面设置
-/// </summary>
 public class PageSettings
 {
     public double PageWidth { get; set; } = 210;
@@ -22,9 +19,6 @@ public class PageSettings
     public string BackgroundColor { get; set; } = "#FFFFFF";
 }
 
-/// <summary>
-/// 页面方向
-/// </summary>
 public enum PageOrientation
 {
     Portrait,

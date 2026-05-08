@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 日期输入元素
-/// </summary>
 public class DateElement : ExternalElementBase
 {
     public string? Value { get; set; }

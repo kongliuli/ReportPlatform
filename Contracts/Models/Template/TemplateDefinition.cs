@@ -2,9 +2,6 @@ using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace Xinglin.ReportEditor.Contracts.Models.Template;
 
-/// <summary>
-/// 模板定义
-/// </summary>
 public class TemplateDefinition
 {
     public string? Id { get; set; }

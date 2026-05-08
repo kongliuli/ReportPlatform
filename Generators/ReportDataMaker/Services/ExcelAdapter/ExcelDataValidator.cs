@@ -1,4 +1,4 @@
-using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services.ExcelAdapter;
 

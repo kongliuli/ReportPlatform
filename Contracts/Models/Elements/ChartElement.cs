@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 图表元素
-/// </summary>
 public class ChartElement : ExternalElementBase
 {
     public string? ChartType { get; set; }
@@ -20,9 +17,6 @@ public class ChartElement : ExternalElementBase
     public List<ChartDataSeries>? Series { get; set; }
 }
 
-/// <summary>
-/// 图表数据系列
-/// </summary>
 public class ChartDataSeries
 {
     public string? Name { get; set; }

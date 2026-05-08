@@ -2,9 +2,6 @@ using Newtonsoft.Json;
 
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 表格元素
-/// </summary>
 public class TableElement : ExternalElementBase
 {
     public int Rows { get; set; } = 3;
@@ -22,9 +19,6 @@ public class TableElement : ExternalElementBase
     public bool GridLines { get; set; } = true;
 }
 
-/// <summary>
-/// 表格单元格
-/// </summary>
 public class TableCell
 {
     public int Row { get; set; }

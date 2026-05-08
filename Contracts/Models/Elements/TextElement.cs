@@ -2,9 +2,6 @@ using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 文本元素，支持标签和输入
-/// </summary>
 public class TextElement : ExternalElementBase
 {
     public string? Text { get; set; }

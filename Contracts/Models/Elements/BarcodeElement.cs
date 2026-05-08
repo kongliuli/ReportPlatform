@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 条码元素
-/// </summary>
 public class BarcodeElement : ExternalElementBase
 {
     public string? Value { get; set; }

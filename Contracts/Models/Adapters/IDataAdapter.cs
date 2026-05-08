@@ -2,9 +2,6 @@ using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace Xinglin.ReportEditor.Contracts.Models.Adapters;
 
-/// <summary>
-/// 数据适配器接口
-/// </summary>
 public interface IDataAdapter
 {
     string AdapterId { get; }

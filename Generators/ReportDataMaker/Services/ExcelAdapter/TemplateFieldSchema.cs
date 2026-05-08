@@ -1,18 +1,9 @@
-using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services.ExcelAdapter;
 
-public class FlatField
+public class FlatField : FieldSchema
 {
-    public string DataPath { get; set; } = string.Empty;
-    public string Label { get; set; } = string.Empty;
-    public FieldDataType DataType { get; set; } = FieldDataType.Text;
-    public string? Format { get; set; }
-    public List<string>? Options { get; set; }
-    public bool IsRequired { get; set; }
-    public double? MinValue { get; set; }
-    public double? MaxValue { get; set; }
-    public int? DecimalPlaces { get; set; }
     public string? ElementId { get; set; }
 }
 

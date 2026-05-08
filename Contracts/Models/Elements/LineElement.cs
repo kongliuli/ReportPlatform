@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 线条元素
-/// </summary>
 public class LineElement : ElementBase
 {
     public string StrokeColor { get; set; } = "#000000";

@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 页脚元素
-/// </summary>
 public class FooterElement : ElementBase
 {
     public List<ExternalElementBase> Children { get; set; } = new();

@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 重复元素，用于循环渲染数据
-/// </summary>
 public class RepeatElement : ExternalElementBase
 {
     public string? DataSource { get; set; }

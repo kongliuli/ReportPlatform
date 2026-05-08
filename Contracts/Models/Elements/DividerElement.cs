@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 分隔线元素
-/// </summary>
 public class DividerElement : ElementBase
 {
     public double Thickness { get; set; } = 1;

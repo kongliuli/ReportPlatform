@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 水印元素
-/// </summary>
 public class WatermarkElement : ElementBase
 {
     public string? Text { get; set; }

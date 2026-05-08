@@ -5,9 +5,6 @@ using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace Xinglin.ReportEditor.Contracts.Converters;
 
-/// <summary>
-/// 元素 JSON 转换器，支持双格式：Web短格式和WPF完整格式
-/// </summary>
 public class ElementJsonConverter : JsonConverter<ExternalElementBase>
 {
     private static readonly Dictionary<string, Type> WebShortTypeMap = new(StringComparer.OrdinalIgnoreCase)

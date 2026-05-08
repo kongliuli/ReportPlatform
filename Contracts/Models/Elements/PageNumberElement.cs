@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 页码元素
-/// </summary>
 public class PageNumberElement : ElementBase
 {
     public string? Format { get; set; }

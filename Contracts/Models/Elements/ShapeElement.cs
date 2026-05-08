@@ -1,8 +1,5 @@
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
-/// <summary>
-/// 形状元素（矩形、椭圆等）
-/// </summary>
 public class ShapeElement : ElementBase
 {
     public string ShapeType { get; set; } = "Rectangle";
