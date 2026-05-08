@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:vm="clr-namespace:ReportDataMaker.ViewModels"
+        xmlns:vmtabs="clr-namespace:ReportDataMaker.ViewModels.Tabs"
         xmlns:tabs="clr-namespace:ReportDataMaker.Views.Tabs"
         xmlns:converters="clr-namespace:ReportDataMaker.Converters"
         Title="杏林报告平台 - 数据录入工具"
@@ -15,16 +16,16 @@
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
         <converters:BoolToWidthConverter x:Key="BoolToWidthConverter"/>
 
-        <DataTemplate DataType="{x:Type vm:DataEntryTabViewModel}">
+        <DataTemplate DataType="{x:Type vmtabs:DataEntryTabViewModel}">
             <tabs:DataEntryTab/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:PreviewTabViewModel}">
+        <DataTemplate DataType="{x:Type vmtabs:PreviewTabViewModel}">
             <tabs:PreviewTab/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:ExcelAdapterTabViewModel}">
+        <DataTemplate DataType="{x:Type vmtabs:ExcelAdapterTabViewModel}">
             <tabs:ExcelAdapterTab/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:DatabaseAdapterTabViewModel}">
+        <DataTemplate DataType="{x:Type vmtabs:DatabaseAdapterTabViewModel}">
             <tabs:DatabaseAdapterTab/>
         </DataTemplate>
     </Window.Resources>

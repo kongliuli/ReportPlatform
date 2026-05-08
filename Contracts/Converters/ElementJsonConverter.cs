@@ -124,13 +124,10 @@ public class ElementJsonConverter : JsonConverter<ExternalElementBase>
             return ElementGroup.Context;
 
         if (!element.IsDataBound)
-        {
-            if (element is TextElement textEl && !string.IsNullOrEmpty(textEl.Text))
-                return ElementGroup.Fixed;
-            if (element is LineElement)
-                return ElementGroup.Fixed;
             return ElementGroup.Fixed;
-        }
+
+        if (!string.IsNullOrEmpty(element.AdapterId))
+            return ElementGroup.DataAdapter;
 
         if (element is TableElement or RepeatElement or ChartElement)
             return ElementGroup.DataAdapter;

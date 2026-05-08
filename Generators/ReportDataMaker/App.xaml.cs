@@ -40,7 +40,7 @@ public partial class App : Application
         Services = services.BuildServiceProvider();
         ServiceLocator.Initialize(services);
 
-        var mainWindow = new Views.MainWindow
+        var mainWindow = new MainWindow
         {
             DataContext = Services.GetRequiredService<MainViewModel>()
         };

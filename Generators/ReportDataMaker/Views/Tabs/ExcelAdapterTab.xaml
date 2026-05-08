@@ -29,10 +29,8 @@
                     </Grid>
 
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                        <RadioButton Content="单行导入" IsChecked="True" Margin="0,0,16,0"
-                                     Checked="OnSingleModeChecked"/>
-                        <RadioButton Content="批量导入"
-                                     Checked="OnBatchModeChecked"/>
+                        <RadioButton Content="单行导入" IsChecked="{Binding IsSingleMode, Mode=TwoWay}" Margin="0,0,16,0"/>
+                        <RadioButton Content="批量导入" IsChecked="{Binding IsBatchMode, Mode=TwoWay}"/>
                     </StackPanel>
 
                     <TextBlock Margin="0,0,0,8">

@@ -25,7 +25,7 @@ public class AsyncRelayCommand : ICommand
         private set
         {
             _isExecuting = value;
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            CommandManager.InvalidateRequerySuggested();
         }
     }
 

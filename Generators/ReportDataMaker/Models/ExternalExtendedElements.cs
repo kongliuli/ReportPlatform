@@ -134,6 +134,22 @@ public class ExternalTableElement : ReportExternalElementBase
     public double TableBorder { get; set; } = 1;
     /// <summary>是否包含表头</summary>
     public bool HasHeader { get; set; } = true;
+    /// <summary>表头行数</summary>
+    public int HeaderRows { get; set; } = 1;
+    /// <summary>单元格定义集合</summary>
+    public List<TableCellDefinition>? Cells { get; set; }
+}
+
+/// <summary>表格单元格定义</summary>
+public class TableCellDefinition
+{
+    public int Row { get; set; }
+    public int Col { get; set; }
+    public bool IsEditable { get; set; }
+    public string? DataPath { get; set; }
+    public string? InputType { get; set; }
+    public string? Text { get; set; }
+    public List<string>? Options { get; set; }
 }
 
 /// <summary>外部图片元素</summary>

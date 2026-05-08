@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Xinglin.WebReportEditor.Core</RootNamespace>
   </PropertyGroup>
 
@@ -18,22 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xinglin.WebReportEditor.Contracts\Xinglin.WebReportEditor.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="Exists('../libs/Xinglin.Core.dll')">
-    <Reference Include="Xinglin.Core">
-      <HintPath>..\libs\Xinglin.Core.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-    <Reference Include="Xinglin.Infrastructure">
-      <HintPath>..\libs\Xinglin.Infrastructure.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-    <Reference Include="Xinglin.Security">
-      <HintPath>..\libs\Xinglin.Security.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
+    <ProjectReference Include="..\..\Contracts\Xinglin.WebReportEditor.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

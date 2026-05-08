@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Xinglin.WebReportEditor.Server</RootNamespace>
   </PropertyGroup>
 
@@ -19,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xinglin.WebReportEditor.Core\Xinglin.WebReportEditor.Core.csproj" />
-    <ProjectReference Include="..\Xinglin.WebReportEditor.Contracts\Xinglin.WebReportEditor.Contracts.csproj" />
+    <ProjectReference Include="..\Core\Xinglin.WebReportEditor.Core.csproj" />
+    <ProjectReference Include="..\..\Contracts\Xinglin.WebReportEditor.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

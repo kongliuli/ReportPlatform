@@ -24,7 +24,7 @@
                         <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Providers}" SelectedItem="{Binding SelectedProviderInfo}" DisplayMemberPath="DisplayName" Margin="0,0,0,8"/>
 
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="连接字符串" VerticalAlignment="Top" Margin="0,0,8,8"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ConnectionString}" AcceptsReturn="True" TextWrapping="Wrap" Height="60" Margin="0,0,0,8"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ConnectionString, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" Height="60" Margin="0,0,0,8"/>
 
                         <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                             <Button Content="测试连接" Command="{Binding TestConnectionCommand}" Style="{StaticResource ButtonPrimary}"/>
@@ -43,7 +43,7 @@
                         <RadioButton Content="可视化构建" IsChecked="{Binding IsVisualBuilderMode}"/>
                     </StackPanel>
 
-                    <TextBox Text="{Binding RawSql}" AcceptsReturn="True" TextWrapping="Wrap" Height="120"
+                    <TextBox Text="{Binding RawSql, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" Height="120"
                              FontFamily="Consolas" Margin="0,0,0,8"
                              Visibility="{Binding IsRawSqlMode, Converter={StaticResource Boolean2VisibilityConverter}}"/>
 
@@ -84,7 +84,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="WHERE" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <TextBox Grid.Column="1" Text="{Binding WhereClause}"/>
+                            <TextBox Grid.Column="1" Text="{Binding WhereClause, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
 
                         <Grid>
@@ -93,7 +93,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="ORDER BY" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <TextBox Grid.Column="1" Text="{Binding OrderBy}"/>
+                            <TextBox Grid.Column="1" Text="{Binding OrderBy, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                     </StackPanel>
 

@@ -62,7 +62,30 @@ public class ExcelAdapterTabViewModel : TabViewModelBase
 
     private ImportMode _importMode = ImportMode.Single;
     /// <summary>导入模式</summary>
-    public ImportMode ImportModeValue { get => _importMode; set => SetProperty(ref _importMode, value); }
+    public ImportMode ImportModeValue
+    {
+        get => _importMode;
+        set
+        {
+            if (SetProperty(ref _importMode, value))
+            {
+                OnPropertyChanged(nameof(IsSingleMode));
+                OnPropertyChanged(nameof(IsBatchMode));
+            }
+        }
+    }
+
+    public bool IsSingleMode
+    {
+        get => ImportModeValue == ImportMode.Single;
+        set { if (value) ImportModeValue = ImportMode.Single; }
+    }
+
+    public bool IsBatchMode
+    {
+        get => ImportModeValue == ImportMode.Batch;
+        set { if (value) ImportModeValue = ImportMode.Batch; }
+    }
 
     private int _fieldCount;
     /// <summary>字段数量</summary>
