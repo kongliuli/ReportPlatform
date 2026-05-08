@@ -1,0 +1,138 @@
+<hc:Window x:Class="ReportDataMaker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:vm="clr-namespace:ReportDataMaker.ViewModels"
+        xmlns:tabs="clr-namespace:ReportDataMaker.Views.Tabs"
+        xmlns:converters="clr-namespace:ReportDataMaker.Converters"
+        Title="杏林报告平台 - 数据录入工具"
+        Height="720" Width="1280"
+        MinHeight="600" MinWidth="900"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <converters:BoolToWidthConverter x:Key="BoolToWidthConverter"/>
+
+        <DataTemplate DataType="{x:Type vm:DataEntryTabViewModel}">
+            <tabs:DataEntryTab/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PreviewTabViewModel}">
+            <tabs:PreviewTab/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0" Background="White">
+            <MenuItem Header="文件">
+                <MenuItem Header="加载模板" Command="{Binding LoadTemplateCommand}"/>
+                <Separator/>
+                <MenuItem Header="保存" Command="{Binding SaveCommand}"/>
+                <Separator/>
+                <MenuItem Header="退出" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            <MenuItem Header="适配器">
+                <MenuItem Header="添加适配器" Command="{Binding AddAdapterCommand}"/>
+            </MenuItem>
+            <MenuItem Header="视图">
+                <MenuItem Header="切换侧边栏" Command="{Binding ToggleSidePanelCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="#F5F5F5" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0">
+                <Grid Width="{Binding IsSidePanelExpanded,
+                             Converter={StaticResource BoolToWidthConverter},
+                             ConverterParameter='240,48'}">
+
+                    <StackPanel Visibility="{Binding IsSidePanelExpanded,
+                                           Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                VerticalAlignment="Top" Margin="0,8,0,0">
+                        <Button Command="{Binding ToggleSidePanelCommand}"
+                                Content="▶" Padding="8" Margin="4"/>
+                    </StackPanel>
+
+                    <DockPanel Visibility="{Binding IsSidePanelExpanded,
+                                          Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Button DockPanel.Dock="Top" Command="{Binding ToggleSidePanelCommand}"
+                                Content="◀" HorizontalAlignment="Right" Margin="0,4,4,0" Padding="4"/>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="8">
+                                <Expander Header="模板信息" IsExpanded="True" Margin="0,0,0,8">
+                                    <StackPanel Margin="8">
+                                        <TextBlock Text="{Binding TemplateName}" FontWeight="Bold" FontSize="14"/>
+                                        <TextBlock Text="{Binding TemplateVersion}" Foreground="Gray" Margin="0,4,0,0"/>
+                                        <TextBlock Text="{Binding FieldSummary}" Foreground="Gray" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Expander>
+
+                                <Expander Header="已配置适配器" IsExpanded="True" Margin="0,0,0,8">
+                                    <StackPanel Margin="8">
+                                        <ItemsControl ItemsSource="{Binding Adapters}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding DisplayName}" Margin="0,2"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <Button Content="+ 添加适配器" Command="{Binding AddAdapterCommand}" Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Expander>
+
+                                <Expander Header="操作" IsExpanded="True">
+                                    <StackPanel Margin="8">
+                                        <Button Content="保存配置" Command="{Binding SaveCommand}" Margin="0,2"/>
+                                    </StackPanel>
+                                </Expander>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Grid>
+            </Border>
+
+            <TabControl Grid.Column="1" ItemsSource="{Binding Tabs}" SelectedItem="{Binding ActiveTab}" Margin="8">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Title}" VerticalAlignment="Center"/>
+                            <Button Content="×" Command="{Binding CloseCommand}"
+                                    Visibility="{Binding IsClosable, Converter={StaticResource BoolToVisibilityConverter}}"
+                                    Margin="8,0,0,0" Padding="2" Width="16" Height="16"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding}" Margin="0,8,0,0"/>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+        </Grid>
+
+        <StatusBar Grid.Row="2">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="8" Height="8" Fill="{Binding StatusColor}" Margin="0,0,8,0"/>
+                    <TextBlock Text="{Binding StatusText}"/>
+                </StackPanel>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusInfo}"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</hc:Window>
