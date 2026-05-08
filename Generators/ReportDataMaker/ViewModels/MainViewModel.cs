@@ -10,6 +10,7 @@ using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.ViewModels;
 
+/// <summary>主视图模型，管理模板加载、适配器添加和标签页切换</summary>
 public class MainViewModel : ViewModelBase
 {
     private readonly ITemplateLoaderService _templateLoader;
@@ -20,6 +21,14 @@ public class MainViewModel : ViewModelBase
     private readonly ExcelAdapterFactory _excelFactory;
     private readonly DatabaseAdapterFactory _dbFactory;
 
+    /// <summary>初始化主视图模型</summary>
+    /// <param name="templateLoader">模板加载服务</param>
+    /// <param name="dataBindingService">数据绑定服务</param>
+    /// <param name="previewService">模板预览服务</param>
+    /// <param name="dialogService">对话框服务</param>
+    /// <param name="configStore">适配器配置存储</param>
+    /// <param name="excelFactory">Excel适配器工厂</param>
+    /// <param name="dbFactory">数据库适配器工厂</param>
     public MainViewModel(
         ITemplateLoaderService templateLoader,
         IDataBindingService dataBindingService,
@@ -49,6 +58,7 @@ public class MainViewModel : ViewModelBase
     }
 
     private ExternalTemplateDefinition? _currentTemplate;
+    /// <summary>当前加载的模板定义</summary>
     public ExternalTemplateDefinition? CurrentTemplate
     {
         get => _currentTemplate;
@@ -56,11 +66,15 @@ public class MainViewModel : ViewModelBase
     }
 
     private bool _isTemplateLoaded;
+    /// <summary>是否已加载模板</summary>
     public bool IsTemplateLoaded { get => _isTemplateLoaded; private set => SetProperty(ref _isTemplateLoaded, value); }
 
+    /// <summary>模板名称</summary>
     public string TemplateName => CurrentTemplate?.Name ?? "未加载模板";
+    /// <summary>模板版本</summary>
     public string TemplateVersion => CurrentTemplate != null ? $"v{CurrentTemplate.Version}" : "";
 
+    /// <summary>字段摘要信息</summary>
     public string FieldSummary
     {
         get
@@ -72,28 +86,41 @@ public class MainViewModel : ViewModelBase
     }
 
     private bool _isSidePanelExpanded = true;
+    /// <summary>侧边面板是否展开</summary>
     public bool IsSidePanelExpanded { get => _isSidePanelExpanded; set => SetProperty(ref _isSidePanelExpanded, value); }
 
+    /// <summary>适配器项集合</summary>
     public ObservableCollection<AdapterItemViewModel> Adapters { get; }
+    /// <summary>标签页集合</summary>
     public ObservableCollection<TabViewModelBase> Tabs { get; }
 
     private TabViewModelBase? _activeTab;
+    /// <summary>当前活动的标签页</summary>
     public TabViewModelBase? ActiveTab { get => _activeTab; set => SetProperty(ref _activeTab, value); }
 
     private string _statusText = "就绪";
+    /// <summary>状态栏文本</summary>
     public string StatusText { get => _statusText; set => SetProperty(ref _statusText, value); }
 
     private string _statusInfo = "";
+    /// <summary>状态栏附加信息</summary>
     public string StatusInfo { get => _statusInfo; set => SetProperty(ref _statusInfo, value); }
 
+    /// <summary>状态栏颜色</summary>
     public System.Windows.Media.Brush StatusColor => IsTemplateLoaded
         ? System.Windows.Media.Brushes.Green : System.Windows.Media.Brushes.Gray;
 
+    /// <summary>加载模板命令</summary>
     public RelayCommand LoadTemplateCommand { get; }
+    /// <summary>切换侧边面板命令</summary>
     public RelayCommand ToggleSidePanelCommand { get; }
+    /// <summary>添加Excel适配器命令</summary>
     public RelayCommand AddExcelAdapterCommand { get; }
+    /// <summary>添加数据库适配器命令</summary>
     public RelayCommand AddDbAdapterCommand { get; }
+    /// <summary>保存命令</summary>
     public AsyncRelayCommand SaveCommand { get; }
+    /// <summary>退出命令</summary>
     public RelayCommand ExitCommand { get; }
 
     private void ExecuteLoadTemplate()
@@ -213,12 +240,18 @@ public class MainViewModel : ViewModelBase
     }
 }
 
+/// <summary>适配器项视图模型，表示侧边栏中的适配器条目</summary>
 public class AdapterItemViewModel : ViewModelBase
 {
+    /// <summary>适配器标识</summary>
     public string AdapterId { get; }
+    /// <summary>显示名称</summary>
     public string DisplayName { get; }
+    /// <summary>适配器类型</summary>
     public AdapterType Type { get; }
 
+    /// <summary>初始化适配器项视图模型</summary>
+    /// <param name="config">适配器配置基类</param>
     public AdapterItemViewModel(AdapterConfigBase config)
     {
         AdapterId = config.AdapterId;

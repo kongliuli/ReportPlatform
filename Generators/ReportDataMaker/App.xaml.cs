@@ -5,13 +5,18 @@ using ReportDataMaker.Services;
 using ReportDataMaker.Services.DatabaseAdapter;
 using ReportDataMaker.Services.ExcelAdapter;
 using ReportDataMaker.ViewModels;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker;
 
+/// <summary>应用程序入口类，负责依赖注入配置和启动</summary>
 public partial class App : Application
 {
+    /// <summary>全局服务提供者实例</summary>
     public static IServiceProvider Services { get; private set; } = null!;
 
+    /// <summary>应用程序启动时初始化依赖注入和主窗口</summary>
+    /// <param name="e">启动事件参数</param>
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);

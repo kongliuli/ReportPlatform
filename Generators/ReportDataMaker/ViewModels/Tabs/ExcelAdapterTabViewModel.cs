@@ -6,12 +6,18 @@ using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.ViewModels.Tabs;
 
+/// <summary>Excel适配器标签页视图模型，管理Excel模板的导出、导入和校验</summary>
 public class ExcelAdapterTabViewModel : TabViewModelBase
 {
     private readonly ExcelAdapterFactory _factory;
     private readonly ExternalTemplateDefinition _template;
     private readonly IDialogService _dialogService;
 
+    /// <summary>初始化Excel适配器标签页视图模型</summary>
+    /// <param name="template">外部模板定义</param>
+    /// <param name="factory">Excel适配器工厂</param>
+    /// <param name="dialogService">对话框服务</param>
+    /// <param name="displayName">显示名称</param>
     public ExcelAdapterTabViewModel(
         ExternalTemplateDefinition template,
         ExcelAdapterFactory factory,
@@ -39,37 +45,52 @@ public class ExcelAdapterTabViewModel : TabViewModelBase
         RefreshSchema();
     }
 
+    /// <summary>Excel适配器配置</summary>
     public ExcelAdapterConfig Config { get; }
+    /// <summary>字段集合</summary>
     public ObservableCollection<FlatField> Fields { get; } = new();
+    /// <summary>校验错误集合</summary>
     public ObservableCollection<ValidationError> ValidationErrors { get; } = new();
 
     private TemplateFieldSchema? _schema;
+    /// <summary>模板字段模式</summary>
     public TemplateFieldSchema? Schema { get => _schema; set => SetProperty(ref _schema, value); }
 
     private string _importFilePath = string.Empty;
+    /// <summary>导入文件路径</summary>
     public string ImportFilePath { get => _importFilePath; set => SetProperty(ref _importFilePath, value); }
 
     private ImportMode _importMode = ImportMode.Single;
+    /// <summary>导入模式</summary>
     public ImportMode ImportModeValue { get => _importMode; set => SetProperty(ref _importMode, value); }
 
     private int _fieldCount;
+    /// <summary>字段数量</summary>
     public int FieldCount { get => _fieldCount; set => SetProperty(ref _fieldCount, value); }
 
     private int _matchedCount;
+    /// <summary>匹配字段数量</summary>
     public int MatchedCount { get => _matchedCount; set => SetProperty(ref _matchedCount, value); }
 
     private int _dataRowCount;
+    /// <summary>数据行数</summary>
     public int DataRowCount { get => _dataRowCount; set => SetProperty(ref _dataRowCount, value); }
 
     private bool _isValid;
+    /// <summary>校验是否通过</summary>
     public bool IsValid { get => _isValid; set => SetProperty(ref _isValid, value); }
 
     private string _statusText = "就绪";
+    /// <summary>状态文本</summary>
     public string StatusText { get => _statusText; set => SetProperty(ref _statusText, value); }
 
+    /// <summary>导出模板命令</summary>
     public RelayCommand ExportCommand { get; }
+    /// <summary>导入数据命令</summary>
     public AsyncRelayCommand ImportCommand { get; }
+    /// <summary>校验数据命令</summary>
     public RelayCommand ValidateCommand { get; }
+    /// <summary>浏览文件命令</summary>
     public RelayCommand BrowseFileCommand { get; }
 
     private void RefreshSchema()

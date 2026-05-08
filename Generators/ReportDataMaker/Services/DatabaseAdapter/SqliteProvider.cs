@@ -7,11 +7,17 @@ using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.Services.DatabaseAdapter;
 
+/// <summary>SQLite数据库提供者实现</summary>
 public class SqliteProvider : IDatabaseProvider
 {
+    /// <summary>数据库提供者类型</summary>
     public DatabaseProvider ProviderType => DatabaseProvider.Sqlite;
+    /// <summary>显示名称</summary>
     public string DisplayName => "SQLite";
 
+    /// <summary>异步测试数据库连接</summary>
+    /// <param name="connectionString">连接字符串</param>
+    /// <returns>连接是否成功</returns>
     public async Task<bool> TestConnectionAsync(string connectionString)
     {
         try
@@ -27,11 +33,17 @@ public class SqliteProvider : IDatabaseProvider
         }
     }
 
+    /// <summary>创建SQLite数据库连接</summary>
+    /// <param name="connectionString">连接字符串</param>
+    /// <returns>数据库连接实例</returns>
     public DbConnection CreateConnection(string connectionString)
     {
         return new SqliteConnection(connectionString);
     }
 
+    /// <summary>异步获取数据库表列表</summary>
+    /// <param name="connectionString">连接字符串</param>
+    /// <returns>表信息列表</returns>
     public async Task<List<TableInfo>> GetTablesAsync(string connectionString)
     {
         var tables = new List<TableInfo>();
@@ -55,6 +67,10 @@ public class SqliteProvider : IDatabaseProvider
         return tables;
     }
 
+    /// <summary>异步获取指定表的列信息</summary>
+    /// <param name="connectionString">连接字符串</param>
+    /// <param name="tableName">表名</param>
+    /// <returns>列信息列表</returns>
     public async Task<List<ColumnInfo>> GetColumnsAsync(string connectionString, string tableName)
     {
         var columns = new List<ColumnInfo>();
@@ -80,6 +96,10 @@ public class SqliteProvider : IDatabaseProvider
         return columns;
     }
 
+    /// <summary>异步获取指定表的外键信息</summary>
+    /// <param name="connectionString">连接字符串</param>
+    /// <param name="tableName">表名</param>
+    /// <returns>外键信息列表</returns>
     public async Task<List<ForeignKeyInfo>> GetForeignKeysAsync(string connectionString, string tableName)
     {
         var fks = new List<ForeignKeyInfo>();
@@ -103,12 +123,22 @@ public class SqliteProvider : IDatabaseProvider
         return fks;
     }
 
+    /// <summary>构建SQLite分页查询语句</summary>
+    /// <param name="baseSql">基础SQL语句</param>
+    /// <param name="offset">偏移量</param>
+    /// <param name="limit">限制行数</param>
+    /// <returns>分页SQL语句</returns>
     public string BuildPagedQuery(string baseSql, int offset, int limit)
     {
         return $"{baseSql} LIMIT {limit} OFFSET {offset}";
     }
 
+    /// <summary>引用SQLite标识符</summary>
+    /// <param name="identifier">标识符</param>
+    /// <returns>引用后的标识符</returns>
     public string QuoteIdentifier(string identifier) => $"\"{identifier}\"";
 
+    /// <summary>获取SQLite参数前缀</summary>
+    /// <returns>参数前缀字符</returns>
     public string GetParameterPrefix() => "@";
 }

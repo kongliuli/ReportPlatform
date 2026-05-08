@@ -4,8 +4,14 @@ using System.Text;
 
 namespace ReportDataMaker.Services.DatabaseAdapter;
 
+/// <summary>SQL构建器，根据查询配置和连接定义生成SQL语句</summary>
 public class SqlBuilder
 {
+    /// <summary>构建SQL查询语句</summary>
+    /// <param name="query">查询配置</param>
+    /// <param name="joins">连接定义列表</param>
+    /// <param name="provider">数据库提供者</param>
+    /// <returns>生成的SQL语句</returns>
     public string Build(QueryConfig query, List<JoinDefinition> joins, IDatabaseProvider provider)
     {
         if (query.Mode == QueryMode.RawSql)

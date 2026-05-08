@@ -3,8 +3,12 @@ using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services.ExcelAdapter;
 
+/// <summary>Excel模式导出器，将模板字段模式导出为Excel文件</summary>
 public class ExcelSchemaExporter
 {
+    /// <summary>将模板字段模式导出为Excel文件</summary>
+    /// <param name="filePath">导出文件路径</param>
+    /// <param name="schema">模板字段模式</param>
     public void ExportTemplate(string filePath, TemplateFieldSchema schema)
     {
         using var workbook = new XLWorkbook();

@@ -2,8 +2,13 @@ using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services.ExcelAdapter;
 
+/// <summary>Excel数据校验器，验证批量数据是否符合模板字段模式</summary>
 public class ExcelDataValidator
 {
+    /// <summary>校验批量数据是否符合模板字段模式</summary>
+    /// <param name="schema">模板字段模式</param>
+    /// <param name="batchData">批量数据</param>
+    /// <returns>校验报告</returns>
     public ValidationReport Validate(TemplateFieldSchema schema, List<Dictionary<string, object>> batchData)
     {
         var report = new ValidationReport { TotalRows = batchData.Count };
@@ -86,20 +91,32 @@ public class ExcelDataValidator
     }
 }
 
+/// <summary>校验报告，包含校验结果和错误列表</summary>
 public class ValidationReport
 {
+    /// <summary>校验是否通过</summary>
     public bool IsValid { get; set; }
+    /// <summary>总行数</summary>
     public int TotalRows { get; set; }
+    /// <summary>校验错误列表</summary>
     public List<ValidationError> Errors { get; set; } = new();
+    /// <summary>错误数量</summary>
     public int ErrorCount => Errors.Count;
 }
 
+/// <summary>校验错误，描述单条数据的校验错误信息</summary>
 public class ValidationError
 {
+    /// <summary>行号</summary>
     public int Row { get; set; }
+    /// <summary>数据路径</summary>
     public string DataPath { get; set; } = string.Empty;
+    /// <summary>字段标签</summary>
     public string Label { get; set; } = string.Empty;
+    /// <summary>实际值</summary>
     public string Value { get; set; } = string.Empty;
+    /// <summary>期望类型</summary>
     public string ExpectedType { get; set; } = string.Empty;
+    /// <summary>错误消息</summary>
     public string Message { get; set; } = string.Empty;
 }

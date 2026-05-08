@@ -7,11 +7,17 @@ using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.Services.DatabaseAdapter;
 
+/// <summary>PostgreSQL数据库提供者实现</summary>
 public class PostgreSqlProvider : IDatabaseProvider
 {
+    /// <summary>数据库提供者类型</summary>
     public DatabaseProvider ProviderType => DatabaseProvider.PostgreSql;
+    /// <summary>显示名称</summary>
     public string DisplayName => "PostgreSQL";
 
+    /// <summary>异步测试数据库连接</summary>
+    /// <param name="connectionString">连接字符串</param>
+    /// <returns>连接是否成功</returns>
     public async Task<bool> TestConnectionAsync(string connectionString)
     {
         try
@@ -27,11 +33,17 @@ public class PostgreSqlProvider : IDatabaseProvider
         }
     }
 
+    /// <summary>创建PostgreSQL数据库连接</summary>
+    /// <param name="connectionString">连接字符串</param>
+    /// <returns>数据库连接实例</returns>
     public DbConnection CreateConnection(string connectionString)
     {
         return new NpgsqlConnection(connectionString);
     }
 
+    /// <summary>异步获取数据库表列表</summary>
+    /// <param name="connectionString">连接字符串</param>
+    /// <returns>表信息列表</returns>
     public async Task<List<TableInfo>> GetTablesAsync(string connectionString)
     {
         var tables = new List<TableInfo>();
@@ -55,6 +67,10 @@ public class PostgreSqlProvider : IDatabaseProvider
         return tables;
     }
 
+    /// <summary>异步获取指定表的列信息</summary>
+    /// <param name="connectionString">连接字符串</param>
+    /// <param name="tableName">表名</param>
+    /// <returns>列信息列表</returns>
     public async Task<List<ColumnInfo>> GetColumnsAsync(string connectionString, string tableName)
     {
         var columns = new List<ColumnInfo>();
@@ -98,6 +114,10 @@ WHERE tc.constraint_type = 'PRIMARY KEY' AND kcu.table_name = :tableName";
         return columns;
     }
 
+    /// <summary>异步获取指定表的外键信息</summary>
+    /// <param name="connectionString">连接字符串</param>
+    /// <param name="tableName">表名</param>
+    /// <returns>外键信息列表</returns>
     public async Task<List<ForeignKeyInfo>> GetForeignKeysAsync(string connectionString, string tableName)
     {
         var fks = new List<ForeignKeyInfo>();
@@ -126,12 +146,22 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND kcu.table_name = :tableName";
         return fks;
     }
 
+    /// <summary>构建PostgreSQL分页查询语句</summary>
+    /// <param name="baseSql">基础SQL语句</param>
+    /// <param name="offset">偏移量</param>
+    /// <param name="limit">限制行数</param>
+    /// <returns>分页SQL语句</returns>
     public string BuildPagedQuery(string baseSql, int offset, int limit)
     {
         return $"{baseSql} LIMIT {limit} OFFSET {offset}";
     }
 
+    /// <summary>引用PostgreSQL标识符</summary>
+    /// <param name="identifier">标识符</param>
+    /// <returns>引用后的标识符</returns>
     public string QuoteIdentifier(string identifier) => $"\"{identifier}\"";
 
+    /// <summary>获取PostgreSQL参数前缀</summary>
+    /// <returns>参数前缀字符</returns>
     public string GetParameterPrefix() => ":";
 }

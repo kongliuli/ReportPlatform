@@ -3,8 +3,13 @@ using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services.ExcelAdapter;
 
+/// <summary>Excel契约读取器，按契约行从Excel文件中读取数据</summary>
 public class ExcelContractReader
 {
+    /// <summary>按契约从Excel文件读取单行数据</summary>
+    /// <param name="filePath">Excel文件路径</param>
+    /// <param name="schema">Excel模板模式</param>
+    /// <returns>适配器结果</returns>
     public AdapterResult ReadByContract(string filePath, ExcelTemplateSchema schema)
     {
         var result = new AdapterResult { Success = true };
@@ -31,6 +36,10 @@ public class ExcelContractReader
         return result;
     }
 
+    /// <summary>按契约从Excel文件批量读取数据</summary>
+    /// <param name="filePath">Excel文件路径</param>
+    /// <param name="schema">Excel模板模式</param>
+    /// <returns>适配器结果</returns>
     public AdapterResult ReadBatchByContract(string filePath, ExcelTemplateSchema schema)
     {
         var result = new AdapterResult { Success = true };

@@ -5,10 +5,12 @@ using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services;
 
+/// <summary>适配器配置存储，负责适配器配置的持久化读写</summary>
 public class AdapterConfigStore
 {
     private readonly string _configPath;
 
+    /// <summary>初始化适配器配置存储，使用默认应用数据路径</summary>
     public AdapterConfigStore()
     {
         var appDataPath = Path.Combine(
@@ -18,6 +20,9 @@ public class AdapterConfigStore
         _configPath = Path.Combine(appDataPath, "adapters.json");
     }
 
+    /// <summary>加载指定模板的适配器配置列表</summary>
+    /// <param name="templateName">模板名称</param>
+    /// <returns>适配器配置列表</returns>
     public List<AdapterConfigBase> Load(string templateName)
     {
         if (!File.Exists(_configPath))
@@ -32,6 +37,9 @@ public class AdapterConfigStore
         catch { return new List<AdapterConfigBase>(); }
     }
 
+    /// <summary>保存指定模板的适配器配置列表</summary>
+    /// <param name="templateName">模板名称</param>
+    /// <param name="configs">适配器配置列表</param>
     public void Save(string templateName, List<AdapterConfigBase> configs)
     {
         Dictionary<string, List<AdapterConfigBase>> allConfigs;

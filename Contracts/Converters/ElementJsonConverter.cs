@@ -5,6 +5,7 @@ using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace Xinglin.ReportEditor.Contracts.Converters;
 
+/// <summary>元素JSON转换器，负责ExternalElementBase的多态序列化与反序列化</summary>
 public class ElementJsonConverter : JsonConverter<ExternalElementBase>
 {
     private static readonly Dictionary<string, Type> WebShortTypeMap = new(StringComparer.OrdinalIgnoreCase)
@@ -34,10 +35,17 @@ public class ElementJsonConverter : JsonConverter<ExternalElementBase>
         ["chart"] = typeof(ChartElement)
     };
 
-    private static readonly Dictionary<Type, string> ReverseTypeMap = 
+    private static readonly Dictionary<Type, string> ReverseTypeMap =
         WebShortTypeMap.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
 
-    public override ExternalElementBase? ReadJson(JsonReader reader, Type objectType, 
+    /// <summary>从JSON反序列化为元素对象</summary>
+    /// <param name="reader">JSON读取器</param>
+    /// <param name="objectType">目标类型</param>
+    /// <param name="existingValue">已有值</param>
+    /// <param name="hasExistingValue">是否已有值</param>
+    /// <param name="serializer">JSON序列化器</param>
+    /// <returns>反序列化后的元素对象</returns>
+    public override ExternalElementBase? ReadJson(JsonReader reader, Type objectType,
         ExternalElementBase? existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
         var jsonObject = JObject.Load(reader);
@@ -45,15 +53,19 @@ public class ElementJsonConverter : JsonConverter<ExternalElementBase>
 
         var elementType = MapType(typeString);
         var element = (ExternalElementBase?)jsonObject.ToObject(elementType, serializer);
-        
+
         if (element != null)
         {
             element.Group = ClassifyElement(element);
         }
-        
+
         return element;
     }
 
+    /// <summary>将元素对象序列化为JSON</summary>
+    /// <param name="writer">JSON写入器</param>
+    /// <param name="value">要序列化的元素对象</param>
+    /// <param name="serializer">JSON序列化器</param>
     public override void WriteJson(JsonWriter writer, ExternalElementBase? value, JsonSerializer serializer)
     {
         var jObject = JObject.FromObject(value, serializer);
@@ -76,7 +88,7 @@ public class ElementJsonConverter : JsonConverter<ExternalElementBase>
 
         var parts = typeString.Split(',')[0].Trim();
         var simpleName = parts.Split('.').Last();
-        
+
         return simpleName switch
         {
             "TextElement" or "LabelElement" or "LabelInputBoxElement" => typeof(TextElement),
@@ -110,7 +122,7 @@ public class ElementJsonConverter : JsonConverter<ExternalElementBase>
     {
         if (element.DataPath?.StartsWith("Context.", StringComparison.OrdinalIgnoreCase) == true)
             return ElementGroup.Context;
-        
+
         if (!element.IsDataBound)
         {
             if (element is TextElement textEl && !string.IsNullOrEmpty(textEl.Text))

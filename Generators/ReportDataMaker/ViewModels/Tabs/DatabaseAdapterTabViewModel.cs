@@ -13,6 +13,7 @@ using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.ViewModels.Tabs;
 
+/// <summary>数据库适配器标签页视图模型，管理数据库连接、查询和字段映射</summary>
 public class DatabaseAdapterTabViewModel : TabViewModelBase
 {
     private readonly ExternalTemplateDefinition _template;
@@ -20,6 +21,12 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     private readonly IDialogService _dialogService;
     private readonly AdapterConfigStore _configStore;
 
+    /// <summary>初始化数据库适配器标签页视图模型</summary>
+    /// <param name="template">外部模板定义</param>
+    /// <param name="factory">数据库适配器工厂</param>
+    /// <param name="dialogService">对话框服务</param>
+    /// <param name="configStore">适配器配置存储</param>
+    /// <param name="displayName">显示名称</param>
     public DatabaseAdapterTabViewModel(
         ExternalTemplateDefinition template,
         DatabaseAdapterFactory factory,
@@ -61,21 +68,34 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
         SaveConfigCommand = new RelayCommand(_ => ExecuteSaveConfig());
     }
 
+    /// <summary>数据库适配器配置</summary>
     public DatabaseAdapterConfig Config { get; }
+    /// <summary>模板字段列表</summary>
     public List<FlatField> TemplateFields { get; }
+    /// <summary>数据库表集合</summary>
     public ObservableCollection<TableInfo> Tables { get; } = new();
+    /// <summary>数据库列集合</summary>
     public ObservableCollection<ColumnInfo> Columns { get; } = new();
+    /// <summary>连接定义集合</summary>
     public ObservableCollection<JoinDefinition> Joins { get; } = new();
+    /// <summary>查询参数集合</summary>
     public ObservableCollection<QueryParameter> Parameters { get; } = new();
+    /// <summary>数据库字段映射集合</summary>
     public ObservableCollection<DbFieldMapping> DbFieldMappings { get; } = new();
 
+    /// <summary>可用的数据库提供者列表</summary>
     public IReadOnlyList<IDatabaseProvider> Providers => _factory.GetAllProviders();
+    /// <summary>连接类型列表</summary>
     public List<JoinType> JoinTypeList { get; } = Enum.GetValues(typeof(JoinType)).Cast<JoinType>().ToList();
+    /// <summary>字段数据类型列表</summary>
     public List<FieldDataType> FieldDataTypeList { get; } = Enum.GetValues(typeof(FieldDataType)).Cast<FieldDataType>().ToList();
+    /// <summary>参数来源列表</summary>
     public List<ParameterSource> ParameterSourceList { get; } = Enum.GetValues(typeof(ParameterSource)).Cast<ParameterSource>().ToList();
+    /// <summary>模板数据路径列表</summary>
     public List<string> TemplateDataPathList => TemplateFields.Select(f => f.DataPath).ToList();
 
     private IDatabaseProvider? _selectedProviderInfo;
+    /// <summary>选中的数据库提供者信息</summary>
     public IDatabaseProvider? SelectedProviderInfo
     {
         get => _selectedProviderInfo;
@@ -89,6 +109,7 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     }
 
     private DatabaseProvider _selectedProvider = DatabaseProvider.SqlServer;
+    /// <summary>选中的数据库提供者类型</summary>
     public DatabaseProvider SelectedProvider
     {
         get => _selectedProvider;
@@ -96,6 +117,7 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     }
 
     private string _connectionString = string.Empty;
+    /// <summary>数据库连接字符串</summary>
     public string ConnectionString
     {
         get => _connectionString;
@@ -103,12 +125,15 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     }
 
     private bool _isConnected;
+    /// <summary>是否已连接数据库</summary>
     public bool IsConnected { get => _isConnected; set => SetProperty(ref _isConnected, value); }
 
     private string _connectionStatus = "未连接";
+    /// <summary>连接状态文本</summary>
     public string ConnectionStatus { get => _connectionStatus; set => SetProperty(ref _connectionStatus, value); }
 
     private TableInfo? _selectedTable;
+    /// <summary>选中的数据库表</summary>
     public TableInfo? SelectedTable
     {
         get => _selectedTable;
@@ -124,6 +149,7 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     }
 
     private QueryMode _currentQueryMode = QueryMode.RawSql;
+    /// <summary>当前查询模式</summary>
     public QueryMode CurrentQueryMode
     {
         get => _currentQueryMode;
@@ -138,12 +164,14 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
         }
     }
 
+    /// <summary>是否为原始SQL模式</summary>
     public bool IsRawSqlMode
     {
         get => CurrentQueryMode == QueryMode.RawSql;
         set { if (value) CurrentQueryMode = QueryMode.RawSql; }
     }
 
+    /// <summary>是否为可视化构建模式</summary>
     public bool IsVisualBuilderMode
     {
         get => CurrentQueryMode == QueryMode.VisualBuilder;
@@ -151,6 +179,7 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     }
 
     private string _rawSql = string.Empty;
+    /// <summary>原始SQL语句</summary>
     public string RawSql
     {
         get => _rawSql;
@@ -158,6 +187,7 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     }
 
     private string _primaryTable = string.Empty;
+    /// <summary>主表名称</summary>
     public string PrimaryTable
     {
         get => _primaryTable;
@@ -165,6 +195,7 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     }
 
     private string _whereClause = string.Empty;
+    /// <summary>WHERE条件子句</summary>
     public string WhereClause
     {
         get => _whereClause;
@@ -172,6 +203,7 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     }
 
     private string _orderBy = string.Empty;
+    /// <summary>排序子句</summary>
     public string OrderBy
     {
         get => _orderBy;
@@ -179,32 +211,49 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     }
 
     private string _previewData = string.Empty;
+    /// <summary>预览数据文本</summary>
     public string PreviewData
     {
         get => _previewData;
         set { if (SetProperty(ref _previewData, value)) OnPropertyChanged(nameof(HasPreviewData)); }
     }
 
+    /// <summary>是否有预览数据</summary>
     public bool HasPreviewData => !string.IsNullOrEmpty(PreviewData);
 
     private string _statusText = "就绪";
+    /// <summary>状态文本</summary>
     public string StatusText { get => _statusText; set => SetProperty(ref _statusText, value); }
 
     private bool _isBusy;
+    /// <summary>是否正在执行操作</summary>
     public bool IsBusy { get => _isBusy; set => SetProperty(ref _isBusy, value); }
 
+    /// <summary>测试连接命令</summary>
     public AsyncRelayCommand TestConnectionCommand { get; }
+    /// <summary>加载表列表命令</summary>
     public AsyncRelayCommand LoadTablesCommand { get; }
+    /// <summary>加载列信息命令</summary>
     public AsyncRelayCommand LoadColumnsCommand { get; }
+    /// <summary>执行预览命令</summary>
     public AsyncRelayCommand ExecutePreviewCommand { get; }
+    /// <summary>执行查询命令</summary>
     public AsyncRelayCommand ExecuteQueryCommand { get; }
+    /// <summary>添加连接命令</summary>
     public RelayCommand AddJoinCommand { get; }
+    /// <summary>移除连接命令</summary>
     public RelayCommand RemoveJoinCommand { get; }
+    /// <summary>添加参数命令</summary>
     public RelayCommand AddParameterCommand { get; }
+    /// <summary>移除参数命令</summary>
     public RelayCommand RemoveParameterCommand { get; }
+    /// <summary>添加映射命令</summary>
     public RelayCommand AddMappingCommand { get; }
+    /// <summary>移除映射命令</summary>
     public RelayCommand RemoveMappingCommand { get; }
+    /// <summary>自动匹配命令</summary>
     public RelayCommand AutoMatchCommand { get; }
+    /// <summary>保存配置命令</summary>
     public RelayCommand SaveConfigCommand { get; }
 
     private async Task ExecuteTestConnection(object? parameter)

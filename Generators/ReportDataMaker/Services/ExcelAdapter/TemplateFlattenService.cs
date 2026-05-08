@@ -4,8 +4,12 @@ using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services.ExcelAdapter;
 
+/// <summary>模板扁平化服务，将模板元素结构展平为字段列表</summary>
 public class TemplateFlattenService
 {
+    /// <summary>将外部模板定义扁平化为字段模式</summary>
+    /// <param name="template">外部模板定义</param>
+    /// <returns>模板字段模式</returns>
     public TemplateFieldSchema Flatten(ExternalTemplateDefinition template)
     {
         var schema = new TemplateFieldSchema

@@ -8,22 +8,31 @@ using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services.DatabaseAdapter;
 
+/// <summary>数据库适配器基类，提供数据库查询和数据映射功能</summary>
 public class DatabaseAdapterBase
 {
     private readonly IDatabaseProvider _provider;
     private readonly DatabaseAdapterConfig _config;
     private readonly SqlBuilder _sqlBuilder = new();
 
+    /// <summary>适配器显示名称</summary>
     public string AdapterName => _config.DisplayName;
+    /// <summary>适配器类型</summary>
     public AdapterType Type => AdapterType.Database;
+    /// <summary>目标数据路径列表</summary>
     public IReadOnlyList<string> TargetDataPaths => _config.DbFieldMappings.Select(m => m.TargetDataPath).Distinct().ToList().AsReadOnly();
 
+    /// <summary>初始化数据库适配器</summary>
+    /// <param name="provider">数据库提供者</param>
+    /// <param name="config">数据库适配器配置</param>
     public DatabaseAdapterBase(IDatabaseProvider provider, DatabaseAdapterConfig config)
     {
         _provider = provider;
         _config = config;
     }
 
+    /// <summary>异步读取单行数据</summary>
+    /// <returns>适配器结果</returns>
     public async Task<AdapterResult> ReadDataAsync()
     {
         try
@@ -49,6 +58,8 @@ public class DatabaseAdapterBase
         }
     }
 
+    /// <summary>异步读取批量数据</summary>
+    /// <returns>适配器结果</returns>
     public async Task<AdapterResult> ReadBatchDataAsync()
     {
         try
@@ -74,6 +85,8 @@ public class DatabaseAdapterBase
         }
     }
 
+    /// <summary>异步校验配置有效性</summary>
+    /// <returns>校验结果</returns>
     public Task<ValidationResult> ValidateConfigAsync()
     {
         var errors = new List<string>();
@@ -89,6 +102,9 @@ public class DatabaseAdapterBase
             : Task.FromResult(ValidationResult.Success);
     }
 
+    /// <summary>异步预览查询数据</summary>
+    /// <param name="limit">预览行数限制</param>
+    /// <returns>适配器结果</returns>
     public async Task<AdapterResult> PreviewAsync(int limit = 10)
     {
         try
