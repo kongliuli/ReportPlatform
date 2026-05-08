@@ -1,0 +1,170 @@
+{
+  "name": "住院病历首页",
+  "type": "住院",
+  "version": 1,
+  "pageWidth": 210,
+  "pageHeight": 297,
+  "orientation": "Portrait",
+  "marginLeft": 12,
+  "marginRight": 12,
+  "marginTop": 12,
+  "marginBottom": 12,
+  "backgroundColor": "#FFFFFF",
+  "globalFontSize": 11,
+  "elements": [
+    {
+      "id": "el_title",
+      "$type": "template.element.text",
+      "x": 12, "y": 12, "width": 186, "height": 14,
+      "isVisible": true,
+      "text": "杏林医院 住院病历首页",
+      "fontFamily": "SimHei", "fontSize": 16, "fontWeight": "bold",
+      "foregroundColor": "#000000", "textAlignment": "center"
+    },
+    {
+      "id": "el_div1",
+      "$type": "template.element.line",
+      "x": 12, "y": 28, "width": 186, "height": 0,
+      "isVisible": true,
+      "lineColor": "#000000", "lineWidth": 1.5, "lineStyle": "solid",
+      "startX": 12, "startY": 28, "endX": 198, "endY": 28
+    },
+    {
+      "id": "el_patient_name",
+      "$type": "template.element.text",
+      "x": 12, "y": 34, "width": 60, "height": 9,
+      "isVisible": true,
+      "label": "姓名", "dataPath": "PatientName",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_gender",
+      "$type": "template.element.dropdown",
+      "x": 90, "y": 34, "width": 20, "height": 9,
+      "isVisible": true,
+      "label": "性别", "dataPath": "Gender",
+      "options": ["男", "女"],
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_age",
+      "$type": "template.element.number",
+      "x": 130, "y": 34, "width": 25, "height": 9,
+      "isVisible": true,
+      "label": "年龄", "dataPath": "Age",
+      "unit": "岁", "decimalPlaces": 0,
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_department",
+      "$type": "template.element.dropdown",
+      "x": 12, "y": 46, "width": 45, "height": 9,
+      "isVisible": true,
+      "label": "科室", "dataPath": "Department",
+      "options": ["内科", "外科", "儿科", "妇科", "骨科", "ICU"],
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_admission_no",
+      "$type": "template.element.text",
+      "x": 80, "y": 46, "width": 50, "height": 9,
+      "isVisible": true,
+      "label": "住院号", "dataPath": "AdmissionNo",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_bed_no",
+      "$type": "template.element.text",
+      "x": 155, "y": 46, "width": 55, "height": 9,
+      "isVisible": true,
+      "label": "床号", "dataPath": "BedNo",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_admission_date",
+      "$type": "template.element.date",
+      "x": 12, "y": 58, "width": 50, "height": 9,
+      "isVisible": true,
+      "label": "入院日期", "dataPath": "AdmissionDate",
+      "format": "yyyy-MM-dd",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_discharge_date",
+      "$type": "template.element.date",
+      "x": 100, "y": 58, "width": 50, "height": 9,
+      "isVisible": true,
+      "label": "出院日期", "dataPath": "DischargeDate",
+      "format": "yyyy-MM-dd",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_div2",
+      "$type": "template.element.line",
+      "x": 12, "y": 71, "width": 186, "height": 0,
+      "isVisible": true,
+      "lineColor": "#999999", "lineWidth": 0.5, "lineStyle": "dashed",
+      "startX": 12, "startY": 71, "endX": 198, "endY": 71
+    },
+    {
+      "id": "el_admission_diag_label",
+      "$type": "template.element.text",
+      "x": 12, "y": 76, "width": 50, "height": 9,
+      "isVisible": true,
+      "text": "入院诊断：",
+      "fontFamily": "SimSun", "fontSize": 10, "fontWeight": "bold"
+    },
+    {
+      "id": "el_admission_diag",
+      "$type": "template.element.text",
+      "x": 12, "y": 87, "width": 186, "height": 40,
+      "isVisible": true,
+      "label": "入院诊断", "dataPath": "AdmissionDiagnosis",
+      "fontFamily": "SimSun", "fontSize": 10,
+      "borderColor": "#CCCCCC", "borderWidth": 1
+    },
+    {
+      "id": "el_discharge_diag_label",
+      "$type": "template.element.text",
+      "x": 12, "y": 132, "width": 50, "height": 9,
+      "isVisible": true,
+      "text": "出院诊断：",
+      "fontFamily": "SimSun", "fontSize": 10, "fontWeight": "bold"
+    },
+    {
+      "id": "el_diagnosis_table",
+      "$type": "template.element.table",
+      "x": 12, "y": 143, "width": 186, "height": 80,
+      "isVisible": true,
+      "rows": 5, "columns": 3, "hasHeader": true, "cellPadding": 3,
+      "cellData": [
+        ["序号", "诊断名称", "ICD-10编码"],
+        ["1", "", ""],
+        ["2", "", ""],
+        ["3", "", ""],
+        ["4", "", ""]
+      ],
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_surgery_label",
+      "$type": "template.element.text",
+      "x": 12, "y": 230, "width": 50, "height": 9,
+      "isVisible": true,
+      "text": "手术及操作：",
+      "fontFamily": "SimSun", "fontSize": 10, "fontWeight": "bold"
+    },
+    {
+      "id": "el_surgery_table",
+      "$type": "template.element.table",
+      "x": 12, "y": 241, "width": 186, "height": 40,
+      "isVisible": true,
+      "rows": 2, "columns": 4, "hasHeader": true, "cellPadding": 3,
+      "cellData": [
+        ["序号", "手术名称", "手术日期", "术者"],
+        ["1", "", "", ""]
+      ],
+      "fontFamily": "SimSun", "fontSize": 10
+    }
+  ]
+}

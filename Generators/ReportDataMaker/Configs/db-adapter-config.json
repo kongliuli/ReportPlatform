@@ -1,0 +1,20 @@
+{
+  "connectionString": "Data Source=localhost;Initial Catalog=MedicalRecords;Integrated Security=True;TrustServerCertificate=True",
+  "provider": "SqlServer",
+  "mappings": [
+    { "dataPath": "PatientName", "table": "Patients", "column": "Name", "where": "PatientId = @pid" },
+    { "dataPath": "Gender", "table": "Patients", "column": "Gender", "where": "PatientId = @pid" },
+    { "dataPath": "Age", "table": "Patients", "column": "Age", "where": "PatientId = @pid" },
+    { "dataPath": "SampleType", "table": "LabRequests", "column": "SampleType", "where": "RequestId = @rid" },
+    { "dataPath": "ReportDate", "table": "LabRequests", "column": "ReportDate", "where": "RequestId = @rid" },
+    { "dataPath": "Technician", "table": "LabRequests", "column": "Technician", "where": "RequestId = @rid" },
+    { "dataPath": "Reviewer", "table": "LabRequests", "column": "Reviewer", "where": "RequestId = @rid" },
+    { "dataPath": "Department", "table": "LabRequests", "column": "Department", "where": "RequestId = @rid" },
+    { "dataPath": "DoctorName", "table": "LabRequests", "column": "DoctorName", "where": "RequestId = @rid" },
+    { "dataPath": "VisitDate", "table": "LabRequests", "column": "VisitDate", "where": "RequestId = @rid" },
+    { "dataPath": "ChiefComplaint", "table": "LabRequests", "column": "ChiefComplaint", "where": "RequestId = @rid" },
+    { "dataPath": "Diagnosis", "table": "LabRequests", "column": "Diagnosis", "where": "RequestId = @rid" },
+    { "dataPath": "Treatment", "table": "LabRequests", "column": "Treatment", "where": "RequestId = @rid" },
+    { "dataPath": "PresentIllness", "table": "LabRequests", "column": "PresentIllness", "where": "RequestId = @rid" }
+  ]
+}

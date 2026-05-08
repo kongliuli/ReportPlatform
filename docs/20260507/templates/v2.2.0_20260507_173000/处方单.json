@@ -1,0 +1,131 @@
+{
+  "name": "处方笺",
+  "type": "处方",
+  "version": 1,
+  "pageWidth": 210,
+  "pageHeight": 148,
+  "orientation": "Landscape",
+  "marginLeft": 10,
+  "marginRight": 10,
+  "marginTop": 10,
+  "marginBottom": 10,
+  "backgroundColor": "#FFFFFF",
+  "globalFontSize": 10,
+  "elements": [
+    {
+      "id": "el_title",
+      "$type": "template.element.text",
+      "x": 10, "y": 10, "width": 190, "height": 12,
+      "isVisible": true,
+      "text": "杏林医院 处方笺",
+      "fontFamily": "SimHei", "fontSize": 14, "fontWeight": "bold",
+      "foregroundColor": "#000000", "textAlignment": "center"
+    },
+    {
+      "id": "el_div1",
+      "$type": "template.element.line",
+      "x": 10, "y": 24, "width": 190, "height": 0,
+      "isVisible": true,
+      "lineColor": "#CC0000", "lineWidth": 2, "lineStyle": "solid",
+      "startX": 10, "startY": 24, "endX": 200, "endY": 24
+    },
+    {
+      "id": "el_patient_name",
+      "$type": "template.element.text",
+      "x": 10, "y": 30, "width": 50, "height": 8,
+      "isVisible": true,
+      "label": "姓名", "dataPath": "PatientName",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_gender",
+      "$type": "template.element.dropdown",
+      "x": 70, "y": 30, "width": 15, "height": 8,
+      "isVisible": true,
+      "label": "性别", "dataPath": "Gender",
+      "options": ["男", "女"],
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_age",
+      "$type": "template.element.number",
+      "x": 100, "y": 30, "width": 22, "height": 8,
+      "isVisible": true,
+      "label": "年龄", "dataPath": "Age",
+      "unit": "岁", "decimalPlaces": 0,
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_diagnosis",
+      "$type": "template.element.text",
+      "x": 10, "y": 42, "width": 120, "height": 8,
+      "isVisible": true,
+      "label": "临床诊断", "dataPath": "Diagnosis",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_presc_date",
+      "$type": "template.element.date",
+      "x": 140, "y": 30, "width": 60, "height": 8,
+      "isVisible": true,
+      "label": "处方日期", "dataPath": "PrescriptionDate",
+      "format": "yyyy-MM-dd",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_div2",
+      "$type": "template.element.line",
+      "x": 10, "y": 54, "width": 190, "height": 0,
+      "isVisible": true,
+      "lineColor": "#999999", "lineWidth": 0.5, "lineStyle": "dashed",
+      "startX": 10, "startY": 54, "endX": 200, "endY": 54
+    },
+    {
+      "id": "el_rp_label",
+      "$type": "template.element.text",
+      "x": 10, "y": 58, "width": 20, "height": 10,
+      "isVisible": true,
+      "text": "Rp:",
+      "fontFamily": "SimSun", "fontSize": 12, "fontWeight": "bold"
+    },
+    {
+      "id": "el_drug_table",
+      "$type": "template.element.table",
+      "x": 10, "y": 72, "width": 190, "height": 55,
+      "isVisible": true,
+      "rows": 5, "columns": 4, "hasHeader": true, "cellPadding": 2,
+      "cellData": [
+        ["药品名称", "规格", "用法用量", "数量"],
+        ["", "", "", ""],
+        ["", "", "", ""],
+        ["", "", "", ""],
+        ["", "", "", ""]
+      ],
+      "fontFamily": "SimSun", "fontSize": 9
+    },
+    {
+      "id": "el_div3",
+      "$type": "template.element.line",
+      "x": 10, "y": 131, "width": 190, "height": 0,
+      "isVisible": true,
+      "lineColor": "#CC0000", "lineWidth": 1, "lineStyle": "solid",
+      "startX": 10, "startY": 131, "endX": 200, "endY": 131
+    },
+    {
+      "id": "el_doctor",
+      "$type": "template.element.text",
+      "x": 80, "y": 136, "width": 55, "height": 8,
+      "isVisible": true,
+      "label": "医师", "dataPath": "DoctorName",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_pharmacist",
+      "$type": "template.element.text",
+      "x": 145, "y": 136, "width": 55, "height": 8,
+      "isVisible": true,
+      "label": "药师", "dataPath": "Pharmacist",
+      "fontFamily": "SimSun", "fontSize": 10
+    }
+  ]
+}

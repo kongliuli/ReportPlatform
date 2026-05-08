@@ -1,0 +1,174 @@
+{
+  "name": "门诊病历",
+  "type": "门诊",
+  "version": 1,
+  "pageWidth": 210,
+  "pageHeight": 297,
+  "orientation": "Portrait",
+  "marginLeft": 15,
+  "marginRight": 15,
+  "marginTop": 15,
+  "marginBottom": 15,
+  "backgroundColor": "#FFFFFF",
+  "globalFontSize": 11,
+  "elements": [
+    {
+      "id": "el_title",
+      "$type": "template.element.text",
+      "x": 15, "y": 15, "width": 180, "height": 14,
+      "isVisible": true,
+      "text": "杏林医院 门诊病历",
+      "fontFamily": "SimHei", "fontSize": 18, "fontWeight": "bold",
+      "foregroundColor": "#000000", "textAlignment": "center"
+    },
+    {
+      "id": "el_div1",
+      "$type": "template.element.line",
+      "x": 15, "y": 32, "width": 180, "height": 0,
+      "isVisible": true,
+      "lineColor": "#000000", "lineWidth": 1.5, "lineStyle": "solid",
+      "startX": 15, "startY": 32, "endX": 195, "endY": 32
+    },
+    {
+      "id": "el_patient_name",
+      "$type": "template.element.text",
+      "x": 15, "y": 38, "width": 60, "height": 10,
+      "isVisible": true,
+      "label": "姓名", "dataPath": "PatientName",
+      "fontFamily": "SimSun", "fontSize": 11, "foregroundColor": "#000000"
+    },
+    {
+      "id": "el_gender",
+      "$type": "template.element.dropdown",
+      "x": 100, "y": 38, "width": 20, "height": 10,
+      "isVisible": true,
+      "label": "性别", "dataPath": "Gender",
+      "options": ["男", "女"],
+      "fontFamily": "SimSun", "fontSize": 11
+    },
+    {
+      "id": "el_age",
+      "$type": "template.element.number",
+      "x": 150, "y": 38, "width": 25, "height": 10,
+      "isVisible": true,
+      "label": "年龄", "dataPath": "Age",
+      "unit": "岁", "decimalPlaces": 0,
+      "fontFamily": "SimSun", "fontSize": 11
+    },
+    {
+      "id": "el_department",
+      "$type": "template.element.dropdown",
+      "x": 15, "y": 52, "width": 50, "height": 10,
+      "isVisible": true,
+      "label": "科室", "dataPath": "Department",
+      "options": ["内科", "外科", "儿科", "妇科", "骨科", "眼科"],
+      "fontFamily": "SimSun", "fontSize": 11
+    },
+    {
+      "id": "el_date",
+      "$type": "template.element.date",
+      "x": 100, "y": 52, "width": 50, "height": 10,
+      "isVisible": true,
+      "label": "就诊日期", "dataPath": "VisitDate",
+      "format": "yyyy-MM-dd",
+      "fontFamily": "SimSun", "fontSize": 11
+    },
+    {
+      "id": "el_div2",
+      "$type": "template.element.line",
+      "x": 15, "y": 66, "width": 180, "height": 0,
+      "isVisible": true,
+      "lineColor": "#999999", "lineWidth": 0.5, "lineStyle": "dashed",
+      "startX": 15, "startY": 66, "endX": 195, "endY": 66
+    },
+    {
+      "id": "el_complaint_label",
+      "$type": "template.element.text",
+      "x": 15, "y": 72, "width": 40, "height": 10,
+      "isVisible": true,
+      "text": "主诉：",
+      "fontFamily": "SimSun", "fontSize": 11, "fontWeight": "bold",
+      "foregroundColor": "#333333"
+    },
+    {
+      "id": "el_complaint",
+      "$type": "template.element.text",
+      "x": 15, "y": 84, "width": 180, "height": 30,
+      "isVisible": true,
+      "label": "主诉", "dataPath": "ChiefComplaint",
+      "fontFamily": "SimSun", "fontSize": 11,
+      "borderColor": "#CCCCCC", "borderWidth": 1, "cornerRadius": 2
+    },
+    {
+      "id": "el_history_label",
+      "$type": "template.element.text",
+      "x": 15, "y": 120, "width": 40, "height": 10,
+      "isVisible": true,
+      "text": "现病史：",
+      "fontFamily": "SimSun", "fontSize": 11, "fontWeight": "bold",
+      "foregroundColor": "#333333"
+    },
+    {
+      "id": "el_history",
+      "$type": "template.element.text",
+      "x": 15, "y": 132, "width": 180, "height": 50,
+      "isVisible": true,
+      "label": "现病史", "dataPath": "PresentIllness",
+      "fontFamily": "SimSun", "fontSize": 11,
+      "borderColor": "#CCCCCC", "borderWidth": 1, "cornerRadius": 2
+    },
+    {
+      "id": "el_diag_label",
+      "$type": "template.element.text",
+      "x": 15, "y": 188, "width": 40, "height": 10,
+      "isVisible": true,
+      "text": "诊断：",
+      "fontFamily": "SimSun", "fontSize": 11, "fontWeight": "bold",
+      "foregroundColor": "#333333"
+    },
+    {
+      "id": "el_diag",
+      "$type": "template.element.text",
+      "x": 15, "y": 200, "width": 180, "height": 25,
+      "isVisible": true,
+      "label": "诊断", "dataPath": "Diagnosis",
+      "fontFamily": "SimSun", "fontSize": 11,
+      "backgroundColor": "#FFFEF0", "borderColor": "#CCCCCC", "borderWidth": 1, "cornerRadius": 2
+    },
+    {
+      "id": "el_treat_label",
+      "$type": "template.element.text",
+      "x": 15, "y": 232, "width": 50, "height": 10,
+      "isVisible": true,
+      "text": "处理意见：",
+      "fontFamily": "SimSun", "fontSize": 11, "fontWeight": "bold",
+      "foregroundColor": "#333333"
+    },
+    {
+      "id": "el_treat",
+      "$type": "template.element.text",
+      "x": 15, "y": 244, "width": 180, "height": 25,
+      "isVisible": true,
+      "label": "处理意见", "dataPath": "Treatment",
+      "fontFamily": "SimSun", "fontSize": 11,
+      "borderColor": "#CCCCCC", "borderWidth": 1, "cornerRadius": 2
+    },
+    {
+      "id": "el_div3",
+      "$type": "template.element.line",
+      "x": 15, "y": 278, "width": 180, "height": 0,
+      "isVisible": true,
+      "lineColor": "#000000", "lineWidth": 0.5, "lineStyle": "solid",
+      "startX": 15, "startY": 278, "endX": 195, "endY": 278
+    },
+    {
+      "id": "el_doctor",
+      "$type": "template.element.text",
+      "x": 120, "y": 282, "width": 75, "height": 8,
+      "isVisible": true,
+      "label": "医师签名", "dataPath": "DoctorName",
+      "fontFamily": "SimSun", "fontSize": 10, "textAlignment": "right",
+      "foregroundColor": "#666666"
+    }
+  ]
+}

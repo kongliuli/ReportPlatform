@@ -1,0 +1,40 @@
+{
+  "hospital": {
+    "name": "杏林医院",
+    "shortName": "杏林",
+    "grade": "三级甲等",
+    "address": "北京市海淀区杏林路100号",
+    "phone": "010-88888888",
+    "website": "https://www.xinglin-hospital.com",
+    "logoPath": ""
+  },
+  "defaults": {
+    "technician": "张检验",
+    "reviewer": "李审核",
+    "doctor": "王医师",
+    "nurseName": "赵护士",
+    "reportingDoctor": "孙医师",
+    "pharmacist": "周药师",
+    "department": "检验科",
+    "sampleType": "静脉血",
+    "reportDate": "",
+    "visitDate": ""
+  },
+  "departments": [
+    "内科",
+    "外科",
+    "儿科",
+    "妇科",
+    "骨科",
+    "眼科",
+    "检验科",
+    "放射科",
+    "超声科",
+    "急诊科"
+  ],
+  "staff": {
+    "technicians": ["张检验", "刘检验", "陈检验", "赵检验"],
+    "reviewers": ["李审核", "王审核", "孙审核", "周审核"],
+    "doctors": ["王医师", "赵医师", "钱医师", "孙医师"]
+  }
+}

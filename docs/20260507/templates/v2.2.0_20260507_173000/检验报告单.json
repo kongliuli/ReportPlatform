@@ -1,0 +1,143 @@
+{
+  "name": "检验报告单",
+  "type": "检验",
+  "version": 1,
+  "pageWidth": 210,
+  "pageHeight": 297,
+  "orientation": "Portrait",
+  "marginLeft": 15,
+  "marginRight": 15,
+  "marginTop": 12,
+  "marginBottom": 12,
+  "backgroundColor": "#FFFFFF",
+  "globalFontSize": 11,
+  "elements": [
+    {
+      "id": "el_title",
+      "$type": "template.element.text",
+      "x": 15, "y": 12, "width": 180, "height": 14,
+      "isVisible": true,
+      "text": "杏林医院 检验报告单",
+      "fontFamily": "SimHei", "fontSize": 16, "fontWeight": "bold",
+      "foregroundColor": "#000000", "textAlignment": "center"
+    },
+    {
+      "id": "el_div1",
+      "$type": "template.element.line",
+      "x": 15, "y": 28, "width": 180, "height": 0,
+      "isVisible": true,
+      "lineColor": "#000000", "lineWidth": 1.5, "lineStyle": "solid",
+      "startX": 15, "startY": 28, "endX": 195, "endY": 28
+    },
+    {
+      "id": "el_patient_name",
+      "$type": "template.element.text",
+      "x": 15, "y": 34, "width": 55, "height": 9,
+      "isVisible": true,
+      "label": "姓名", "dataPath": "PatientName",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_gender",
+      "$type": "template.element.dropdown",
+      "x": 80, "y": 34, "width": 18, "height": 9,
+      "isVisible": true,
+      "label": "性别", "dataPath": "Gender",
+      "options": ["男", "女"],
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_age",
+      "$type": "template.element.number",
+      "x": 115, "y": 34, "width": 22, "height": 9,
+      "isVisible": true,
+      "label": "年龄", "dataPath": "Age",
+      "unit": "岁", "decimalPlaces": 0,
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_sample_type",
+      "$type": "template.element.dropdown",
+      "x": 15, "y": 46, "width": 40, "height": 9,
+      "isVisible": true,
+      "label": "样本类型", "dataPath": "SampleType",
+      "options": ["血液", "尿液", "粪便", "其他"],
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_report_date",
+      "$type": "template.element.date",
+      "x": 80, "y": 46, "width": 45, "height": 9,
+      "isVisible": true,
+      "label": "报告日期", "dataPath": "ReportDate",
+      "format": "yyyy-MM-dd",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_div2",
+      "$type": "template.element.line",
+      "x": 15, "y": 59, "width": 180, "height": 0,
+      "isVisible": true,
+      "lineColor": "#999999", "lineWidth": 0.5, "lineStyle": "dashed",
+      "startX": 15, "startY": 59, "endX": 195, "endY": 59
+    },
+    {
+      "id": "el_results_title",
+      "$type": "template.element.text",
+      "x": 15, "y": 64, "width": 180, "height": 10,
+      "isVisible": true,
+      "text": "检验项目明细",
+      "fontFamily": "SimSun", "fontSize": 12, "fontWeight": "bold"
+    },
+    {
+      "id": "el_results_table",
+      "$type": "template.element.table",
+      "x": 15, "y": 78, "width": 180, "height": 140,
+      "isVisible": true,
+      "rows": 8, "columns": 5, "hasHeader": true, "cellPadding": 3,
+      "cellData": [
+        ["项目名称", "结果", "单位", "参考范围", "标志"],
+        ["白细胞(WBC)", "", "10^9/L", "3.5-9.5", ""],
+        ["红细胞(RBC)", "", "10^12/L", "4.3-5.8", ""],
+        ["血红蛋白(HGB)", "", "g/L", "130-175", ""],
+        ["血小板(PLT)", "", "10^9/L", "125-350", ""],
+        ["总胆红素(TBIL)", "", "umol/L", "3.4-17.1", ""],
+        ["白蛋白(ALB)", "", "g/L", "40-55", ""],
+        ["谷丙转氨酶(ALT)", "", "U/L", "9-50", ""]
+      ],
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_div3",
+      "$type": "template.element.line",
+      "x": 15, "y": 225, "width": 180, "height": 0,
+      "isVisible": true,
+      "lineColor": "#000000", "lineWidth": 0.5, "lineStyle": "solid",
+      "startX": 15, "startY": 225, "endX": 195, "endY": 225
+    },
+    {
+      "id": "el_remark_label",
+      "$type": "template.element.text",
+      "x": 15, "y": 230, "width": 180, "height": 8,
+      "isVisible": true,
+      "text": "备注：H 表示偏高  L 表示偏低  * 表示危急值",
+      "fontFamily": "SimSun", "fontSize": 9, "foregroundColor": "#999999"
+    },
+    {
+      "id": "el_technician",
+      "$type": "template.element.text",
+      "x": 120, "y": 278, "width": 75, "height": 8,
+      "isVisible": true,
+      "label": "检验者", "dataPath": "Technician",
+      "fontFamily": "SimSun", "fontSize": 10, "textAlignment": "right"
+    },
+    {
+      "id": "el_reviewer",
+      "$type": "template.element.text",
+      "x": 120, "y": 288, "width": 75, "height": 8,
+      "isVisible": true,
+      "label": "审核者", "dataPath": "Reviewer",
+      "fontFamily": "SimSun", "fontSize": 10, "textAlignment": "right"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "adapters": [
+    {
+      "name": "hospital-defaults",
+      "targetPaths": [
+        "PatientName",
+        "SampleType",
+        "Department",
+        "DoctorName",
+        "Technician",
+        "Reviewer",
+        "ReportDate",
+        "VisitDate",
+        "NurseName",
+        "ReportingDoctor",
+        "Pharmacist"
+      ]
+    }
+  ]
+}
