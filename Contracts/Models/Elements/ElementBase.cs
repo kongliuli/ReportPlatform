@@ -5,7 +5,15 @@ namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 /// </summary>
 public abstract class ElementBase
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    private string? _id;
+    
+    public string Id
+    {
+        get => _id ??= GenerateShortId();
+        set => _id = value;
+    }
+    
+    private static string GenerateShortId() => Guid.NewGuid().ToString("N");
     
     public double X { get; set; }
     
