@@ -14,6 +14,7 @@ public class DatabaseAdapterBase
     private readonly IDatabaseProvider _provider;
     private readonly DatabaseAdapterConfig _config;
     private readonly SqlBuilder _sqlBuilder = new();
+    private readonly ConnectionPoolManager? _poolManager;
 
     /// <summary>适配器显示名称</summary>
     public string AdapterName => _config.DisplayName;
@@ -25,10 +26,12 @@ public class DatabaseAdapterBase
     /// <summary>初始化数据库适配器</summary>
     /// <param name="provider">数据库提供者</param>
     /// <param name="config">数据库适配器配置</param>
-    public DatabaseAdapterBase(IDatabaseProvider provider, DatabaseAdapterConfig config)
+    /// <param name="poolManager">连接池管理器（可选）</param>
+    public DatabaseAdapterBase(IDatabaseProvider provider, DatabaseAdapterConfig config, ConnectionPoolManager? poolManager = null)
     {
         _provider = provider;
         _config = config;
+        _poolManager = poolManager;
     }
 
     /// <summary>异步读取单行数据</summary>
@@ -37,16 +40,15 @@ public class DatabaseAdapterBase
     {
         try
         {
+            var sql = _sqlBuilder.Build(_config.Query, _config.Joins, _provider);
+            if (_poolManager != null)
+            {
+                await using var pooled = await _poolManager.AcquireAsync(_provider, _config.ConnectionString);
+                return await ExecuteReadAsync(pooled.Connection, sql);
+            }
             using var conn = _provider.CreateConnection(_config.ConnectionString);
             await conn.OpenAsync();
-
-            var sql = _sqlBuilder.Build(_config.Query, _config.Joins, _provider);
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = sql;
-            ApplyParameters(cmd);
-
-            using var reader = await cmd.ExecuteReaderAsync();
-            return MapResult(reader);
+            return await ExecuteReadAsync(conn, sql);
         }
         catch (DbException ex)
         {
@@ -64,16 +66,15 @@ public class DatabaseAdapterBase
     {
         try
         {
+            var sql = _sqlBuilder.Build(_config.Query, _config.Joins, _provider);
+            if (_poolManager != null)
+            {
+                await using var pooled = await _poolManager.AcquireAsync(_provider, _config.ConnectionString);
+                return await ExecuteBatchReadAsync(pooled.Connection, sql);
+            }
             using var conn = _provider.CreateConnection(_config.ConnectionString);
             await conn.OpenAsync();
-
-            var sql = _sqlBuilder.Build(_config.Query, _config.Joins, _provider);
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = sql;
-            ApplyParameters(cmd);
-
-            using var reader = await cmd.ExecuteReaderAsync();
-            return MapBatchResult(reader);
+            return await ExecuteBatchReadAsync(conn, sql);
         }
         catch (DbException ex)
         {
@@ -109,22 +110,39 @@ public class DatabaseAdapterBase
     {
         try
         {
-            using var conn = _provider.CreateConnection(_config.ConnectionString);
-            await conn.OpenAsync();
-
             var sql = _sqlBuilder.Build(_config.Query, _config.Joins, _provider);
             sql = _provider.BuildPagedQuery(sql, 0, limit);
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = sql;
-            ApplyParameters(cmd);
-
-            using var reader = await cmd.ExecuteReaderAsync();
-            return MapBatchResult(reader);
+            if (_poolManager != null)
+            {
+                await using var pooled = await _poolManager.AcquireAsync(_provider, _config.ConnectionString);
+                return await ExecuteBatchReadAsync(pooled.Connection, sql);
+            }
+            using var conn = _provider.CreateConnection(_config.ConnectionString);
+            await conn.OpenAsync();
+            return await ExecuteBatchReadAsync(conn, sql);
         }
         catch (Exception ex)
         {
             return new AdapterResult { Success = false, ErrorMessage = $"预览失败: {ex.Message}" };
         }
+    }
+
+    private async Task<AdapterResult> ExecuteReadAsync(DbConnection conn, string sql)
+    {
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = sql;
+        ApplyParameters(cmd);
+        using var reader = await cmd.ExecuteReaderAsync();
+        return MapResult(reader);
+    }
+
+    private async Task<AdapterResult> ExecuteBatchReadAsync(DbConnection conn, string sql)
+    {
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = sql;
+        ApplyParameters(cmd);
+        using var reader = await cmd.ExecuteReaderAsync();
+        return MapBatchResult(reader);
     }
 
     private void ApplyParameters(DbCommand cmd)

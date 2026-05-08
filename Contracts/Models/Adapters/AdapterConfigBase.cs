@@ -10,7 +10,7 @@ public abstract class AdapterConfigBase
     /// <summary>适配器唯一标识</summary>
     public string AdapterId
     {
-        get => _adapterId ??= Guid.NewGuid().ToString("N");
+        get => _adapterId ??= IdGenerator.NewId();
         set => _adapterId = value;
     }
 

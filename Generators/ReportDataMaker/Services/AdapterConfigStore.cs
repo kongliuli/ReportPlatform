@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Xinglin.ReportEditor.Contracts.Enums;
 using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
@@ -30,8 +31,9 @@ public class AdapterConfigStore
         try
         {
             var json = File.ReadAllText(_configPath);
+            DecryptConnectionStrings(ref json);
             var configs = JsonSerializer.Deserialize<Dictionary<string, List<AdapterConfigBase>>>(json);
-            return configs?.GetValueOrDefault(templateName, new List<AdapterConfigBase>()) 
+            return configs?.GetValueOrDefault(templateName, new List<AdapterConfigBase>())
                 ?? new List<AdapterConfigBase>();
         }
         catch { return new List<AdapterConfigBase>(); }
@@ -48,7 +50,8 @@ public class AdapterConfigStore
             try
             {
                 var json = File.ReadAllText(_configPath);
-                allConfigs = JsonSerializer.Deserialize<Dictionary<string, List<AdapterConfigBase>>>(json) 
+                DecryptConnectionStrings(ref json);
+                allConfigs = JsonSerializer.Deserialize<Dictionary<string, List<AdapterConfigBase>>>(json)
                     ?? new Dictionary<string, List<AdapterConfigBase>>();
             }
             catch { allConfigs = new Dictionary<string, List<AdapterConfigBase>>(); }
@@ -57,6 +60,55 @@ public class AdapterConfigStore
 
         allConfigs[templateName] = configs;
         var outputJson = JsonSerializer.Serialize(allConfigs, new JsonSerializerOptions { WriteIndented = true });
+        EncryptConnectionStrings(ref outputJson);
         File.WriteAllText(_configPath, outputJson);
+    }
+
+    private static void EncryptConnectionStrings(ref string json)
+    {
+        try
+        {
+            var node = JsonNode.Parse(json);
+            if (node == null) return;
+            ProcessConnectionStrings(node, encrypt: true);
+            json = node.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+        }
+        catch { }
+    }
+
+    private static void DecryptConnectionStrings(ref string json)
+    {
+        try
+        {
+            var node = JsonNode.Parse(json);
+            if (node == null) return;
+            ProcessConnectionStrings(node, encrypt: false);
+            json = node.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+        }
+        catch { }
+    }
+
+    private static void ProcessConnectionStrings(JsonNode node, bool encrypt)
+    {
+        if (node is JsonObject obj)
+        {
+            if (obj.ContainsKey("ConnectionString"))
+            {
+                var val = obj["ConnectionString"]?.GetValue<string>();
+                if (!string.IsNullOrEmpty(val))
+                {
+                    obj["ConnectionString"] = encrypt
+                        ? ConfigProtector.Protect(val)
+                        : ConfigProtector.Unprotect(val);
+                }
+            }
+            foreach (var prop in obj.ToList())
+                if (prop.Value != null) ProcessConnectionStrings(prop.Value, encrypt);
+        }
+        else if (node is JsonArray arr)
+        {
+            foreach (var item in arr)
+                if (item != null) ProcessConnectionStrings(item, encrypt);
+        }
     }
 }

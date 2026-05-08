@@ -76,6 +76,8 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
     public ObservableCollection<TableInfo> Tables { get; } = new();
     /// <summary>数据库列集合</summary>
     public ObservableCollection<ColumnInfo> Columns { get; } = new();
+    /// <summary>选中的列名集合（用于 SELECT）</summary>
+    public ObservableCollection<string> SelectedColumnNames { get; } = new();
     /// <summary>连接定义集合</summary>
     public ObservableCollection<JoinDefinition> Joins { get; } = new();
     /// <summary>查询参数集合</summary>
@@ -430,6 +432,7 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
         Config.Query.Mode = CurrentQueryMode;
         Config.Query.RawSql = RawSql;
         Config.Query.PrimaryTable = PrimaryTable;
+        Config.Query.SelectedColumns = SelectedColumnNames.Count > 0 ? SelectedColumnNames.ToList() : null;
         Config.Query.WhereClause = WhereClause;
         Config.Query.OrderBy = OrderBy;
         Config.Joins = Joins.ToList();

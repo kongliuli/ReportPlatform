@@ -12,7 +12,7 @@ public abstract class ElementBase
         set => _id = value;
     }
 
-    private static string GenerateShortId() => Guid.NewGuid().ToString("N");
+    private static string GenerateShortId() => IdGenerator.NewId();
 
     /// <summary>元素X坐标</summary>
     public double X { get; set; }

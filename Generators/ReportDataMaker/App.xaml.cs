@@ -31,6 +31,7 @@ public partial class App : Application
         services.AddSingleton<AdapterConfigStore>();
         services.AddSingleton<ExcelAdapterFactory>();
         services.AddSingleton<DatabaseProviderRegistry>(sp => DatabaseProviderRegistry.CreateDefault());
+        services.AddSingleton<ConnectionPoolManager>();
         services.AddSingleton<DatabaseAdapterFactory>();
 
         services.AddTransient<MainViewModel>();

@@ -57,6 +57,19 @@
                             <ComboBox Grid.Column="1" ItemsSource="{Binding Tables}" SelectedItem="{Binding SelectedTable}" DisplayMemberPath="Name"/>
                         </Grid>
 
+                        <TextBlock Text="选择列 (留空则 SELECT *)" Margin="0,4,0,4"/>
+                        <ListBox ItemsSource="{Binding Columns}" MaxHeight="120" SelectionMode="Multiple"
+                                 SelectionChanged="OnColumnSelectionChanged">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <Run Text="{Binding Name}"/>
+                                        <Run Text=" (" Foreground="Gray"/><Run Text="{Binding DataType}" Foreground="Gray"/><Run Text=")" Foreground="Gray"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
                         <TextBlock Text="关联 (JOIN)" Margin="0,4,0,4"/>
                         <ItemsControl ItemsSource="{Binding Joins}">
                             <ItemsControl.ItemTemplate>
