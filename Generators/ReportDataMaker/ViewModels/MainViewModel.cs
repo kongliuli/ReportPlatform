@@ -1,8 +1,10 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
 using ReportDataMaker.Services;
+using ReportDataMaker.Services.ContextAdapter;
 using ReportDataMaker.Services.DatabaseAdapter;
 using ReportDataMaker.Services.ExcelAdapter;
 using ReportDataMaker.ViewModels.Tabs;
@@ -21,6 +23,7 @@ public class MainViewModel : ViewModelBase
     private readonly AdapterConfigStore _configStore;
     private readonly ExcelAdapterFactory _excelFactory;
     private readonly DatabaseAdapterFactory _dbFactory;
+    private readonly ContextAdapterFactory _contextFactory;
 
     /// <summary>初始化主视图模型</summary>
     /// <param name="templateLoader">模板加载服务</param>
@@ -37,7 +40,8 @@ public class MainViewModel : ViewModelBase
         IDialogService dialogService,
         AdapterConfigStore configStore,
         ExcelAdapterFactory excelFactory,
-        DatabaseAdapterFactory dbFactory)
+        DatabaseAdapterFactory dbFactory,
+        ContextAdapterFactory contextFactory)
     {
         _templateLoader = templateLoader;
         _dataBindingService = dataBindingService;
@@ -46,6 +50,7 @@ public class MainViewModel : ViewModelBase
         _configStore = configStore;
         _excelFactory = excelFactory;
         _dbFactory = dbFactory;
+        _contextFactory = contextFactory;
 
         Tabs = new ObservableCollection<TabViewModelBase>();
         Adapters = new ObservableCollection<AdapterItemViewModel>();
@@ -54,6 +59,7 @@ public class MainViewModel : ViewModelBase
         ToggleSidePanelCommand = new RelayCommand(_ => IsSidePanelExpanded = !IsSidePanelExpanded);
         AddExcelAdapterCommand = new RelayCommand(_ => ExecuteAddExcelAdapter(), _ => IsTemplateLoaded);
         AddDbAdapterCommand = new RelayCommand(_ => ExecuteAddDbAdapter(), _ => IsTemplateLoaded);
+        EditContextCommand = new RelayCommand(_ => ExecuteEditContext(), _ => IsTemplateLoaded);
         SaveCommand = new AsyncRelayCommand(ExecuteSaveAsync, _ => IsTemplateLoaded);
         ExitCommand = new RelayCommand(_ => Application.Current.Shutdown());
     }
@@ -119,6 +125,8 @@ public class MainViewModel : ViewModelBase
     public RelayCommand AddExcelAdapterCommand { get; }
     /// <summary>添加数据库适配器命令</summary>
     public RelayCommand AddDbAdapterCommand { get; }
+    /// <summary>编辑上下文命令</summary>
+    public RelayCommand EditContextCommand { get; }
     /// <summary>保存命令</summary>
     public AsyncRelayCommand SaveCommand { get; }
     /// <summary>退出命令</summary>
@@ -142,6 +150,21 @@ public class MainViewModel : ViewModelBase
     private void LoadTemplate(ExternalTemplateDefinition template)
     {
         CurrentTemplate = template;
+
+        var contextConfig = _contextFactory.LoadProfile("default");
+        var contextResult = _contextFactory.Fill(template, contextConfig);
+        if (contextResult.Success && contextResult.Data.Count > 0)
+        {
+            foreach (var element in template.Elements)
+            {
+                if (element.Group == ElementGroup.Context && !string.IsNullOrEmpty(element.DataPath)
+                    && contextResult.Data.TryGetValue(element.DataPath, out var value))
+                {
+                    element.DefaultValue = value?.ToString() ?? string.Empty;
+                }
+            }
+        }
+
         StatusInfo = $"模板: {template.Name}";
         Tabs.Clear();
         Adapters.Clear();
@@ -198,6 +221,17 @@ public class MainViewModel : ViewModelBase
             DisplayName = displayName
         };
         Adapters.Add(new AdapterItemViewModel(config));
+        ActiveTab = tab;
+    }
+
+    private void ExecuteEditContext()
+    {
+        if (CurrentTemplate == null) return;
+        var existingTab = Tabs.OfType<ContextAdapterTabViewModel>().FirstOrDefault();
+        if (existingTab != null) { ActiveTab = existingTab; return; }
+        var tab = new ContextAdapterTabViewModel(CurrentTemplate, _contextFactory, _dialogService);
+        tab.CloseRequested += OnTabCloseRequested;
+        Tabs.Insert(Tabs.Count - 1, tab);
         ActiveTab = tab;
     }
 

@@ -28,6 +28,9 @@
         <DataTemplate DataType="{x:Type vmtabs:DatabaseAdapterTabViewModel}">
             <tabs:DatabaseAdapterTab/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vmtabs:ContextAdapterTabViewModel}">
+            <tabs:ContextAdapterTab/>
+        </DataTemplate>
     </Window.Resources>
 
     <Grid>
@@ -48,6 +51,9 @@
             <MenuItem Header="适配器">
                 <MenuItem Header="添加 Excel 适配器" Command="{Binding AddExcelAdapterCommand}"/>
                 <MenuItem Header="添加数据库适配器" Command="{Binding AddDbAdapterCommand}"/>
+            </MenuItem>
+            <MenuItem Header="上下文">
+                <MenuItem Header="编辑上下文配置" Command="{Binding EditContextCommand}"/>
             </MenuItem>
             <MenuItem Header="视图">
                 <MenuItem Header="切换侧边栏" Command="{Binding ToggleSidePanelCommand}"/>

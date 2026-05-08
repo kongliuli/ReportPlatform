@@ -2,6 +2,7 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Services;
+using ReportDataMaker.Services.ContextAdapter;
 using ReportDataMaker.Services.DatabaseAdapter;
 using ReportDataMaker.Services.ExcelAdapter;
 using ReportDataMaker.ViewModels;
@@ -33,6 +34,9 @@ public partial class App : Application
         services.AddSingleton<DatabaseProviderRegistry>(sp => DatabaseProviderRegistry.CreateDefault());
         services.AddSingleton<ConnectionPoolManager>();
         services.AddSingleton<DatabaseAdapterFactory>();
+        services.AddSingleton<ContextProfileStore>();
+        services.AddSingleton<ContextAdapterService>();
+        services.AddSingleton<ContextAdapterFactory>();
 
         services.AddTransient<MainViewModel>();
         services.AddTransient<TemplateLoadViewModel>();
