@@ -1,0 +1,116 @@
+{
+  "name": "护理记录单",
+  "type": "护理",
+  "version": 1,
+  "pageWidth": 297,
+  "pageHeight": 210,
+  "orientation": "Landscape",
+  "marginLeft": 10,
+  "marginRight": 10,
+  "marginTop": 10,
+  "marginBottom": 10,
+  "backgroundColor": "#FFFFFF",
+  "globalFontSize": 10,
+  "elements": [
+    {
+      "id": "el_title",
+      "$type": "template.element.text",
+      "x": 10, "y": 10, "width": 277, "height": 12,
+      "isVisible": true,
+      "text": "杏林医院 护理记录单",
+      "fontFamily": "SimHei", "fontSize": 14, "fontWeight": "bold",
+      "foregroundColor": "#000000", "textAlignment": "center"
+    },
+    {
+      "id": "el_div1",
+      "$type": "template.element.line",
+      "x": 10, "y": 24, "width": 277, "height": 0,
+      "isVisible": true,
+      "lineColor": "#000000", "lineWidth": 1.5, "lineStyle": "solid",
+      "startX": 10, "startY": 24, "endX": 287, "endY": 24
+    },
+    {
+      "id": "el_patient_name",
+      "$type": "template.element.text",
+      "x": 10, "y": 30, "width": 50, "height": 8,
+      "isVisible": true,
+      "label": "姓名", "dataPath": "PatientName",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_department",
+      "$type": "template.element.text",
+      "x": 70, "y": 30, "width": 40, "height": 8,
+      "isVisible": true,
+      "label": "科室", "dataPath": "Department",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_bed_no",
+      "$type": "template.element.text",
+      "x": 125, "y": 30, "width": 30, "height": 8,
+      "isVisible": true,
+      "label": "床号", "dataPath": "BedNo",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_admission_no",
+      "$type": "template.element.text",
+      "x": 165, "y": 30, "width": 50, "height": 8,
+      "isVisible": true,
+      "label": "住院号", "dataPath": "AdmissionNo",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_record_date",
+      "$type": "template.element.date",
+      "x": 235, "y": 30, "width": 50, "height": 8,
+      "isVisible": true,
+      "label": "记录日期", "dataPath": "RecordDate",
+      "format": "yyyy-MM-dd",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_div2",
+      "$type": "template.element.line",
+      "x": 10, "y": 42, "width": 277, "height": 0,
+      "isVisible": true,
+      "lineColor": "#999999", "lineWidth": 0.5, "lineStyle": "dashed",
+      "startX": 10, "startY": 42, "endX": 287, "endY": 42
+    },
+    {
+      "id": "el_record_table",
+      "$type": "template.element.table",
+      "x": 10, "y": 46, "width": 277, "height": 138,
+      "isVisible": true,
+      "rows": 8, "columns": 7, "hasHeader": true, "cellPadding": 2,
+      "cellData": [
+        ["时间", "体温(℃)", "脉搏(次/分)", "呼吸(次/分)", "血压(mmHg)", "护理措施", "签名"],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", ""]
+      ],
+      "fontFamily": "SimSun", "fontSize": 9
+    },
+    {
+      "id": "el_div3",
+      "$type": "template.element.line",
+      "x": 10, "y": 188, "width": 277, "height": 0,
+      "isVisible": true,
+      "lineColor": "#000000", "lineWidth": 0.5, "lineStyle": "solid",
+      "startX": 10, "startY": 188, "endX": 287, "endY": 188
+    },
+    {
+      "id": "el_nurse",
+      "$type": "template.element.text",
+      "x": 230, "y": 192, "width": 55, "height": 8,
+      "isVisible": true,
+      "label": "护士签名", "dataPath": "NurseName",
+      "fontFamily": "SimSun", "fontSize": 10, "textAlignment": "right"
+    }
+  ]
+}

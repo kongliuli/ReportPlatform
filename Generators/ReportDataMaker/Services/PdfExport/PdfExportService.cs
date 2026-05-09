@@ -1,3 +1,4 @@
+using System.IO;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -46,7 +47,7 @@ public class PdfExportService : IPdfExportService
                     page.Header().Canvas((canvas, size) =>
                     {
                         foreach (var element in headerElements)
-                            _renderer.RenderElement(canvas, element, data, layout);
+                            _renderer.RenderElement((SKCanvas)canvas, element, data, layout);
                     });
                 }
 
@@ -55,14 +56,14 @@ public class PdfExportService : IPdfExportService
                     page.Footer().Canvas((canvas, size) =>
                     {
                         foreach (var element in footerElements)
-                            _renderer.RenderElement(canvas, element, data, layout);
+                            _renderer.RenderElement((SKCanvas)canvas, element, data, layout);
                     });
                 }
 
                 page.Content().Canvas((canvas, size) =>
                 {
                     foreach (var element in contentElements)
-                        _renderer.RenderElement(canvas, element, data, layout);
+                        _renderer.RenderElement((SKCanvas)canvas, element, data, layout);
                 });
             });
         });

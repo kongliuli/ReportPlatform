@@ -22,6 +22,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+node_modules/
+dist/
 
 # .NET Core
 project.lock.json

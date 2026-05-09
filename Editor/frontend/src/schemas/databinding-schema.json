@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/databinding-schema.json",
+  "title": "数据绑定契约规范",
+  "description": "报告模板数据绑定契约规范 v2.2 — 内联绑定",
+  "version": "2.2.0",
+  "metadata": {
+    "name": "数据绑定契约",
+    "description": "定义模板元素与数据源的绑定规则",
+    "createdAt": "2026-05-07",
+    "updatedAt": "2026-05-07",
+    "author": "Xinglin Team"
+  },
+  "bindingTypes": [
+    {
+      "type": "direct",
+      "label": "直接绑定",
+      "description": "直接绑定到数据源字段",
+      "example": "patient.name"
+    },
+    {
+      "type": "expression",
+      "label": "表达式",
+      "description": "使用表达式计算",
+      "example": "${patient.age + 1}"
+    },
+    {
+      "type": "format",
+      "label": "格式化",
+      "description": "格式化输出",
+      "example": "formatDate(report.date, 'yyyy年MM月dd日')"
+    },
+    {
+      "type": "lookup",
+      "label": "查找",
+      "description": "根据键值查找",
+      "example": "lookup(dictionary, 'key')"
+    }
+  ],
+  "pathSyntax": {
+    "description": "数据路径语法（驼峰格式）",
+    "rules": [
+      "使用点号(.)访问对象属性：PatientName",
+      "使用方括号([])访问数组元素：items[0].name",
+      "支持嵌套路径：patient.address.city",
+      "支持JSONPath语法子集"
+    ],
+    "examples": [
+      { "path": "PatientName", "description": "患者姓名" },
+      { "path": "ReportDate", "description": "报告日期" },
+      { "path": "Items[0].Result", "description": "第一个检查项目结果" }
+    ]
+  },
+  "transformRules": [
+    {
+      "type": "uppercase",
+      "label": "转大写",
+      "description": "将文本转换为大写",
+      "example": "uppercase(PatientName)"
+    },
+    {
+      "type": "lowercase",
+      "label": "转小写",
+      "description": "将文本转换为小写",
+      "example": "lowercase(PatientName)"
+    },
+    {
+      "type": "formatDate",
+      "label": "日期格式化",
+      "description": "格式化日期",
+      "example": "formatDate(date, 'yyyy-MM-dd')",
+      "parameters": ["date", "format"]
+    },
+    {
+      "type": "formatNumber",
+      "label": "数字格式化",
+      "description": "格式化数字",
+      "example": "formatNumber(value, '0.00')",
+      "parameters": ["value", "format"]
+    },
+    {
+      "type": "concat",
+      "label": "字符串拼接",
+      "description": "拼接多个字符串",
+      "example": "concat(PatientName, ' ', Gender)",
+      "parameters": ["...values"]
+    },
+    {
+      "type": "substring",
+      "label": "截取字符串",
+      "description": "截取字符串的一部分",
+      "example": "substring(text, 0, 10)",
+      "parameters": ["text", "start", "length"]
+    },
+    {
+      "type": "replace",
+      "label": "替换字符串",
+      "description": "替换字符串中的内容",
+      "example": "replace(text, 'old', 'new')",
+      "parameters": ["text", "search", "replace"]
+    },
+    {
+      "type": "math",
+      "label": "数学运算",
+      "description": "执行数学运算",
+      "example": "math(value * 2 + 1)",
+      "parameters": ["expression"]
+    },
+    {
+      "type": "ifElse",
+      "label": "条件判断",
+      "description": "根据条件返回不同值",
+      "example": "ifElse(value > 100, '超标', '正常')",
+      "parameters": ["condition", "trueValue", "falseValue"]
+    },
+    {
+      "type": "lookup",
+      "label": "字典查找",
+      "description": "根据键查找值",
+      "example": "lookup(dictName, key)",
+      "parameters": ["dictionaryName", "key"]
+    }
+  ],
+  "placeholderSyntax": {
+    "description": "占位符语法",
+    "rules": [
+      "使用双花括号包裹路径：{{PatientName}}",
+      "支持嵌套：{{items[{{index}}].name}}",
+      "支持表达式：{{patient.age + 1}}",
+      "支持函数调用：{{formatDate(ReportDate, 'yyyy-MM-dd')}}",
+      "支持条件：{{Gender === '男' ? '先生' : '女士'}}"
+    ],
+    "examples": [
+      { "template": "患者：{{PatientName}}", "data": { "PatientName": "张三" }, "result": "患者：张三" },
+      { "template": "{{PatientName}}，{{Age}}岁", "data": { "PatientName": "李四", "Age": 30 }, "result": "李四，30岁" },
+      { "template": "{{formatDate(ReportDate, 'yyyy年MM月dd日')}}", "data": { "ReportDate": "2026-05-07" }, "result": "2026年05月07日" }
+    ]
+  },
+  "dataTypes": [
+    { "type": "string", "label": "字符串", "description": "文本类型" },
+    { "type": "number", "label": "数字", "description": "数值类型" },
+    { "type": "boolean", "label": "布尔", "description": "真假值" },
+    { "type": "date", "label": "日期", "description": "日期类型" },
+    { "type": "array", "label": "数组", "description": "列表类型" },
+    { "type": "object", "label": "对象", "description": "对象类型" }
+  ]
+}

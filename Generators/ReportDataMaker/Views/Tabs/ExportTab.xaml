@@ -50,7 +50,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0" Text="{Binding FileNamePattern}" Margin="0,0,8,0"/>
-                            <TextBlock Grid.Column="1" Text="{index} {date} {name}" Foreground="Gray" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="index date name" Foreground="Gray" VerticalAlignment="Center"/>
                         </Grid>
 
                         <ProgressBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Value="{Binding ProgressValue}" Margin="0,0,0,8"

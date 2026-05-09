@@ -1,3 +1,4 @@
+using System.IO;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -52,7 +53,10 @@ public class PdfElementRenderer
         var h = element.Height > 0 ? layout.ConvertSize(element.Height) : 0;
 
         if (element.Opacity < 1)
-            canvas.SaveLayerAlpha(new SKRect(x, y, w > 0 ? x + w : canvas.LocalClipBounds.Right, h > 0 ? y + h : canvas.LocalClipBounds.Bottom), (byte)(element.Opacity * 255));
+        {
+            using var alphaPaint = new SKPaint { Color = SKColors.White.WithAlpha((byte)(element.Opacity * 255)) };
+            canvas.SaveLayer(alphaPaint);
+        }
 
         switch (element)
         {
@@ -106,6 +110,11 @@ public class PdfElementRenderer
         }
     }
 
+    private QuestPDF.Infrastructure.Color ToQuestColor(SKColor skColor)
+    {
+        return QuestPDF.Infrastructure.Color.FromARGB(skColor.Alpha, skColor.Red, skColor.Green, skColor.Blue);
+    }
+
     private float GetFontSize(ReportExternalElementBase element)
     {
         return element.FontSize > 0 ? (float)element.FontSize * 2.835f : 12f * 2.835f;
@@ -131,8 +140,8 @@ public class PdfElementRenderer
         if (string.IsNullOrEmpty(text)) text = element.DefaultValue;
         if (string.IsNullOrEmpty(text)) return;
 
-        container.Text(text).FontSize(element.FontSize > 0 ? element.FontSize : 12)
-            .FontColor(ParseColor(element.ForegroundColor));
+        container.Text(text).FontSize(element.FontSize > 0 ? (float)element.FontSize : 12)
+            .FontColor(element.ForegroundColor ?? "#000000");
     }
 
     private void RenderNumberContainer(IContainer container, ExternalNumberElement element, Dictionary<string, object> data)
@@ -144,8 +153,8 @@ public class PdfElementRenderer
                 : element.Value.ToString();
         if (!string.IsNullOrEmpty(element.Unit)) value += $" {element.Unit}";
 
-        container.Text(value ?? string.Empty).FontSize(element.FontSize > 0 ? element.FontSize : 12)
-            .FontColor(ParseColor(element.ForegroundColor));
+        container.Text(value ?? string.Empty).FontSize(element.FontSize > 0 ? (float)element.FontSize : 12)
+            .FontColor(element.ForegroundColor ?? "#000000");
     }
 
     private void RenderDateContainer(IContainer container, ExternalDateElement element, Dictionary<string, object> data)
@@ -155,8 +164,8 @@ public class PdfElementRenderer
         if (!string.IsNullOrEmpty(value) && DateTime.TryParse(value, out var dt))
             value = dt.ToString(!string.IsNullOrEmpty(element.Format) ? element.Format : "yyyy-MM-dd");
 
-        container.Text(value ?? string.Empty).FontSize(element.FontSize > 0 ? element.FontSize : 12)
-            .FontColor(ParseColor(element.ForegroundColor));
+        container.Text(value ?? string.Empty).FontSize(element.FontSize > 0 ? (float)element.FontSize : 12)
+            .FontColor(element.ForegroundColor ?? "#000000");
     }
 
     private void RenderImageContainer(IContainer container, ExternalImageElement element, Dictionary<string, object> data)
@@ -171,7 +180,7 @@ public class PdfElementRenderer
         else
         {
             container.Text(!string.IsNullOrEmpty(element.AltText) ? $"[{element.AltText}]" : "[图片]")
-                .FontSize(element.FontSize > 0 ? element.FontSize : 12)
+                .FontSize(element.FontSize > 0 ? (float)element.FontSize : 12)
                 .FontColor(Colors.Grey.Medium);
         }
     }
@@ -195,14 +204,14 @@ public class PdfElementRenderer
                 var isHeader = r < headerRows;
                 for (int c = 0; c < Math.Min(cellData[r].Count, element.Columns); c++)
                 {
-                    var cell = table.Cell().ColumnSpan(1).RowSpan(1);
+                    var cell = table.Cell();
                     if (isHeader)
-                        cell = cell.Background(Colors.Grey.Lighten3);
+                        cell.Background(Colors.Grey.Lighten3);
 
                     cell.Border(1).BorderColor(Colors.Grey.Darken1)
                         .Padding(4)
                         .Text(cellData[r][c] ?? string.Empty)
-                        .FontSize(element.FontSize > 0 ? element.FontSize : 10);
+                        .FontSize(element.FontSize > 0 ? (float)element.FontSize : 10);
                 }
             }
         });
@@ -214,7 +223,7 @@ public class PdfElementRenderer
         if (string.IsNullOrEmpty(value)) value = element.Value;
         if (string.IsNullOrEmpty(value))
         {
-            container.Text("[条形码]").FontSize(element.FontSize > 0 ? element.FontSize : 12).FontColor(Colors.Grey.Medium);
+            container.Text("[条形码]").FontSize(element.FontSize > 0 ? (float)element.FontSize : 12).FontColor(Colors.Grey.Medium);
             return;
         }
 
@@ -229,7 +238,7 @@ public class PdfElementRenderer
         }
         catch
         {
-            container.Text($"[条形码: {value}]").FontSize(element.FontSize > 0 ? element.FontSize : 12).FontColor(Colors.Grey.Medium);
+            container.Text($"[条形码: {value}]").FontSize(element.FontSize > 0 ? (float)element.FontSize : 12).FontColor(Colors.Grey.Medium);
         }
     }
 
@@ -239,7 +248,7 @@ public class PdfElementRenderer
         if (string.IsNullOrEmpty(value)) value = element.Value;
         if (string.IsNullOrEmpty(value))
         {
-            container.Text("[二维码]").FontSize(element.FontSize > 0 ? element.FontSize : 12).FontColor(Colors.Grey.Medium);
+            container.Text("[二维码]").FontSize(element.FontSize > 0 ? (float)element.FontSize : 12).FontColor(Colors.Grey.Medium);
             return;
         }
 
@@ -272,49 +281,48 @@ public class PdfElementRenderer
         }
         catch
         {
-            container.Text($"[二维码: {value}]").FontSize(element.FontSize > 0 ? element.FontSize : 12).FontColor(Colors.Grey.Medium);
+            container.Text($"[二维码: {value}]").FontSize(element.FontSize > 0 ? (float)element.FontSize : 12).FontColor(Colors.Grey.Medium);
         }
     }
 
     private void RenderLineContainer(IContainer container, ExternalLineElement element, Dictionary<string, object> data)
     {
-        container.LineHorizontal((float)element.LineWidth).LineColor(ParseColor(element.LineColor));
+        container.LineHorizontal((float)element.LineWidth).LineColor(element.LineColor ?? "#000000");
     }
 
     private void RenderShapeContainer(IContainer container, ExternalShapeElement element, Dictionary<string, object> data)
     {
-        var c = container.Width(element.Width > 0 ? element.Width : 100).Height(element.Height > 0 ? element.Height : 50);
+        var c = container.Width(element.Width > 0 ? (float)element.Width : 100).Height(element.Height > 0 ? (float)element.Height : 50);
         if (!string.IsNullOrEmpty(element.FillColor))
-            c = c.Background(ParseColor(element.FillColor));
+            c = c.Background(element.FillColor);
         if (!string.IsNullOrEmpty(element.StrokeColor) && element.StrokeWidth > 0)
-            c = c.Border((float)element.StrokeWidth).BorderColor(ParseColor(element.StrokeColor));
+            c = c.Border((float)element.StrokeWidth).BorderColor(element.StrokeColor);
     }
 
     private void RenderDividerContainer(IContainer container, ExternalDividerElement element, Dictionary<string, object> data)
     {
         var thickness = element.Thickness > 0 ? (float)element.Thickness : 1f;
-        var color = !string.IsNullOrEmpty(element.Color) ? ParseColor(element.Color) : SKColors.Black;
-        container.LineHorizontal(thickness).LineColor(color);
+        container.LineHorizontal(thickness).LineColor(element.Color ?? "#000000");
     }
 
     private void RenderCheckboxContainer(IContainer container, ExternalCheckboxElement element, Dictionary<string, object> data)
     {
         var symbol = element.Checked ? "☑" : "☐";
-        container.Text(symbol).FontSize(element.FontSize > 0 ? element.FontSize : 12)
-            .FontColor(ParseColor(element.ForegroundColor));
+        container.Text(symbol).FontSize(element.FontSize > 0 ? (float)element.FontSize : 12)
+            .FontColor(element.ForegroundColor ?? "#000000");
     }
 
     private void RenderRadioContainer(IContainer container, ExternalRadioElement element, Dictionary<string, object> data)
     {
         var symbol = element.Checked ? "◉" : "○";
-        container.Text(symbol).FontSize(element.FontSize > 0 ? element.FontSize : 12)
-            .FontColor(ParseColor(element.ForegroundColor));
+        container.Text(symbol).FontSize(element.FontSize > 0 ? (float)element.FontSize : 12)
+            .FontColor(element.ForegroundColor ?? "#000000");
     }
 
     private void RenderSignatureContainer(IContainer container, ExternalSignatureElement element, Dictionary<string, object> data)
     {
         container.Text(!string.IsNullOrEmpty(element.Placeholder) ? $"[{element.Placeholder}]" : "[签名]")
-            .FontSize(element.FontSize > 0 ? element.FontSize : 12)
+            .FontSize(element.FontSize > 0 ? (float)element.FontSize : 12)
             .FontColor(Colors.Grey.Medium);
     }
 
@@ -340,26 +348,23 @@ public class PdfElementRenderer
     {
         container.Text(text =>
         {
-            text.Span("第 ");
+            text.Span("第 ").FontSize(element.FontSize > 0 ? (float)element.FontSize : 10).FontColor(element.ForegroundColor ?? "#000000");
             text.CurrentPageNumber();
-            text.Span(" 页");
-        }).FontSize(element.FontSize > 0 ? element.FontSize : 10)
-          .FontColor(ParseColor(element.ForegroundColor));
+        });
     }
 
     private void RenderWatermarkContainer(IContainer container, ExternalWatermarkElement element, Dictionary<string, object> data)
     {
-        var color = !string.IsNullOrEmpty(element.Color) ? ParseColor(element.Color, 40) : SKColors.Gray.WithAlpha(40);
         container.Text(element.Text ?? string.Empty)
-            .FontSize(element.FontSize > 0 ? element.FontSize : 48)
-            .FontColor(color);
+            .FontSize(element.FontSize > 0 ? (float)element.FontSize : 48)
+            .FontColor(element.Color ?? "#808080");
     }
 
     private void RenderContainerContainer(IContainer container, ExternalContainerElement element, Dictionary<string, object> data)
     {
         var c = container;
         if (!string.IsNullOrEmpty(element.BackgroundColor))
-            c = c.Background(ParseColor(element.BackgroundColor));
+            c = c.Background(element.BackgroundColor);
         if (element.Padding > 0)
             c = c.Padding((float)element.Padding);
 
@@ -383,13 +388,13 @@ public class PdfElementRenderer
                         var itemText = !string.IsNullOrEmpty(element.ItemTemplate)
                             ? element.ItemTemplate.Replace("{value}", item?.ToString() ?? string.Empty)
                             : item?.ToString() ?? string.Empty;
-                        column.Item().Text(itemText).FontSize(element.FontSize > 0 ? element.FontSize : 12);
+                        column.Item().Text(itemText).FontSize(element.FontSize > 0 ? (float)element.FontSize : 12);
                     }
                 }
             }
             else
             {
-                column.Item().Text(element.ItemTemplate).FontSize(element.FontSize > 0 ? element.FontSize : 12);
+                column.Item().Text(element.ItemTemplate).FontSize(element.FontSize > 0 ? (float)element.FontSize : 12);
             }
         });
     }
@@ -398,7 +403,7 @@ public class PdfElementRenderer
     {
         var text = !string.IsNullOrEmpty(element.Text) ? element.Text : element.Url;
         container.Text(text ?? string.Empty)
-            .FontSize(element.FontSize > 0 ? element.FontSize : 12)
+            .FontSize(element.FontSize > 0 ? (float)element.FontSize : 12)
             .FontColor(Colors.Blue.Medium)
             .Underline();
     }
@@ -406,14 +411,14 @@ public class PdfElementRenderer
     private void RenderIconContainer(IContainer container, ExternalIconElement element, Dictionary<string, object> data)
     {
         var label = !string.IsNullOrEmpty(element.IconName) ? $"[{element.IconName}]" : "[图标]";
-        container.Text(label).FontSize(element.FontSize > 0 ? element.FontSize : 12)
-            .FontColor(ParseColor(element.ForegroundColor));
+        container.Text(label).FontSize(element.FontSize > 0 ? (float)element.FontSize : 12)
+            .FontColor(element.ForegroundColor ?? "#000000");
     }
 
     private void RenderChartContainer(IContainer container, ExternalChartElement element, Dictionary<string, object> data)
     {
         var label = !string.IsNullOrEmpty(element.ChartType) ? $"[图表: {element.ChartType}]" : "[图表]";
-        container.Text(label).FontSize(element.FontSize > 0 ? element.FontSize : 12)
+        container.Text(label).FontSize(element.FontSize > 0 ? (float)element.FontSize : 12)
             .FontColor(Colors.Grey.Medium);
     }
 
@@ -454,7 +459,7 @@ public class PdfElementRenderer
 
         if (w > 0 && h > 0)
         {
-            using var bounds = new SKRect();
+            SKRect bounds = new();
             paint.MeasureText(text, ref bounds);
             var textY = y + (h + bounds.Height) / 2 - bounds.Top;
             canvas.DrawText(text, textX, textY, paint);
@@ -915,16 +920,25 @@ public class PdfElementRenderer
     private void DrawHyperlink(SKCanvas canvas, ExternalHyperlinkElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
     {
         var text = !string.IsNullOrEmpty(element.Text) ? element.Text : element.Url;
+        var fontSize = GetFontSize(element);
 
         using var paint = new SKPaint
         {
             Color = SKColors.Blue,
-            TextSize = GetFontSize(element),
-            IsAntialias = true,
-            UnderlineText = true
+            TextSize = fontSize,
+            IsAntialias = true
         };
 
-        canvas.DrawText(text, x, y + paint.TextSize, paint);
+        canvas.DrawText(text, x, y + fontSize, paint);
+
+        // 手动绘制下划线
+        using var underlinePaint = new SKPaint
+        {
+            Color = SKColors.Blue,
+            StrokeWidth = 1,
+            IsAntialias = true
+        };
+        canvas.DrawLine(x, y + fontSize + 2, x + (text.Length * fontSize * 0.6f), y + fontSize + 2, underlinePaint);
     }
 
     private void DrawIcon(SKCanvas canvas, ExternalIconElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)

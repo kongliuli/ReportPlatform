@@ -17,14 +17,36 @@ public class TableElement : ExternalElementBase
     /// <summary>表头行数</summary>
     public int HeaderRows { get; set; } = 1;
 
-    /// <summary>边框颜色</summary>
-    public string? BorderColor { get; set; }
-
-    /// <summary>边框宽度</summary>
-    public double BorderWidth { get; set; } = 1;
-
     /// <summary>是否显示网格线</summary>
     public bool GridLines { get; set; } = true;
+
+    /// <summary>单元格内边距</summary>
+    public double CellPadding { get; set; } = 2;
+
+    /// <summary>是否有表头</summary>
+    public bool HasHeader { get; set; } = true;
+
+    /// <summary>表头样式</summary>
+    public TableCellStyle? HeaderStyle { get; set; }
+
+    /// <summary>是否交替行颜色</summary>
+    public bool AlternateRowColors { get; set; }
+
+    /// <summary>单元格数据（扁平化格式）</summary>
+    public List<List<string>>? CellData { get; set; }
+}
+
+/// <summary>表格单元格样式</summary>
+public class TableCellStyle
+{
+    /// <summary>背景颜色</summary>
+    public string? BackgroundColor { get; set; }
+
+    /// <summary>文字颜色</summary>
+    public string? ForegroundColor { get; set; }
+
+    /// <summary>字体粗细</summary>
+    public string? FontWeight { get; set; }
 }
 
 /// <summary>表格单元格</summary>

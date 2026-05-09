@@ -15,12 +15,6 @@ public class ContainerElement : ElementBase
     /// <summary>是否裁剪内容</summary>
     public bool ClipContent { get; set; }
 
-    /// <summary>背景颜色</summary>
-    public string? BackgroundColor { get; set; }
-
-    /// <summary>边框颜色</summary>
-    public string? BorderColor { get; set; }
-
-    /// <summary>边框宽度</summary>
-    public double? BorderWidth { get; set; }
+    /// <summary>子元素间距</summary>
+    public double Gap { get; set; }
 }

@@ -8,26 +8,11 @@ public class TextElement : ExternalElementBase
     /// <summary>文本内容</summary>
     public string? Text { get; set; }
 
-    /// <summary>字体大小</summary>
-    public double FontSize { get; set; } = 14;
-
-    /// <summary>字体粗细</summary>
-    public string? FontWeight { get; set; }
-
-    /// <summary>字体族</summary>
-    public string? FontFamily { get; set; }
-
-    /// <summary>文字颜色</summary>
+    /// <summary>文字颜色（兼容旧版，推荐使用 ForegroundColor）</summary>
     public string TextColor { get; set; } = "#000000";
-
-    /// <summary>文本水平对齐方式</summary>
-    public string? TextAlign { get; set; }
 
     /// <summary>文本垂直对齐方式</summary>
     public string? VerticalAlign { get; set; }
-
-    /// <summary>字体样式</summary>
-    public string? FontStyle { get; set; }
 
     /// <summary>文本装饰</summary>
     public string? TextDecoration { get; set; }
@@ -37,4 +22,10 @@ public class TextElement : ExternalElementBase
 
     /// <summary>占位提示文本</summary>
     public string? Placeholder { get; set; }
+
+    /// <summary>行高倍数</summary>
+    public double LineHeight { get; set; } = 1.5;
+
+    /// <summary>字间距（px）</summary>
+    public double LetterSpacing { get; set; }
 }

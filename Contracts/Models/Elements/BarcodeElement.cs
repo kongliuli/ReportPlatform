@@ -14,7 +14,4 @@ public class BarcodeElement : ExternalElementBase
 
     /// <summary>线条颜色</summary>
     public string? LineColor { get; set; }
-
-    /// <summary>条形码高度</summary>
-    public int Height { get; set; } = 50;
 }

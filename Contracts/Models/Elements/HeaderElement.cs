@@ -12,9 +12,6 @@ public class HeaderElement : ElementBase
     /// <summary>是否在所有页面显示</summary>
     public bool ShowOnAllPages { get; set; }
 
-    /// <summary>背景颜色</summary>
-    public string? BackgroundColor { get; set; }
-
-    /// <summary>页眉高度</summary>
-    public double Height { get; set; } = 30;
+    /// <summary>页眉内容</summary>
+    public string? Content { get; set; }
 }

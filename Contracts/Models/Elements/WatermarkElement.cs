@@ -9,18 +9,9 @@ public class WatermarkElement : ElementBase
     /// <summary>水印角度</summary>
     public double Angle { get; set; } = -45;
 
-    /// <summary>水印颜色</summary>
+    /// <summary>水印颜色（兼容旧版，推荐使用 ForegroundColor）</summary>
     public string? Color { get; set; }
 
     /// <summary>是否重复铺满</summary>
     public bool Repeat { get; set; } = true;
-
-    /// <summary>不透明度</summary>
-    public double Opacity { get; set; } = 0.3;
-
-    /// <summary>字体族</summary>
-    public string? FontFamily { get; set; }
-
-    /// <summary>字体大小</summary>
-    public double FontSize { get; set; } = 48;
 }

@@ -1,0 +1,543 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/template-element-schema.json",
+  "title": "模板元素契约规范",
+  "description": "报告模板编辑器元素契约规范 v2.2 — WPF 兼容",
+  "version": "2.2.0",
+  "metadata": {
+    "name": "模板元素契约",
+    "description": "定义报告模板中所有可用元素的结构和属性，与 WPF 渲染器对齐。v2.2 统一 $type 格式，废弃 Xinglin.Core.Elements.* 旧格式。",
+    "createdAt": "2026-05-07",
+    "updatedAt": "2026-05-07",
+    "author": "Xinglin Team"
+  },
+  "versionHistory": [
+    {
+      "version": "2.2.0",
+      "date": "2026-05-07",
+      "description": "破坏性变更：统一 $type、废弃旧格式、label 强制中文",
+      "changes": [
+        "$type 统一为 template.element.xxx 格式（23种全覆盖）",
+        "废弃 Xinglin.Core.Elements.* 旧格式，不再输出",
+        "label 字段必须填写中文标签（可编辑元素必填）",
+        "isVisible 必须显式设为 true",
+        "移除 WPF 未使用字段：rotation、shadow、labelWidth、isDataBound",
+        "移除 WPF 未使用字段：richText、isRichText",
+        "移除 WPF 未使用字段：minValue、maxValue、minDate、maxDate",
+        "移除旧格式 LabelInputBox 类型，统一用 TextElement + label"
+      ]
+    },
+    {
+      "version": "2.0.0",
+      "date": "2026-05-07",
+      "description": "WPF 契约对齐：统一 $type 格式、强制 label、清理未使用字段",
+      "changes": [
+        "$type 统一为 template.element.xxx 格式（23种全覆盖）",
+        "label 字段必须填写中文标签",
+        "isVisible 必须显式设为 true",
+        "移除 WPF 未使用字段：rotation、shadow、labelWidth、borderStyle、formatString、isDataBound",
+        "移除 WPF 未使用字段：richText、isRichText、textDecoration",
+        "移除 WPF 未使用字段：minValue、maxValue、minDate、maxDate",
+        "移除旧格式 LabelInputBox 类型，统一用 TextElement + label"
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-05-07",
+      "description": "初始版本",
+      "changes": ["新增基础元素", "新增输入元素", "新增数据元素", "新增布局元素", "新增特殊元素"]
+    }
+  ],
+  "contractRequirements": {
+    "$type": {
+      "format": "template.element.{name}",
+      "description": "统一使用 template.element.xxx 格式，覆盖全部 23 种元素类型",
+      "note": "不再使用 Xinglin.Core.Elements.* 旧格式"
+    },
+    "label": {
+      "requiredForInput": true,
+      "description": "可编辑字段务必填写中文标签，WPF 输入面板和 Canvas 渲染均依赖此字段",
+      "note": "如姓名、检验者；无 label 时 WPF 降级为显示 dataPath"
+    },
+    "isVisible": {
+      "required": true,
+      "description": "C# bool 默认 false，必须显式设为 true 否则元素不可见"
+    },
+    "dataPath": {
+      "format": "camelCase",
+      "description": "保持驼峰格式，如 PatientName、ReportDate"
+    },
+    "excludedFields": {
+      "description": "以下字段在序列化时会被排除（已确认 WPF 渲染器不使用）",
+      "fields": ["rotation", "shadow", "labelWidth", "isDataBound", "richText", "isRichText", "minValue", "maxValue", "minDate", "maxDate"],
+      "retainedForWpfCompat": ["borderStyle", "formatString", "textDecoration"]
+    }
+  },
+  "categories": {
+    "basic": {
+      "label": "基础元素",
+      "description": "文本、图片、线条等基础元素",
+      "order": 1
+    },
+    "input": {
+      "label": "输入元素",
+      "description": "表单输入控件",
+      "order": 2
+    },
+    "data": {
+      "label": "数据元素",
+      "description": "表格、图表、条码等数据展示",
+      "order": 3
+    },
+    "layout": {
+      "label": "布局元素",
+      "description": "容器、页眉页脚等布局组件",
+      "order": 4
+    },
+    "special": {
+      "label": "特殊元素",
+      "description": "签名、水印等特殊功能",
+      "order": 5
+    }
+  },
+  "elementTypes": [
+    {
+      "key": "TextElement",
+      "label": "文本",
+      "category": "basic",
+      "type": "template.element.text",
+      "description": "文本元素，用于显示文字内容或绑定数据输入",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 30,
+        "text": "",
+        "fontSize": 12,
+        "fontFamily": "SimSun",
+        "fontWeight": "normal",
+        "foregroundColor": "#000000",
+        "textAlignment": "left",
+        "isVisible": true,
+        "label": "",
+        "dataPath": ""
+      }
+    },
+    {
+      "key": "ImageElement",
+      "label": "图片",
+      "category": "basic",
+      "type": "template.element.image",
+      "description": "图片元素，用于显示图片",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 100,
+        "imagePath": "",
+        "imageData": "",
+        "stretch": "Uniform",
+        "isVisible": true
+      }
+    },
+    {
+      "key": "LineElement",
+      "label": "线条",
+      "category": "basic",
+      "type": "template.element.line",
+      "description": "线条元素，用于绘制直线",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "lineColor": "#000000",
+        "lineWidth": 1,
+        "lineStyle": "solid",
+        "startX": 0,
+        "startY": 0,
+        "endX": 100,
+        "endY": 0,
+        "isVisible": true
+      }
+    },
+    {
+      "key": "ShapeElement",
+      "label": "形状",
+      "category": "basic",
+      "type": "template.element.shape",
+      "description": "形状元素，支持矩形、圆形、三角形、菱形",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 80,
+        "height": 80,
+        "shapeType": "rectangle",
+        "fillColor": "transparent",
+        "strokeColor": "#000000",
+        "strokeWidth": 1,
+        "isVisible": true
+      }
+    },
+    {
+      "key": "DividerElement",
+      "label": "分隔线",
+      "category": "basic",
+      "type": "template.element.divider",
+      "description": "分隔线元素，用于分隔内容",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 10,
+        "dividerStyle": "solid",
+        "thickness": 1,
+        "color": "#000000",
+        "isVisible": true
+      }
+    },
+    {
+      "key": "CheckboxElement",
+      "label": "复选框",
+      "category": "input",
+      "type": "template.element.checkbox",
+      "description": "复选框元素，用于多选",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 24,
+        "checkboxLabel": "",
+        "checkboxPosition": "left",
+        "checked": false,
+        "isVisible": true,
+        "label": "",
+        "dataPath": ""
+      }
+    },
+    {
+      "key": "RadioElement",
+      "label": "单选框",
+      "category": "input",
+      "type": "template.element.radio",
+      "description": "单选框元素，用于单选",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 60,
+        "options": [],
+        "selectedValue": "",
+        "orientation": "vertical",
+        "isVisible": true,
+        "label": "",
+        "dataPath": ""
+      }
+    },
+    {
+      "key": "DropdownElement",
+      "label": "下拉框",
+      "category": "input",
+      "type": "template.element.dropdown",
+      "description": "下拉框元素，用于选择",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 30,
+        "value": "",
+        "options": [],
+        "placeholder": "请选择",
+        "isVisible": true,
+        "label": "",
+        "dataPath": ""
+      }
+    },
+    {
+      "key": "NumberElement",
+      "label": "数字",
+      "category": "input",
+      "type": "template.element.number",
+      "description": "数字输入元素",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 30,
+        "value": 0,
+        "format": "",
+        "unit": "",
+        "decimalPlaces": 2,
+        "isVisible": true,
+        "label": "",
+        "dataPath": ""
+      }
+    },
+    {
+      "key": "DateElement",
+      "label": "日期",
+      "category": "input",
+      "type": "template.element.date",
+      "description": "日期选择元素",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 30,
+        "value": "",
+        "format": "yyyy-MM-dd",
+        "showTime": false,
+        "isVisible": true,
+        "label": "",
+        "dataPath": ""
+      }
+    },
+    {
+      "key": "TableElement",
+      "label": "表格",
+      "category": "data",
+      "type": "template.element.table",
+      "description": "表格元素，用于展示数据表格",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 100,
+        "rows": 3,
+        "columns": 3,
+        "cellData": [],
+        "hasHeader": true,
+        "cellPadding": 4,
+        "isVisible": true
+      }
+    },
+    {
+      "key": "BarcodeElement",
+      "label": "条形码",
+      "category": "data",
+      "type": "template.element.barcode",
+      "description": "条形码元素，支持CODE128、CODE39、EAN13",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 120,
+        "height": 50,
+        "value": "",
+        "barcodeFormat": "CODE128",
+        "showText": true,
+        "isVisible": true
+      }
+    },
+    {
+      "key": "QrCodeElement",
+      "label": "二维码",
+      "category": "data",
+      "type": "template.element.qrcode",
+      "description": "二维码元素",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "size": 100,
+        "value": "",
+        "errorLevel": "M",
+        "foregroundColor": "#000000",
+        "backgroundColor": "#FFFFFF",
+        "isVisible": true
+      }
+    },
+    {
+      "key": "ChartElement",
+      "label": "图表",
+      "category": "data",
+      "type": "template.element.chart",
+      "description": "图表元素，支持柱状图、折线图、饼图",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 150,
+        "chartType": "bar",
+        "dataSource": "",
+        "series": [],
+        "legend": { "show": true, "position": "bottom" },
+        "isVisible": true
+      }
+    },
+    {
+      "key": "ContainerElement",
+      "label": "容器",
+      "category": "layout",
+      "type": "template.element.container",
+      "description": "容器元素，用于元素分组",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 150,
+        "height": 100,
+        "children": [],
+        "layout": "absolute",
+        "padding": 0,
+        "gap": 0,
+        "isVisible": true
+      }
+    },
+    {
+      "key": "RepeatElement",
+      "label": "重复区域",
+      "category": "layout",
+      "type": "template.element.repeat",
+      "description": "重复区域元素，用于动态列表",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 150,
+        "height": 100,
+        "dataSource": "",
+        "maxItems": 0,
+        "direction": "vertical",
+        "gap": 10,
+        "isVisible": true
+      }
+    },
+    {
+      "key": "HeaderElement",
+      "label": "页眉",
+      "category": "layout",
+      "type": "template.element.header",
+      "description": "页眉元素",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 30,
+        "content": "",
+        "showOnAllPages": true,
+        "isVisible": true
+      }
+    },
+    {
+      "key": "FooterElement",
+      "label": "页脚",
+      "category": "layout",
+      "type": "template.element.footer",
+      "description": "页脚元素",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 30,
+        "content": "",
+        "showOnAllPages": true,
+        "showPageNumber": false,
+        "isVisible": true
+      }
+    },
+    {
+      "key": "PageNumberElement",
+      "label": "页码",
+      "category": "layout",
+      "type": "template.element.pagenumber",
+      "description": "页码元素",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 60,
+        "height": 20,
+        "format": "{page} / {total}",
+        "startFrom": 1,
+        "position": "center",
+        "isVisible": true
+      }
+    },
+    {
+      "key": "SignatureElement",
+      "label": "签名",
+      "category": "special",
+      "type": "template.element.signature",
+      "description": "签名元素，用于手写签名",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 150,
+        "height": 60,
+        "strokeWidth": 2,
+        "strokeColor": "#000000",
+        "backgroundColor": "#FFFFFF",
+        "isVisible": true
+      }
+    },
+    {
+      "key": "WatermarkElement",
+      "label": "水印",
+      "category": "special",
+      "type": "template.element.watermark",
+      "description": "水印元素",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 150,
+        "text": "",
+        "angle": -45,
+        "fontSize": 48,
+        "opacity": 0.1,
+        "repeat": true,
+        "isVisible": true
+      }
+    },
+    {
+      "key": "IconElement",
+      "label": "图标",
+      "category": "special",
+      "type": "template.element.icon",
+      "description": "图标元素",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "iconName": "star",
+        "iconSize": 24,
+        "iconColor": "#000000",
+        "isVisible": true
+      }
+    },
+    {
+      "key": "HyperlinkElement",
+      "label": "超链接",
+      "category": "special",
+      "type": "template.element.hyperlink",
+      "description": "超链接元素",
+      "defaultProps": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 20,
+        "url": "",
+        "text": "",
+        "target": "_blank",
+        "underline": true,
+        "linkColor": "#409EFF",
+        "isVisible": true
+      }
+    }
+  ],
+  "baseProperties": {
+    "id": { "type": "string", "description": "元素唯一标识" },
+    "x": { "type": "number", "description": "X坐标(mm)" },
+    "y": { "type": "number", "description": "Y坐标(mm)" },
+    "width": { "type": "number", "description": "宽度(mm)" },
+    "height": { "type": "number", "description": "高度(mm)" },
+    "isVisible": { "type": "boolean", "description": "是否可见（必须显式设为 true）" },
+    "zIndex": { "type": "number", "description": "层级" },
+    "backgroundColor": { "type": "string", "description": "背景色" },
+    "borderColor": { "type": "string", "description": "边框色" },
+    "borderWidth": { "type": "number", "description": "边框宽度" },
+    "cornerRadius": { "type": "number", "description": "圆角" },
+    "opacity": { "type": "number", "description": "透明度" },
+    "fontFamily": { "type": "string", "description": "字体" },
+    "fontSize": { "type": "number", "description": "字号" },
+    "fontWeight": { "type": "string", "description": "字体粗细" },
+    "foregroundColor": { "type": "string", "description": "前景色" },
+    "textAlignment": { "type": "string", "description": "文本对齐" },
+    "label": { "type": "string", "description": "中文标签（WPF 输入面板显示用）" },
+    "dataPath": { "type": "string", "description": "数据路径（驼峰格式）" },
+    "$type": { "type": "string", "description": "类型标识（格式：template.element.xxx）" }
+  }
+}

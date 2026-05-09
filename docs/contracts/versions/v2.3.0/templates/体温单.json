@@ -1,0 +1,120 @@
+{
+  "name": "体温单",
+  "type": "护理",
+  "version": 1,
+  "pageWidth": 210,
+  "pageHeight": 297,
+  "orientation": "Portrait",
+  "marginLeft": 12,
+  "marginRight": 12,
+  "marginTop": 12,
+  "marginBottom": 12,
+  "backgroundColor": "#FFFFFF",
+  "globalFontSize": 10,
+  "elements": [
+    {
+      "id": "el_title",
+      "$type": "template.element.text",
+      "x": 12, "y": 12, "width": 186, "height": 12,
+      "isVisible": true,
+      "text": "杏林医院 体温单",
+      "fontFamily": "SimHei", "fontSize": 15, "fontWeight": "bold",
+      "foregroundColor": "#000000", "textAlignment": "center"
+    },
+    {
+      "id": "el_div1",
+      "$type": "template.element.line",
+      "x": 12, "y": 26, "width": 186, "height": 0,
+      "isVisible": true,
+      "lineColor": "#000000", "lineWidth": 1.5, "lineStyle": "solid",
+      "startX": 12, "startY": 26, "endX": 198, "endY": 26
+    },
+    {
+      "id": "el_patient_name",
+      "$type": "template.element.text",
+      "x": 12, "y": 32, "width": 55, "height": 8,
+      "isVisible": true,
+      "label": "姓名", "dataPath": "PatientName",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_bed_no",
+      "$type": "template.element.text",
+      "x": 80, "y": 32, "width": 35, "height": 8,
+      "isVisible": true,
+      "label": "床号", "dataPath": "BedNo",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_department",
+      "$type": "template.element.text",
+      "x": 130, "y": 32, "width": 65, "height": 8,
+      "isVisible": true,
+      "label": "科室", "dataPath": "Department",
+      "fontFamily": "SimSun", "fontSize": 10
+    },
+    {
+      "id": "el_div2",
+      "$type": "template.element.line",
+      "x": 12, "y": 44, "width": 186, "height": 0,
+      "isVisible": true,
+      "lineColor": "#999999", "lineWidth": 0.5, "lineStyle": "dashed",
+      "startX": 12, "startY": 44, "endX": 198, "endY": 44
+    },
+    {
+      "id": "el_chart",
+      "$type": "template.element.chart",
+      "x": 12, "y": 50, "width": 186, "height": 140,
+      "isVisible": true,
+      "chartType": "line",
+      "dataSource": "VitalSigns",
+      "series": [
+        { "name": "体温", "dataPath": "Temperature", "color": "#E74C3C" },
+        { "name": "脉搏", "dataPath": "Pulse", "color": "#3498DB" }
+      ],
+      "xAxis": { "label": "日期", "dataPath": "Date" },
+      "yAxis": { "label": "数值" },
+      "legend": { "show": true, "position": "top" },
+      "colors": ["#E74C3C", "#3498DB", "#27AE60", "#F39C12"]
+    },
+    {
+      "id": "el_table_title",
+      "$type": "template.element.text",
+      "x": 12, "y": 196, "width": 186, "height": 8,
+      "isVisible": true,
+      "text": "生命体征记录表",
+      "fontFamily": "SimSun", "fontSize": 11, "fontWeight": "bold"
+    },
+    {
+      "id": "el_vitals_table",
+      "$type": "template.element.table",
+      "x": 12, "y": 208, "width": 186, "height": 65,
+      "isVisible": true,
+      "rows": 5, "columns": 5, "hasHeader": true, "cellPadding": 2,
+      "cellData": [
+        ["日期", "体温(℃)", "脉搏(次/分)", "呼吸(次/分)", "血压(mmHg)"],
+        ["", "", "", "", ""],
+        ["", "", "", "", ""],
+        ["", "", "", "", ""],
+        ["", "", "", "", ""]
+      ],
+      "fontFamily": "SimSun", "fontSize": 9
+    },
+    {
+      "id": "el_div3",
+      "$type": "template.element.line",
+      "x": 12, "y": 278, "width": 186, "height": 0,
+      "isVisible": true,
+      "lineColor": "#000000", "lineWidth": 0.5, "lineStyle": "solid",
+      "startX": 12, "startY": 278, "endX": 198, "endY": 278
+    },
+    {
+      "id": "el_nurse",
+      "$type": "template.element.text",
+      "x": 140, "y": 282, "width": 55, "height": 8,
+      "isVisible": true,
+      "label": "护士签名", "dataPath": "NurseName",
+      "fontFamily": "SimSun", "fontSize": 10, "textAlignment": "right"
+    }
+  ]
+}

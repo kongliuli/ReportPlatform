@@ -37,4 +37,52 @@ public abstract class ElementBase
 
     /// <summary>元素是否锁定</summary>
     public bool IsLocked { get; set; }
+
+    /// <summary>元素是否可见</summary>
+    public bool IsVisible { get; set; } = true;
+
+    /// <summary>背景颜色</summary>
+    public string? BackgroundColor { get; set; }
+
+    /// <summary>边框颜色</summary>
+    public string? BorderColor { get; set; }
+
+    /// <summary>边框宽度</summary>
+    public double? BorderWidth { get; set; }
+
+    /// <summary>边框样式</summary>
+    public string? BorderStyle { get; set; } = "solid";
+
+    /// <summary>圆角半径</summary>
+    public double? CornerRadius { get; set; }
+
+    /// <summary>透明度</summary>
+    public double? Opacity { get; set; } = 1.0;
+
+    /// <summary>前景色（文字颜色）</summary>
+    public string? ForegroundColor { get; set; } = "#000000";
+
+    /// <summary>字体族</summary>
+    public string? FontFamily { get; set; }
+
+    /// <summary>字体大小</summary>
+    public double? FontSize { get; set; } = 12;
+
+    /// <summary>字体粗细</summary>
+    public string? FontWeight { get; set; } = "normal";
+
+    /// <summary>字体样式</summary>
+    public string? FontStyle { get; set; } = "normal";
+
+    /// <summary>文本对齐方式</summary>
+    public string? TextAlignment { get; set; } = "left";
+
+    /// <summary>标签文本</summary>
+    public string? Label { get; set; }
+
+    /// <summary>数据绑定路径</summary>
+    public string? DataPath { get; set; }
+
+    /// <summary>格式化字符串</summary>
+    public string? FormatString { get; set; }
 }

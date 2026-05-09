@@ -12,9 +12,9 @@ public class FooterElement : ElementBase
     /// <summary>是否在所有页面显示</summary>
     public bool ShowOnAllPages { get; set; }
 
-    /// <summary>背景颜色</summary>
-    public string? BackgroundColor { get; set; }
+    /// <summary>页脚内容</summary>
+    public string? Content { get; set; }
 
-    /// <summary>页脚高度</summary>
-    public double Height { get; set; } = 30;
+    /// <summary>是否显示页码</summary>
+    public bool ShowPageNumber { get; set; }
 }

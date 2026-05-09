@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/template-schema.json",
+  "title": "报告模板契约规范",
+  "description": "报告模板编辑器模板契约规范 v2.2 — WPF 兼容",
+  "version": "2.2.0",
+  "metadata": {
+    "name": "报告模板契约",
+    "description": "定义报告模板的完整结构，与 WPF 渲染器输出契约对齐。v2.2 统一 $type 格式，移除 dataBindings 数组。",
+    "createdAt": "2026-05-07",
+    "updatedAt": "2026-05-07",
+    "author": "Xinglin Team"
+  },
+  "versionHistory": [
+    {
+      "version": "2.2.0",
+      "date": "2026-05-07",
+      "description": "破坏性变更：统一 $type、label 强制中文、isVisible 显式 true、移除 dataBindings、剥离 10 个 WPF 未用字段",
+      "changes": [
+        "$type 统一为 template.element.xxx（23种全覆盖，废弃 Xinglin.Core.Elements.* 旧格式）",
+        "label 强制中文（可编辑元素必填）",
+        "isVisible 必须显式设为 true",
+        "移除 dataBindings 独立数组，改为 label + dataPath 内联绑定",
+        "剥离 10 个 WPF 未用字段",
+        "废弃 LabelInputBox 类型"
+      ]
+    },
+    {
+      "version": "2.0.0",
+      "date": "2026-05-07",
+      "description": "WPF 契约对齐",
+      "changes": [
+        "元素 $type 统一为 template.element.xxx 格式",
+        "可编辑元素必须包含 label 中文标签",
+        "每个元素必须显式 isVisible: true",
+        "移除 WPF 未使用的冗余样式字段"
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-05-07",
+      "description": "初始版本",
+      "changes": ["新增基础结构定义"]
+    }
+  ],
+  "templateStructure": {
+    "id": { "type": "string", "description": "模板唯一标识" },
+    "name": { "type": "string", "description": "模板名称" },
+    "type": { "type": "string", "description": "模板类型（门诊/住院/检验/处方/影像/护理）" },
+    "description": { "type": "string", "description": "模板描述" },
+    "version": { "type": "number", "description": "模板版本号" },
+    "pageWidth": { "type": "number", "description": "页面宽度(mm)" },
+    "pageHeight": { "type": "number", "description": "页面高度(mm)" },
+    "orientation": { "type": "string", "description": "页面方向: Portrait|Landscape" },
+    "margins": {
+      "type": "object",
+      "description": "页面边距(mm)",
+      "properties": {
+        "top": { "type": "number" },
+        "bottom": { "type": "number" },
+        "left": { "type": "number" },
+        "right": { "type": "number" }
+      }
+    },
+    "backgroundColor": { "type": "string", "description": "页面背景色" },
+    "globalFontSize": { "type": "number", "description": "全局默认字号" },
+    "elements": { "type": "array", "description": "元素列表" },
+    "createdAt": { "type": "string", "description": "创建时间" },
+    "updatedAt": { "type": "string", "description": "更新时间" },
+    "isPublished": { "type": "boolean", "description": "是否发布" }
+  }
+}
