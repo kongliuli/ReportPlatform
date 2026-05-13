@@ -6,6 +6,9 @@ function generateId() {
 
 export class ElementBase {
   constructor(props = {}) {
+    if (typeof props !== 'object' || props === null) {
+      throw new Error('Props must be an object')
+    }
     this.id = props.id || generateId()
     this.x = props.x ?? 0
     this.y = props.y ?? 0
