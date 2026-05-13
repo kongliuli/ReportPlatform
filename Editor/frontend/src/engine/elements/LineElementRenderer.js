@@ -1,8 +1,10 @@
 import { Line } from 'fabric'
 import { MM_TO_PX, CANVAS_PADDING, round2 } from '@/utils/constants'
+import { BaseElementRenderer } from './BaseElementRenderer'
 
-export class LineElementRenderer {
+export class LineElementRenderer extends BaseElementRenderer {
   create(canvas, element, mmToPx) {
+    const { left: _l, top: _t, ...lineSelectionStyle } = this._applyCommonOptions(element, mmToPx)
     const fabricObj = new Line(
       [
         mmToPx(element.startX || element.x) + CANVAS_PADDING,
@@ -15,10 +17,7 @@ export class LineElementRenderer {
         strokeWidth: element.lineWidth || 1,
         strokeDashArray: element.lineStyle === 'dashed' ? [10, 5] : element.lineStyle === 'dotted' ? [3, 3] : null,
         opacity: element.opacity ?? 1,
-        borderColor: '#409eff',
-        cornerColor: '#409eff',
-        cornerSize: 8,
-        transparentCorners: false
+        ...lineSelectionStyle
       }
     )
     return fabricObj
@@ -27,7 +26,7 @@ export class LineElementRenderer {
   update(fabricObj, props) {
     if (props.lineColor !== undefined) fabricObj.set('stroke', props.lineColor)
     if (props.lineWidth !== undefined) fabricObj.set('strokeWidth', props.lineWidth)
-    if (props.opacity !== undefined) fabricObj.set('opacity', props.opacity)
+    this._applyCommonUpdate(fabricObj, props)
   }
 
   toModel(fabricObj) {

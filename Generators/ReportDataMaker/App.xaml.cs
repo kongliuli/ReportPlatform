@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using ReportDataMaker.Infrastructure;
@@ -21,8 +22,13 @@ public partial class App : Application
     /// <param name="e">启动事件参数</param>
     protected override void OnStartup(StartupEventArgs e)
     {
+        FileLogger.Initialize();
+        FileLogger.Instance.WriteLine("[LOG] ===== App.OnStartup 开始 =====");
+        FileLogger.Instance.WriteLine($"[LOG] 基准目录: {AppDomain.CurrentDomain.BaseDirectory}");
+
         base.OnStartup(e);
 
+        FileLogger.Instance.WriteLine("[LOG] 开始注册 DI 服务...");
         var services = new ServiceCollection();
 
         services.AddSingleton<IDialogService, DialogService>();
@@ -42,19 +48,99 @@ public partial class App : Application
         services.AddSingleton<IPdfExportService, PdfExportService>();
         services.AddSingleton<BatchExportService>();
         services.AddSingleton<ExportHistoryStore>();
-        services.AddSingleton<DataBindingService>(sp => (DataBindingService)sp.GetRequiredService<IDataBindingService>());
-
         services.AddTransient<MainViewModel>();
         services.AddTransient<TemplateLoadViewModel>();
         services.AddTransient<SidePanelViewModel>();
 
+        FileLogger.Instance.WriteLine("[LOG] DI 注册完成，开始 BuildServiceProvider...");
         Services = services.BuildServiceProvider();
-        ServiceLocator.Initialize(services);
+        FileLogger.Instance.WriteLine("[LOG] BuildServiceProvider 完成");
+
+        FileLogger.Instance.WriteLine("[LOG] 执行 TestTemplateLoading...");
+        TestTemplateLoading();
+        FileLogger.Instance.WriteLine("[LOG] TestTemplateLoading 完成");
+
+        FileLogger.Instance.WriteLine("[LOG] 创建 MainWindow...");
+        MainViewModel mainVm;
+        try
+        {
+            mainVm = Services.GetRequiredService<MainViewModel>();
+            FileLogger.Instance.WriteLine("[LOG] MainViewModel 创建成功");
+        }
+        catch (Exception ex)
+        {
+            FileLogger.Instance.WriteLine($"[LOG] MainViewModel 创建失败: {ex.GetType().Name} - {ex.Message}");
+            FileLogger.Instance.WriteLine($"[LOG] 堆栈: {ex.StackTrace}");
+            throw;
+        }
 
         var mainWindow = new MainWindow
         {
-            DataContext = Services.GetRequiredService<MainViewModel>()
+            DataContext = mainVm
         };
+        FileLogger.Instance.WriteLine("[LOG] 调用 mainWindow.Show()...");
         mainWindow.Show();
+        FileLogger.Instance.WriteLine("[LOG] ===== App.OnStartup 完成 =====");
     }
+
+    private void TestTemplateLoading()
+    {
+        FileLogger.Instance.WriteLine("[LOG] ===== TestTemplateLoading =====");
+        try
+        {
+            FileLogger.Instance.WriteLine("[LOG] 获取 ITemplateLoaderService...");
+            var templateLoader = Services.GetRequiredService<ITemplateLoaderService>();
+            var testPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates", "住院病历.json");
+            FileLogger.Instance.WriteLine($"[LOG] 测试路径: {testPath}");
+            
+            if (File.Exists(testPath))
+            {
+                FileLogger.Instance.WriteLine("[LOG] 文件存在，开始加载...");
+                var template = templateLoader.LoadFromFile(testPath);
+                
+                FileLogger.Instance.WriteLine($"[LOG] 加载成功！模板名称: {template.Name}, 元素数量: {template.Elements.Count}");
+                FileLogger.Instance.WriteLine($"[LOG] 页面尺寸: {template.PageWidth}x{template.PageHeight}, DataBindings: {template.DataBindings.Count}");
+                
+                int dataPathCount = 0;
+                for (int i = 0; i < template.Elements.Count; i++)
+                {
+                    var el = template.Elements[i];
+                    var typeName = el.GetType().Name;
+                    var dataPath = el.DataPath;
+                    var label = el.Label ?? "(空)";
+                    FileLogger.Instance.WriteLine($"[LOG]   元素[{i}]: {typeName} DataPath='{dataPath}' Label='{label}' Group={el.Group} DefaultValue='{el.DefaultValue}'");
+                    if (!string.IsNullOrEmpty(dataPath)) dataPathCount++;
+                }
+                FileLogger.Instance.WriteLine($"[LOG] 有 DataPath 的元素: {dataPathCount}");
+                
+                // 额外检查：可录入元素数量
+                var entryCount = template.Elements.Count(e => !string.IsNullOrEmpty(e.DataPath) || e.Group == ElementGroup.Editable);
+                FileLogger.Instance.WriteLine($"[LOG] DataEntry 分组或 DataPath 非空的元素数: {entryCount}");
+            }
+            else
+            {
+                FileLogger.Instance.WriteLine($"[LOG] 文件不存在: {testPath}");
+                FileLogger.Instance.WriteLine("[LOG] 列出 Templates 目录内容:");
+                var templateDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates");
+                if (Directory.Exists(templateDir))
+                {
+                    foreach (var f in Directory.GetFiles(templateDir))
+                        FileLogger.Instance.WriteLine($"[LOG]   - {Path.GetFileName(f)}");
+                }
+                else
+                {
+                    FileLogger.Instance.WriteLine($"[LOG]   Templates 目录不存在: {templateDir}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            FileLogger.Instance.WriteLine($"[LOG] 加载失败: {ex.GetType().Name} - {ex.Message}");
+            FileLogger.Instance.WriteLine($"[LOG] 堆栈: {ex.StackTrace}");
+            if (ex.InnerException != null)
+                FileLogger.Instance.WriteLine($"[LOG] 内部异常: {ex.InnerException.GetType().Name} - {ex.InnerException.Message}");
+        }
+        FileLogger.Instance.WriteLine("[LOG] ===== TestTemplateLoading 结束 =====");
+    }
+    
 }

@@ -1,7 +1,8 @@
 import { Rect, Text, Group } from 'fabric'
 import { MM_TO_PX, CANVAS_PADDING, round2 } from '@/utils/constants'
+import { BaseElementRenderer } from './BaseElementRenderer'
 
-export class DropdownElementRenderer {
+export class DropdownElementRenderer extends BaseElementRenderer {
   create(canvas, element, mmToPx) {
     const group = new Group(
       [
@@ -29,28 +30,21 @@ export class DropdownElementRenderer {
         })
       ],
       {
-        left: mmToPx(element.x) + CANVAS_PADDING,
-        top: mmToPx(element.y) + CANVAS_PADDING,
+        ...this._applyCommonOptions(element, mmToPx),
         opacity: element.opacity ?? 1,
-        angle: element.rotation || 0,
-        borderColor: '#409eff',
-        cornerColor: '#409eff',
-        cornerSize: 8,
-        transparentCorners: false
+        angle: element.rotation || 0
       }
     )
     return group
   }
 
   update(fabricObj, props) {
-    if (props.opacity !== undefined) fabricObj.set('opacity', props.opacity)
-    if (props.rotation !== undefined) fabricObj.set('angle', props.rotation)
+    this._applyCommonUpdate(fabricObj, props)
   }
 
   toModel(fabricObj) {
     return {
-      x: round2((fabricObj.left - CANVAS_PADDING) / MM_TO_PX),
-      y: round2((fabricObj.top - CANVAS_PADDING) / MM_TO_PX),
+      ...this._applyCommonToModel(fabricObj),
       width: round2(fabricObj.getScaledWidth() / MM_TO_PX),
       height: round2(fabricObj.getScaledHeight() / MM_TO_PX),
       rotation: round2(fabricObj.angle || 0),

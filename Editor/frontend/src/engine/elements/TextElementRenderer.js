@@ -1,12 +1,12 @@
 import { IText } from 'fabric'
 import { MM_TO_PX, CANVAS_PADDING, round2 } from '@/utils/constants'
+import { BaseElementRenderer } from './BaseElementRenderer'
 
-export class TextElementRenderer {
+export class TextElementRenderer extends BaseElementRenderer {
   create(canvas, element, mmToPx) {
     const text = element.isRichText && element.richText ? element.richText : (element.text || element.label || '文本')
     const fabricObj = new IText(text, {
-      left: mmToPx(element.x) + CANVAS_PADDING,
-      top: mmToPx(element.y) + CANVAS_PADDING,
+      ...this._applyCommonOptions(element, mmToPx),
       width: mmToPx(element.width),
       fontSize: element.fontSize || 12,
       fontFamily: element.fontFamily || 'SimSun',
@@ -15,11 +15,7 @@ export class TextElementRenderer {
       fill: element.foregroundColor || '#000000',
       textAlign: element.textAlignment || 'left',
       opacity: element.opacity ?? 1,
-      angle: element.rotation || 0,
-      borderColor: '#409eff',
-      cornerColor: '#409eff',
-      cornerSize: 8,
-      transparentCorners: false
+      angle: element.rotation || 0
     })
 
     if (element.backgroundColor && element.backgroundColor !== 'transparent') {
@@ -37,20 +33,12 @@ export class TextElementRenderer {
     if (props.fontStyle !== undefined) fabricObj.set('fontStyle', props.fontStyle)
     if (props.foregroundColor !== undefined) fabricObj.set('fill', props.foregroundColor)
     if (props.textAlignment !== undefined) fabricObj.set('textAlign', props.textAlignment)
-    if (props.opacity !== undefined) fabricObj.set('opacity', props.opacity)
-    if (props.rotation !== undefined) fabricObj.set('angle', props.rotation)
-    if (props.x !== undefined || props.y !== undefined) {
-      fabricObj.set({
-        left: (props.x !== undefined ? props.x * MM_TO_PX : fabricObj.left - CANVAS_PADDING) + CANVAS_PADDING,
-        top: (props.y !== undefined ? props.y * MM_TO_PX : fabricObj.top - CANVAS_PADDING) + CANVAS_PADDING
-      })
-    }
+    this._applyCommonUpdate(fabricObj, props)
   }
 
   toModel(fabricObj) {
     return {
-      x: round2((fabricObj.left - CANVAS_PADDING) / MM_TO_PX),
-      y: round2((fabricObj.top - CANVAS_PADDING) / MM_TO_PX),
+      ...this._applyCommonToModel(fabricObj),
       width: round2(fabricObj.getScaledWidth() / MM_TO_PX),
       height: round2(fabricObj.getScaledHeight() / MM_TO_PX),
       text: fabricObj.text,

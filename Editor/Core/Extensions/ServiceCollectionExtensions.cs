@@ -30,9 +30,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IVersionService, VersionService>();
         services.AddScoped<IPdfRenderService, PdfRenderService>();
-        services.AddScoped<IJsonTemplateSerializer, JsonTemplateSerializerStub>();
-        services.AddScoped<IDataBindingEngine, DataBindingEngineStub>();
-        services.AddScoped<IPdfSharpTemplateRenderer, PdfSharpTemplateRendererStub>();
+        services.AddScoped<IJsonTemplateSerializer, JsonTemplateSerializer>();
+        services.AddScoped<IDataBindingEngine, DataBindingEngine>();
+        services.AddScoped<IPdfSharpTemplateRenderer, PdfTemplateRenderer>();
+        services.AddScoped<ContextService>();
 
         return services;
     }

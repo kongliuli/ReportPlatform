@@ -432,7 +432,7 @@ public class DatabaseAdapterTabViewModel : TabViewModelBase
         Config.Query.Mode = CurrentQueryMode;
         Config.Query.RawSql = RawSql;
         Config.Query.PrimaryTable = PrimaryTable;
-        Config.Query.SelectedColumns = SelectedColumnNames.Count > 0 ? SelectedColumnNames.ToList() : null;
+        Config.Query.SelectedColumns = SelectedColumnNames.Any() ? SelectedColumnNames.ToList() : new List<string>();
         Config.Query.WhereClause = WhereClause;
         Config.Query.OrderBy = OrderBy;
         Config.Joins = Joins.ToList();

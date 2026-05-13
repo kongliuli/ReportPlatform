@@ -38,19 +38,31 @@ public class TemplateLoadViewModel : ViewModelBase
 
     private void ExecuteBrowseFile()
     {
+        FileLogger.Instance.WriteLine($"[TemplateLoadVM] 用户点击浏览文件");
         var filePath = _dialogService.OpenFile("JSON 文件 (*.json)|*.json|所有文件 (*.*)|*.*", "选择模板文件");
+        
+        FileLogger.Instance.WriteLine($"[TemplateLoadVM] 用户选择文件: {filePath}");
+        
         if (!string.IsNullOrEmpty(filePath))
         {
             try
             {
+                FileLogger.Instance.WriteLine($"[TemplateLoadVM] 开始加载模板...");
                 var template = _templateLoader.LoadFromFile(filePath);
+                FileLogger.Instance.WriteLine($"[TemplateLoadVM] 模板加载成功，准备触发事件");
                 TemplateSelected?.Invoke(template);
                 RequestClose?.Invoke(true);
+                FileLogger.Instance.WriteLine($"[TemplateLoadVM] 事件触发完成");
             }
             catch (Exception ex)
             {
+                FileLogger.Instance.WriteLine($"[TemplateLoadVM] 加载失败: {ex.GetType().Name} - {ex.Message}");
                 _dialogService.ShowError($"加载模板失败: {ex.Message}", "错误");
             }
+        }
+        else
+        {
+            FileLogger.Instance.WriteLine($"[TemplateLoadVM] 用户取消选择文件");
         }
     }
 }

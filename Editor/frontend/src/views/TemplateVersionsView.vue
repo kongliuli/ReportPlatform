@@ -1,8 +1,8 @@
 <template>
   <div class="versions-view">
-    <el-page-header @back="goBack" title="返回">
+    <el-page-header @back="goBack" :title="$t('toolbar.back')">
       <template #content>
-        <span>版本历史 - {{ templateName }}</span>
+        <span>{{ $t('versions.title') }} - {{ templateName }}</span>
       </template>
     </el-page-header>
 
@@ -32,7 +32,7 @@
         </el-timeline-item>
       </el-timeline>
 
-      <el-empty v-else description="暂无版本历史" />
+      <el-empty v-else :description="$t('versions.title')" />
     </div>
 
     <VersionDiff

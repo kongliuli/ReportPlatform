@@ -11,9 +11,14 @@
     </div>
     
     <div v-if="!collapsed" class="toolbox-content">
+      <div class="toolbox-search">
+        <el-input v-model="searchText" :placeholder="$t('toolbox.search')" size="small" clearable>
+          <template #prefix><el-icon><Search /></el-icon></template>
+        </el-input>
+      </div>
       <el-collapse v-model="activeCategories" class="category-collapse">
         <el-collapse-item
-          v-for="group in groupedElements"
+          v-for="group in filteredGroups"
           :key="group.order"
           :name="group.order"
         >
@@ -62,7 +67,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { 
-  Expand, Fold, Document, Picture, Minus, Grid, Calendar, ArrowDown, Histogram,
+  Expand, Fold, Search, Document, Picture, Minus, Grid, Calendar, ArrowDown, Histogram,
   CircleCheck, SemiSelect, Select, Tickets, TrendCharts, Files, CopyDocument,
   Top, Bottom, Collection, EditPen, Stamp, Star, Link, DataLine, Edit
 } from '@element-plus/icons-vue'
@@ -75,20 +80,15 @@ defineProps({
 defineEmits(['add-element', 'toggle-collapse'])
 
 const activeCategories = ref([1, 2, 3, 4, 5])
+const searchText = ref('')
 
-const iconMap = { 
-  Document, Picture, Minus, Grid, Calendar, ArrowDown, Histogram,
-  CircleCheck, SemiSelect, Select, Tickets, TrendCharts, Files, CopyDocument,
-  Top, Bottom, Collection, EditPen, Stamp, Star, Link, DataLine, Edit
-}
-
-const categoryIconMap = {
-  basic: Document,
-  input: Edit,
-  data: DataLine,
-  layout: Grid,
-  special: Star
-}
+const filteredGroups = computed(() => {
+  const q = searchText.value.trim().toLowerCase()
+  if (!q) return groupedElements.value
+  return groupedElements.value
+    .map(g => ({ ...g, elements: g.elements.filter(e => e.label.toLowerCase().includes(q) || e.key.includes(q)) }))
+    .filter(g => g.elements.length > 0)
+})
 
 const groupedElements = computed(() => {
   return getGroupedElements().map(group => ({
@@ -147,6 +147,11 @@ function onDragStart(e, elementType) {
 .toolbox-content {
   flex: 1;
   overflow-y: auto;
+}
+
+.toolbox-search {
+  padding: var(--spacing-2) var(--spacing-3);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .category-collapse {

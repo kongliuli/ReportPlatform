@@ -1,13 +1,18 @@
 <Application x:Class="ReportDataMaker.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:hc="https://handyorg.github.io/handycontrol">
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:converters="clr-namespace:ReportDataMaker.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+                <ResourceDictionary Source="Styles/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <converters:Boolean2VisibilityConverter x:Key="Boolean2VisibilityConverter"/>
+            <converters:Boolean2BooleanReConverter x:Key="Boolean2BooleanReConverter"/>
+            <converters:DoubleConverter x:Key="DoubleConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

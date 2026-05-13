@@ -1,28 +1,51 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
 
 namespace ReportDataMaker.Services;
 
-/// <summary>模板预览服务实现，提供模板的可视化预览功能</summary>
 public class TemplatePreviewService : ITemplatePreviewService
 {
-    /// <summary>生成模板的可视化预览</summary>
-    /// <param name="template">外部模板定义</param>
-    /// <returns>可视化对象</returns>
+    private readonly CanvasRenderer _canvasRenderer = new();
+
     public Visual GeneratePreview(ExternalTemplateDefinition template)
     {
-        var canvas = new Canvas { Width = 800, Height = 600, Background = Brushes.White };
+        if (template?.Elements == null)
+            return new TextBlock { Text = "无模板数据", Foreground = Brushes.Gray, Margin = new Thickness(16) };
+
+        var canvas = new Canvas
+        {
+            Background = Brushes.White,
+            UseLayoutRounding = true,
+            SnapsToDevicePixels = true
+        };
+
+        _canvasRenderer.RenderToCanvas(canvas, template);
         return canvas;
     }
 
-    /// <summary>将模板渲染为图片字节数组</summary>
-    /// <param name="template">外部模板定义</param>
-    /// <param name="dpi">渲染DPI</param>
-    /// <returns>图片字节数组</returns>
     public byte[] RenderToImage(ExternalTemplateDefinition template, double dpi = 96)
     {
-        return Array.Empty<byte>();
+        // Keep SkiaSharp path for image export (PDF/PNG)
+        var layout = new PdfExport.PdfPageLayoutEngine(template);
+        var scale = dpi / 96;
+        var width = (int)(layout.PageWidth * scale);
+        var height = (int)(layout.PageHeight * scale);
+
+        using var bitmap = new SkiaSharp.SKBitmap(width, height);
+        using var skCanvas = new SkiaSharp.SKCanvas(bitmap);
+        skCanvas.Clear(SkiaSharp.SKColors.White);
+
+        var scaledLayout = new PdfExport.PdfPageLayoutEngine(template, scale);
+        var renderer = new PdfExport.PdfElementRenderer();
+        var data = new System.Collections.Generic.Dictionary<string, object>();
+
+        foreach (var element in template.Elements.OrderBy(e => e.ZIndex))
+            renderer.RenderElement(skCanvas, element, data, scaledLayout);
+
+        using var image = bitmap.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100);
+        return image.ToArray();
     }
 }

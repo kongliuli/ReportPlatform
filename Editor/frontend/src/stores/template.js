@@ -1,94 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import { createElementByType } from '@/models/elements'
-import { ReportTemplateDefinition } from '@/models/template'
-import { deserialize, serialize } from '@/utils/serializer'
-
-const CACHE_SIZE = 10
-const STORAGE_KEY_TEMPLATES = 'xinglin_templates'
-const STORAGE_KEY_DRAFT_PREFIX = 'xinglin_draft_'
-
-function getCachedTemplates() {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY_TEMPLATES)
-    return data ? JSON.parse(data) : []
-  } catch {
-    return []
-  }
-}
-
-function setCachedTemplates(templates) {
-  try {
-    localStorage.setItem(STORAGE_KEY_TEMPLATES, JSON.stringify(templates))
-  } catch (e) {
-    console.warn('Failed to cache templates', e)
-  }
-}
-
-function getDraft(templateId) {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY_DRAFT_PREFIX + templateId)
-    return data ? JSON.parse(data) : null
-  } catch {
-    return null
-  }
-}
-
-function setDraft(templateId, content) {
-  try {
-    localStorage.setItem(STORAGE_KEY_DRAFT_PREFIX + templateId, JSON.stringify(content))
-  } catch (e) {
-    console.warn('Failed to save draft', e)
-  }
-}
-
-function clearDraft(templateId) {
-  try {
-    localStorage.removeItem(STORAGE_KEY_DRAFT_PREFIX + templateId)
-  } catch (e) {
-    console.warn('Failed to clear draft', e)
-  }
-}
-
-function normalizeTemplate(raw) {
-  if (!raw) return null
-  if (raw instanceof ReportTemplateDefinition) return raw
-
-  if (raw.contentJson) {
-    try {
-      const parsed = typeof raw.contentJson === 'string' ? JSON.parse(raw.contentJson) : raw.contentJson
-      const tmpl = new ReportTemplateDefinition({
-        ...parsed,
-        id: raw.id,
-        name: raw.name || parsed.name,
-        type: raw.type || parsed.type,
-        version: raw.version || parsed.version,
-        hospitalId: raw.hospitalId || parsed.hospitalId
-      })
-      if (parsed.elements && Array.isArray(parsed.elements)) {
-        tmpl.elements = parsed.elements.map(el => {
-          try { return deserialize(el) } catch { return el }
-        })
-      }
-      return tmpl
-    } catch (e) {
-      console.warn('解析 contentJson 失败，使用默认模板', e)
-    }
-  }
-
-  return new ReportTemplateDefinition({
-    id: raw.id,
-    name: raw.name || '未命名模板',
-    type: raw.type || '',
-    pageWidth: raw.pageWidth,
-    pageHeight: raw.pageHeight,
-    orientation: raw.orientation,
-    marginLeft: raw.marginLeft,
-    marginRight: raw.marginRight,
-    marginTop: raw.marginTop,
-    marginBottom: raw.marginBottom
-  })
-}
+import { serialize } from '@/utils/serializer'
+import { getCachedTemplates, setCachedTemplates, getDraft, setDraft, clearDraft } from '@/utils/templateCache'
+import { normalizeTemplate } from '@/utils/templateNormalizer'
 
 export const useTemplateStore = defineStore('template', () => {
   const templates = ref([])

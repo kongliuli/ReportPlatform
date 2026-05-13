@@ -13,7 +13,7 @@
             </svg>
           </div>
           <transition name="fade">
-            <span v-if="!sidebarCollapsed" class="brand-text">模板编辑器</span>
+            <span v-if="!sidebarCollapsed" class="brand-text">{{ $t('app.brand') }}</span>
           </transition>
         </div>
       </div>
@@ -27,22 +27,22 @@
         >
           <el-menu-item index="/">
             <el-icon><HomeFilled /></el-icon>
-            <template #title>首页</template>
+            <template #title>{{ $t('pages.home') }}</template>
           </el-menu-item>
           <el-menu-item index="/templates">
             <el-icon><Document /></el-icon>
-            <template #title>模板管理</template>
+            <template #title>{{ $t('pages.templates') }}</template>
           </el-menu-item>
           <el-menu-item v-if="isAdmin" index="/settings">
             <el-icon><Setting /></el-icon>
-            <template #title>系统设置</template>
+            <template #title>{{ $t('pages.settings') }}</template>
           </el-menu-item>
         </el-menu>
       </nav>
 
       <div class="sidebar-footer" v-if="!sidebarCollapsed">
         <div class="version-info">
-          <span class="version-label">版本</span>
+          <span class="version-label">{{ $t('sidebar.version') }}</span>
           <span class="version-number">v2.2.0</span>
         </div>
       </div>
@@ -51,7 +51,7 @@
     <el-container class="main-container">
       <el-header class="app-header">
         <div class="header-left">
-          <button class="collapse-btn" @click="toggleSidebar" :title="sidebarCollapsed ? '展开侧边栏' : '收起侧边栏'">
+          <button class="collapse-btn" @click="toggleSidebar" :title="sidebarCollapsed ? $t('sidebar.expand') : $t('sidebar.collapse')">
             <el-icon :size="18">
               <Fold v-if="!sidebarCollapsed" />
               <Expand v-else />
@@ -64,7 +64,7 @@
 
         <div class="header-right">
           <div class="header-actions">
-            <el-tooltip content="新建模板" placement="bottom">
+            <el-tooltip :content="$t('home.newTemplate')" placement="bottom">
               <button class="action-btn" @click="$router.push('/editor')">
                 <el-icon><Plus /></el-icon>
               </button>
@@ -79,7 +79,7 @@
                 {{ userInitial }}
               </div>
               <div class="user-info">
-                <span class="user-name">{{ currentUser?.displayName || currentUser?.username || '用户' }}</span>
+                <span class="user-name">{{ currentUser?.displayName || currentUser?.username || $t('app.brand') }}</span>
                 <span class="user-role">{{ roleLabel }}</span>
               </div>
               <el-icon class="dropdown-arrow"><ArrowDown /></el-icon>
@@ -91,11 +91,11 @@
                 </div>
                 <el-dropdown-item command="profile">
                   <el-icon><User /></el-icon>
-                  <span>个人资料</span>
+                  <span>{{ $t('userMenu.profile') }}</span>
                 </el-dropdown-item>
                 <el-dropdown-item command="logout" divided>
                   <el-icon><SwitchButton /></el-icon>
-                  <span>退出登录</span>
+                  <span>{{ $t('userMenu.logout') }}</span>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -115,6 +115,7 @@ import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useUiStore } from '@/stores/ui'
+import $t from '@/locales/zh-CN'
 import {
   HomeFilled,
   Document,
@@ -145,22 +146,22 @@ const userInitial = computed(() => {
 const roleLabel = computed(() => {
   const role = currentUser.value?.role
   const labels = {
-    admin: '管理员',
-    editor: '编辑者',
-    viewer: '查看者'
+    admin: $t('roles.admin'),
+    editor: $t('roles.editor'),
+    viewer: $t('roles.viewer')
   }
-  return labels[role] || role || '用户'
+  return labels[role] || role || $t('app.brand')
 })
 
 const pageTitle = computed(() => {
   const titles = {
-    '/': '首页',
-    '/templates': '模板管理',
-    '/settings': '系统设置'
+    '/': $t('pages.home'),
+    '/templates': $t('pages.templates'),
+    '/settings': $t('pages.settings')
   }
-  if (route.path.startsWith('/editor')) return '模板编辑器'
-  if (route.path.includes('/versions')) return '版本历史'
-  return titles[route.path] || '报告模板编辑器'
+  if (route.path.startsWith('/editor')) return $t('pages.editor')
+  if (route.path.includes('/versions')) return $t('pages.versions')
+  return titles[route.path] || $t('app.title')
 })
 
 function toggleSidebar() {

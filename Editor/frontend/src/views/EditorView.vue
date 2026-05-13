@@ -44,6 +44,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import $t from '@/locales/zh-CN'
 import { Expand, Fold } from '@element-plus/icons-vue'
 import { useTemplateStore } from '@/stores/template'
 import { useEditorStore } from '@/stores/editor'
@@ -70,7 +71,7 @@ onMounted(async () => {
     try {
       await loadTemplate(id)
     } catch (e) {
-      ElMessage.error('加载模板失败')
+      ElMessage.error($t('editor.loadFailed'))
     }
   }
 })
@@ -96,7 +97,7 @@ function handleFitScreen() { editorStore.setZoom(1.0) }
 function handleToggleGrid() { editorStore.toggleGrid() }
 function handleExportJson() {
   templateStore.exportTemplateJson()
-  ElMessage.success('JSON 已导出')
+  ElMessage.success($t('editor.jsonExported'))
 }
 </script>
 

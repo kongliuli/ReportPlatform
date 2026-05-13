@@ -12,8 +12,17 @@ public class DialogService : IDialogService
     /// <returns>选中的文件路径，未选择返回null</returns>
     public string? OpenFile(string filter, string title)
     {
-        var dialog = new OpenFileDialog { Filter = filter, Title = title };
-        return dialog.ShowDialog() == true ? dialog.FileName : null;
+        try
+        {
+            var dialog = new OpenFileDialog { Filter = filter, Title = title };
+            var result = dialog.ShowDialog();
+            return result == true ? dialog.FileName : null;
+        }
+        catch (Exception ex)
+        {
+            FileLogger.Instance.WriteLine($"[DialogService] OpenFile 异常: {ex.Message}");
+            throw;
+        }
     }
 
     /// <summary>打开文件保存对话框</summary>

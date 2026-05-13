@@ -10,8 +10,11 @@
     <div class="canvas-wrapper" ref="wrapperRef">
       <canvas ref="canvasRef"></canvas>
     </div>
+    <div class="canvas-zoom-indicator" v-if="currentTemplate">
+      {{ Math.round(editorStore.zoomLevel * 100) }}%
+    </div>
     <div v-if="!currentTemplate" class="canvas-empty">
-      <el-empty description="请选择或创建模板" />
+      <el-empty :description="$t('properties.noTemplate')" />
     </div>
   </div>
 </template>
@@ -21,6 +24,7 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { CanvasEngine } from '@/engine'
 import { useTemplateStore } from '@/stores/template'
 import { useEditorStore } from '@/stores/editor'
+import $t from '@/locales/zh-CN'
 import { MM_TO_PX, CANVAS_PADDING, round2 } from '@/utils/constants'
 
 const canvasRef = ref(null)
@@ -144,7 +148,7 @@ defineExpose({ engine: () => engine })
   flex: 1;
   overflow: auto;
   position: relative;
-  background: #e8e8e8;
+  background: var(--color-surface-dim);
   outline: none;
 }
 .canvas-wrapper {
@@ -158,5 +162,17 @@ defineExpose({ engine: () => engine })
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.canvas-zoom-indicator {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  background: var(--color-bg-active);
+  color: var(--color-text-inverse);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 10;
 }
 </style>

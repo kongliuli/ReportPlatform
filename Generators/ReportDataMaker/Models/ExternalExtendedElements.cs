@@ -7,33 +7,33 @@ namespace ReportDataMaker.Models;
 public abstract class ReportExternalElementBase : ExternalElementBase
 {
     /// <summary>是否可见</summary>
-    public bool IsVisible { get; set; } = true;
+    public new bool IsVisible { get; set; } = true;
     /// <summary>背景颜色</summary>
-    public string BackgroundColor { get; set; } = string.Empty;
+    public new string BackgroundColor { get; set; } = string.Empty;
     /// <summary>边框颜色</summary>
-    public string BorderColor { get; set; } = string.Empty;
+    public new string BorderColor { get; set; } = string.Empty;
     /// <summary>边框宽度</summary>
-    public double BorderWidth { get; set; }
+    public new double BorderWidth { get; set; }
     /// <summary>边框样式</summary>
-    public string BorderStyle { get; set; } = string.Empty;
+    public new string BorderStyle { get; set; } = string.Empty;
     /// <summary>圆角半径</summary>
-    public double CornerRadius { get; set; }
+    public new double CornerRadius { get; set; }
     /// <summary>不透明度</summary>
-    public double Opacity { get; set; } = 1;
+    public new double Opacity { get; set; } = 1;
     /// <summary>阴影效果</summary>
     public string Shadow { get; set; } = string.Empty;
     /// <summary>字体族</summary>
-    public string FontFamily { get; set; } = string.Empty;
+    public new string FontFamily { get; set; } = string.Empty;
     /// <summary>字体大小</summary>
-    public double FontSize { get; set; }
+    public new double FontSize { get; set; }
     /// <summary>字体粗细</summary>
-    public string FontWeight { get; set; } = string.Empty;
+    public new string FontWeight { get; set; } = string.Empty;
     /// <summary>字体样式</summary>
-    public string FontStyle { get; set; } = string.Empty;
+    public new string FontStyle { get; set; } = string.Empty;
     /// <summary>前景色</summary>
-    public string ForegroundColor { get; set; } = "#000000";
+    public new string ForegroundColor { get; set; } = "#000000";
     /// <summary>文本对齐方式</summary>
-    public string TextAlignment { get; set; } = string.Empty;
+    public new string TextAlignment { get; set; } = string.Empty;
     /// <summary>标签宽度</summary>
     public double LabelWidth { get; set; }
     /// <summary>默认值</summary>
@@ -41,7 +41,7 @@ public abstract class ReportExternalElementBase : ExternalElementBase
     /// <summary>选项列表</summary>
     public List<string> Options { get; set; } = new();
     /// <summary>格式化字符串</summary>
-    public string FormatString { get; set; } = string.Empty;
+    public new string FormatString { get; set; } = string.Empty;
     /// <summary>元素类型</summary>
     public string? ElementType { get; set; }
 }

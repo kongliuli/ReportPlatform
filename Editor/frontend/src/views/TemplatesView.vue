@@ -2,11 +2,11 @@
   <div class="templates-view">
     <div class="page-header animate-slide-up">
       <div class="header-content">
-        <h1 class="page-title">模板管理</h1>
-        <p class="page-description">创建、编辑和管理您的报告模板</p>
+        <h1 class="page-title">{{ $t('templates.title') }}</h1>
+        <p class="page-description">{{ $t('templates.description') }}</p>
       </div>
       <el-button type="primary" size="large" :icon="Plus" @click="handleCreate">
-        新建模板
+        {{ $t('templates.newTemplate') }}
       </el-button>
     </div>
 
@@ -15,7 +15,7 @@
         <div class="filter-item filter-item--search">
           <el-input
             v-model="filter.name"
-            placeholder="搜索模板名称..."
+            :placeholder="$t('templates.search')"
             :prefix-icon="Search"
             clearable
             @clear="loadData"
@@ -25,7 +25,7 @@
         <div class="filter-item">
           <el-select
             v-model="filter.type"
-            placeholder="全部类型"
+            :placeholder="$t('templates.allTypes')"
             clearable
             @change="loadData"
           >
@@ -39,8 +39,8 @@
             clearable
             @change="loadData"
           >
-            <el-option label="已发布" :value="true" />
-            <el-option label="草稿" :value="false" />
+            <el-option :label="$t('home.published')" :value="true" />
+            <el-option :label="$t('home.draft')" :value="false" />
           </el-select>
         </div>
         <el-button type="primary" :icon="Search" @click="loadData">搜索</el-button>
@@ -54,7 +54,7 @@
         class="templates-table"
         @row-click="handleRowClick"
       >
-        <el-table-column prop="name" label="模板名称" min-width="200">
+        <el-table-column prop="name" :label="$t('templates.title')" min-width="200">
           <template #default="{ row }">
             <div class="template-name-cell">
               <div class="template-icon">
@@ -75,7 +75,7 @@
         <el-table-column label="状态" width="120" align="center">
           <template #default="{ row }">
             <el-tag :type="row.isPublished ? 'success' : 'info'" size="small">
-              {{ row.isPublished ? '已发布' : '草稿' }}
+              {{ row.isPublished ? $t('home.published') : $t('home.draft') }}
             </el-tag>
           </template>
         </el-table-column>
@@ -91,10 +91,10 @@
           <template #default="{ row }">
             <div class="action-buttons">
               <el-button size="small" type="primary" :icon="Edit" @click.stop="handleEdit(row)">
-                编辑
+                {{ $t('templates.edit') }}
               </el-button>
               <el-button size="small" :icon="Clock" @click.stop="handleVersions(row)">
-                版本
+                {{ $t('templates.edit') }}
               </el-button>
               <el-dropdown trigger="click" @command="(cmd) => handleAction(cmd, row)" @click.stop>
                 <el-button size="small" :icon="MoreFilled">
@@ -106,7 +106,7 @@
                       {{ row.isPublished ? '取消发布' : '发布' }}
                     </el-dropdown-item>
                     <el-dropdown-item :command="'delete'" :icon="Delete" divided>
-                      <span class="danger-text">删除</span>
+                        <span class="danger-text">{{ $t('templates.delete') }}</span>
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
@@ -131,7 +131,7 @@
 
     <el-dialog
       v-model="showCreateDialog"
-      title="新建模板"
+      :title="$t('templates.newTemplate')"
       width="520px"
       :close-on-click-modal="false"
       class="create-dialog"
@@ -143,10 +143,10 @@
         label-position="top"
         class="create-form"
       >
-        <el-form-item label="模板名称" prop="name">
+        <el-form-item :label="$t('templates.title')" prop="name">
           <el-input
             v-model="createForm.name"
-            placeholder="请输入模板名称"
+            :placeholder="$t('templates.search')"
             maxlength="100"
             show-word-limit
           />
@@ -162,7 +162,7 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="showCreateDialog = false">取消</el-button>
+          <el-button @click="showCreateDialog = false">{{ $t('templates.cancel') }}</el-button>
           <el-button type="primary" @click="submitCreate" :loading="creating">
             创建并编辑
           </el-button>
@@ -176,6 +176,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import $t from '@/locales/zh-CN'
 import {
   Plus,
   Search,
@@ -252,7 +253,7 @@ async function handleTogglePublish(row) {
     ElMessage.success(row.isPublished ? '已取消发布' : '已发布')
     await loadData()
   } catch (e) {
-    ElMessage.error('操作失败')
+    ElMessage.error($t('error.operationFailed'))
   }
 }
 
@@ -262,14 +263,14 @@ async function handleDelete(row) {
       `确定删除模板「${row.name}」吗？删除后无法恢复。`,
       '确认删除',
       {
-        confirmButtonText: '删除',
-        cancelButtonText: '取消',
+        confirmButtonText: $t('templates.delete'),
+        cancelButtonText: $t('templates.cancel'),
         type: 'warning',
         confirmButtonClass: 'el-button--danger'
       }
     )
     await templateStore.deleteTemplate(row.id)
-    ElMessage.success('删除成功')
+    ElMessage.success($t('templates.deleteSuccess'))
     await loadData()
   } catch (e) {
     if (e !== 'cancel') ElMessage.error('删除失败')
@@ -302,7 +303,7 @@ async function submitCreate() {
       createdBy: authStore.user?.username
     })
     showCreateDialog.value = false
-    ElMessage.success('创建成功')
+    ElMessage.success($t('templates.createSuccess'))
     router.push(`/editor/${result.id}`)
   } catch (e) {
     ElMessage.error('创建失败')

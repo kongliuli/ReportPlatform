@@ -17,10 +17,10 @@
                 <path d="M8 12h16M8 16h12M8 20h8" stroke="white" stroke-width="2" stroke-linecap="round"/>
               </svg>
             </div>
-            <span class="logo-text">模板编辑器</span>
+            <span class="logo-text">{{ $t('app.brand') }}</span>
           </div>
-          <h1 class="login-title">欢迎回来</h1>
-          <p class="login-subtitle">登录以继续使用报告模板编辑器</p>
+          <h1 class="login-title">{{ $t('login.title') }}</h1>
+          <p class="login-subtitle">{{ $t('login.subtitle') }}</p>
         </div>
 
         <el-form
@@ -31,21 +31,21 @@
           class="login-form"
         >
           <el-form-item prop="username">
-            <div class="form-label">用户名</div>
+            <div class="form-label">{{ $t('login.username') }}</div>
             <el-input
               v-model="form.username"
-              placeholder="请输入用户名"
+              :placeholder="$t('login.usernamePlaceholder')"
               size="large"
               :prefix-icon="User"
             />
           </el-form-item>
 
           <el-form-item prop="password">
-            <div class="form-label">密码</div>
+            <div class="form-label">{{ $t('login.password') }}</div>
             <el-input
               v-model="form.password"
               type="password"
-              placeholder="请输入密码"
+              :placeholder="$t('login.passwordPlaceholder')"
               size="large"
               :prefix-icon="Lock"
               show-password
@@ -60,28 +60,28 @@
               size="large"
               class="login-button"
             >
-              <span v-if="!loading">登录</span>
-              <span v-else>登录中...</span>
+              <span v-if="!loading">{{ $t('login.loginButton') }}</span>
+              <span v-else>{{ $t('login.loggingIn') }}</span>
             </el-button>
           </el-form-item>
         </el-form>
 
         <div class="login-footer">
-          <p>报告模板 Web 编辑器</p>
+          <p>{{ $t('login.footer') }}</p>
         </div>
       </div>
 
       <div class="login-info animate-slide-up" style="animation-delay: 100ms">
         <div class="info-content">
-          <h2>功能特性</h2>
+          <h2>{{ $t('features.heading') }}</h2>
           <ul class="feature-list">
             <li>
               <div class="feature-icon">
                 <el-icon><Document /></el-icon>
               </div>
               <div class="feature-text">
-                <strong>可视化编辑</strong>
-                <span>拖拽式模板设计，所见即所得</span>
+                <strong>{{ $t('features.editor') }}</strong>
+                <span>{{ $t('features.editorDesc') }}</span>
               </div>
             </li>
             <li>
@@ -89,8 +89,8 @@
                 <el-icon><Clock /></el-icon>
               </div>
               <div class="feature-text">
-                <strong>版本管理</strong>
-                <span>自动保存历史版本，随时回溯</span>
+                <strong>{{ $t('features.version') }}</strong>
+                <span>{{ $t('features.versionDesc') }}</span>
               </div>
             </li>
             <li>
@@ -98,8 +98,8 @@
                 <el-icon><Connection /></el-icon>
               </div>
               <div class="feature-text">
-                <strong>数据绑定</strong>
-                <span>灵活的数据源绑定与转换</span>
+                <strong>{{ $t('features.databinding') }}</strong>
+                <span>{{ $t('features.databindingDesc') }}</span>
               </div>
             </li>
             <li>
@@ -107,8 +107,8 @@
                 <el-icon><Download /></el-icon>
               </div>
               <div class="feature-text">
-                <strong>多格式导出</strong>
-                <span>支持 PDF、JSON 等格式导出</span>
+                <strong>{{ $t('features.export') }}</strong>
+                <span>{{ $t('features.exportDesc') }}</span>
               </div>
             </li>
           </ul>
@@ -124,6 +124,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { ElMessage } from 'element-plus'
 import { User, Lock, Document, Clock, Connection, Download } from '@element-plus/icons-vue'
+import $t from '@/locales/zh-CN'
 
 const router = useRouter()
 const route = useRoute()
@@ -138,8 +139,8 @@ const form = reactive({
 })
 
 const rules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+  username: [{ required: true, message: $t('login.usernameRequired'), trigger: 'blur' }],
+  password: [{ required: true, message: $t('login.passwordRequired'), trigger: 'blur' }]
 }
 
 const handleLogin = async () => {
@@ -152,11 +153,11 @@ const handleLogin = async () => {
       username: form.username,
       password: form.password
     })
-    ElMessage.success('登录成功')
+    ElMessage.success($t('login.loginSuccess'))
     const redirect = route.query.redirect || '/'
     router.push(redirect)
   } catch (error) {
-    ElMessage.error(error.message || '登录失败，请检查用户名和密码')
+    ElMessage.error(error.message || $t('login.loginFailed'))
   } finally {
     loading.value = false
   }

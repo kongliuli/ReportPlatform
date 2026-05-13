@@ -2,69 +2,69 @@
   <div class="property-panel">
     <template v-if="selectedElement">
       <el-form label-position="top" size="small">
-        <el-divider content-position="left">基础属性</el-divider>
-        <el-form-item label="标签">
+        <el-divider content-position="left">{{ $t('properties.basicProps') }}</el-divider>
+        <el-form-item :label="$t('properties.label')">
           <el-input v-model="form.label" @change="updateProp('label', form.label)" />
         </el-form-item>
         <el-row :gutter="8">
           <el-col :span="12">
-            <el-form-item label="X (mm)">
+            <el-form-item :label="$t('properties.x')">
               <el-input-number v-model="form.x" :step="0.5" :precision="2" @change="updateProp('x', form.x)" style="width:100%" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Y (mm)">
+            <el-form-item :label="$t('properties.y')">
               <el-input-number v-model="form.y" :step="0.5" :precision="2" @change="updateProp('y', form.y)" style="width:100%" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="8">
           <el-col :span="12">
-            <el-form-item label="宽 (mm)">
+            <el-form-item :label="$t('properties.width')">
               <el-input-number v-model="form.width" :min="1" :step="0.5" :precision="2" @change="updateProp('width', form.width)" style="width:100%" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="高 (mm)">
+            <el-form-item :label="$t('properties.height')">
               <el-input-number v-model="form.height" :min="1" :step="0.5" :precision="2" @change="updateProp('height', form.height)" style="width:100%" />
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-divider content-position="left">外观</el-divider>
+        <el-divider content-position="left">{{ $t('properties.appearance') }}</el-divider>
         <el-row :gutter="8">
           <el-col :span="12">
-            <el-form-item label="前景色">
+            <el-form-item :label="$t('properties.foregroundColor')">
               <el-color-picker v-model="form.foregroundColor" @change="updateProp('foregroundColor', form.foregroundColor)" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="背景色">
+            <el-form-item :label="$t('properties.backgroundColor')">
               <el-color-picker v-model="form.backgroundColor" @change="updateProp('backgroundColor', form.backgroundColor)" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="透明度">
+        <el-form-item :label="$t('properties.opacity')">
           <el-slider v-model="form.opacity" :min="0" :max="1" :step="0.1" @change="updateProp('opacity', form.opacity)" />
         </el-form-item>
         <el-row :gutter="8">
           <el-col :span="12">
-            <el-form-item label="边框色">
+            <el-form-item :label="$t('properties.borderColor')">
               <el-color-picker v-model="form.borderColor" @change="updateProp('borderColor', form.borderColor)" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="边框宽">
+            <el-form-item :label="$t('properties.borderWidth')">
               <el-input-number v-model="form.borderWidth" :min="0" :step="1" @change="updateProp('borderWidth', form.borderWidth)" style="width:100%" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="圆角">
+            <el-form-item :label="$t('properties.cornerRadius')">
           <el-input-number v-model="form.cornerRadius" :min="0" :step="1" @change="updateProp('cornerRadius', form.cornerRadius)" style="width:100%" />
         </el-form-item>
 
-        <el-divider content-position="left">字体</el-divider>
-        <el-form-item label="字体">
+        <el-divider content-position="left">{{ $t('properties.font') }}</el-divider>
+        <el-form-item :label="$t('properties.fontFamily')">
           <el-select v-model="form.fontFamily" @change="updateProp('fontFamily', form.fontFamily)">
             <el-option v-for="f in fontFamilies" :key="f" :label="f" :value="f" />
           </el-select>
@@ -76,15 +76,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="粗细">
+            <el-form-item :label="$t('properties.fontWeight')">
               <el-select v-model="form.fontWeight" @change="updateProp('fontWeight', form.fontWeight)">
                 <el-option label="正常" value="normal" />
-                <el-option label="粗体" value="bold" />
+                <el-option :label="$t('properties.bold')" value="bold" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="对齐">
+            <el-form-item :label="$t('properties.alignment')">
               <el-select v-model="form.textAlignment" @change="updateProp('textAlignment', form.textAlignment)">
                 <el-option label="左" value="left" />
                 <el-option label="中" value="center" />
@@ -118,11 +118,11 @@
         <IconProperties v-else-if="elementType === 'IconElement'" :element="selectedElement" @update="updateProp" />
         <HyperlinkProperties v-else-if="elementType === 'HyperlinkElement'" :element="selectedElement" @update="updateProp" />
 
-        <el-divider content-position="left">数据绑定</el-divider>
+        <el-divider content-position="left">{{ $t('properties.databinding') }}</el-divider>
         <DataBindingPanel :element="selectedElement" @update="updateProp" />
       </el-form>
     </template>
-    <el-empty v-else description="选择元素以编辑属性" :image-size="80" />
+    <el-empty v-else :description="$t('properties.noSelection')" :image-size="80" />
   </div>
 </template>
 
@@ -130,6 +130,7 @@
 import { computed, reactive, watch } from 'vue'
 import { useTemplateStore } from '@/stores/template'
 import { useEditorStore } from '@/stores/editor'
+import $t from '@/locales/zh-CN'
 import TextProperties from './properties/TextProperties.vue'
 import ImageProperties from './properties/ImageProperties.vue'
 import LineProperties from './properties/LineProperties.vue'

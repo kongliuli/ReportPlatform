@@ -11,28 +11,32 @@ public class PdfPageLayoutEngine
     public float MarginTop { get; }
     public float MarginBottom { get; }
     public bool IsLandscape { get; }
+    private readonly float _scale;
 
     private const float MmToPoints = 2.835f;
 
-    public PdfPageLayoutEngine(ExternalTemplateDefinition template)
+    public PdfPageLayoutEngine(ExternalTemplateDefinition template) : this(template, 1.0f) { }
+
+    public PdfPageLayoutEngine(ExternalTemplateDefinition template, double scale)
     {
+        _scale = (float)scale;
         IsLandscape = template.Orientation?.Equals("Landscape", StringComparison.OrdinalIgnoreCase) == true;
 
-        var pageWidth = (float)template.PageWidth * MmToPoints;
-        var pageHeight = (float)template.PageHeight * MmToPoints;
+        var pageWidth = (float)(template.PageWidth * MmToPoints * scale);
+        var pageHeight = (float)(template.PageHeight * MmToPoints * scale);
 
         if (IsLandscape)
             (pageWidth, pageHeight) = (pageHeight, pageWidth);
 
         PageWidth = pageWidth;
         PageHeight = pageHeight;
-        MarginLeft = (float)template.MarginLeft * MmToPoints;
-        MarginRight = (float)template.MarginRight * MmToPoints;
-        MarginTop = (float)template.MarginTop * MmToPoints;
-        MarginBottom = (float)template.MarginBottom * MmToPoints;
+        MarginLeft = (float)(template.MarginLeft * MmToPoints * scale);
+        MarginRight = (float)(template.MarginRight * MmToPoints * scale);
+        MarginTop = (float)(template.MarginTop * MmToPoints * scale);
+        MarginBottom = (float)(template.MarginBottom * MmToPoints * scale);
     }
 
-    public float ConvertX(double x) => (float)(x * MmToPoints);
-    public float ConvertY(double y) => (float)(y * MmToPoints);
-    public float ConvertSize(double size) => (float)(size * MmToPoints);
+    public float ConvertX(double x) => (float)(x * MmToPoints * _scale);
+    public float ConvertY(double y) => (float)(y * MmToPoints * _scale);
+    public float ConvertSize(double size) => (float)(size * MmToPoints * _scale);
 }

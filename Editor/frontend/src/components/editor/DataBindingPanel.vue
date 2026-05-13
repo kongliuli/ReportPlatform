@@ -1,13 +1,13 @@
 <template>
   <div class="data-binding-panel">
     <el-tabs v-model="activeTab">
-      <el-tab-pane label="绑定路径" name="paths">
+      <el-tab-pane :label="$t('databinding.bindPath')" name="paths">
         <DataPathEditor :element="element" @update="emitUpdate" />
       </el-tab-pane>
-      <el-tab-pane label="转换规则" name="transform">
+      <el-tab-pane :label="$t('databinding.transformRules')" name="transform">
         <TransformRuleEditor :element="element" @update="emitUpdate" />
       </el-tab-pane>
-      <el-tab-pane label="验证规则" name="validation">
+      <el-tab-pane :label="$t('databinding.validationRules')" name="validation">
         <ValidationRuleEditor :element="element" @update="emitUpdate" />
       </el-tab-pane>
     </el-tabs>
@@ -15,6 +15,7 @@
 </template>
 
 <script setup>
+import $t from '@/locales/zh-CN'
 import { ref } from 'vue'
 import DataPathEditor from '@/components/editor/databinding/DataPathEditor.vue'
 import TransformRuleEditor from '@/components/editor/databinding/TransformRuleEditor.vue'

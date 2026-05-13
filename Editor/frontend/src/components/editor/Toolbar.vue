@@ -2,7 +2,7 @@
   <div class="toolbar">
     <div class="toolbar-section toolbar-left">
       <el-button :icon="Back" @click="$router.back()" text class="toolbar-btn">
-        <span class="btn-text">返回</span>
+        <span class="btn-text">{{ $t('toolbar.back') }}</span>
       </el-button>
       <div class="toolbar-divider"></div>
       <div class="undo-redo-group">
@@ -29,18 +29,18 @@
 
     <div class="toolbar-section toolbar-center">
       <div class="zoom-control">
-        <el-tooltip content="缩小" placement="bottom">
+        <el-tooltip :content="$t('toolbar.zoomOut')" placement="bottom">
           <button class="icon-btn" @click="$emit('zoom-out')">
             <el-icon><ZoomOut /></el-icon>
           </button>
         </el-tooltip>
         <span class="zoom-value">{{ zoomPercentage }}%</span>
-        <el-tooltip content="放大" placement="bottom">
+        <el-tooltip :content="$t('toolbar.zoomIn')" placement="bottom">
           <button class="icon-btn" @click="$emit('zoom-in')">
             <el-icon><ZoomIn /></el-icon>
           </button>
         </el-tooltip>
-        <el-tooltip content="适应屏幕" placement="bottom">
+        <el-tooltip :content="$t('toolbar.fitScreen')" placement="bottom">
           <button class="icon-btn" @click="$emit('fit-screen')">
             <el-icon><FullScreen /></el-icon>
           </button>
@@ -48,7 +48,7 @@
       </div>
       <div class="toolbar-divider"></div>
       <div class="view-controls">
-        <el-tooltip :content="showGrid ? '隐藏网格' : '显示网格'" placement="bottom">
+        <el-tooltip :content="showGrid ? $t('toolbar.hideGrid') : $t('toolbar.showGrid')" placement="bottom">
           <button
             class="icon-btn"
             :class="{ active: showGrid }"
@@ -57,7 +57,7 @@
             <el-icon><Grid /></el-icon>
           </button>
         </el-tooltip>
-        <el-tooltip content="页面设置" placement="bottom">
+        <el-tooltip :content="$t('toolbar.pageSettings')" placement="bottom">
           <button class="icon-btn" @click="openPageSettings">
             <el-icon><Document /></el-icon>
           </button>
@@ -68,27 +68,27 @@
     <div class="toolbar-section toolbar-right">
       <el-button text class="toolbar-btn" @click="$emit('export-json')">
         <el-icon><Download /></el-icon>
-        <span class="btn-text">导出JSON</span>
+        <span class="btn-text">{{ $t('toolbar.exportJson') }}</span>
       </el-button>
       <el-button class="preview-btn" @click="$emit('preview')">
         <el-icon><View /></el-icon>
-        <span>预览</span>
+        <span>{{ $t('toolbar.preview') }}</span>
       </el-button>
       <el-button type="primary" class="save-btn" @click="$emit('save')">
         <el-icon><Check /></el-icon>
-        <span>保存</span>
+        <span>{{ $t('toolbar.save') }}</span>
       </el-button>
     </div>
 
     <el-dialog
       v-model="showPageSettings"
-      title="页面设置"
+      :title="$t('toolbar.pageSettings')"
       width="480px"
       :close-on-click-modal="false"
       class="page-settings-dialog"
     >
       <el-form label-position="top" size="default" class="settings-form">
-        <el-form-item label="纸张大小">
+        <el-form-item :label="$t('pageSettings.paperSize')">
           <el-radio-group v-model="pageForm.size" @change="onSizeChange" class="size-radio-group">
             <el-radio-button value="A4">
               <div class="size-option">
@@ -105,24 +105,24 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="纸张方向">
+        <el-form-item :label="$t('pageSettings.orientation')">
           <el-radio-group v-model="pageForm.orientation" class="orientation-radio-group">
             <el-radio-button value="Portrait">
               <div class="orientation-option">
                 <div class="orientation-icon portrait"></div>
-                <span>纵向</span>
+                <span>{{ $t('pageSettings.portrait') }}</span>
               </div>
             </el-radio-button>
             <el-radio-button value="Landscape">
               <div class="orientation-option">
                 <div class="orientation-icon landscape"></div>
-                <span>横向</span>
+                <span>{{ $t('pageSettings.landscape') }}</span>
               </div>
             </el-radio-button>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="页边距 (mm)">
+        <el-form-item :label="$t('pageSettings.margins')">
           <div class="margin-inputs">
             <div class="margin-input-group">
               <el-input-number
@@ -205,6 +205,7 @@ import {
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { useTemplateStore } from '@/stores/template'
 import { useEditorStore } from '@/stores/editor'
+import $t from '@/locales/zh-CN'
 
 defineEmits(['save', 'preview', 'undo', 'redo', 'zoom-in', 'zoom-out', 'fit-screen', 'toggle-grid', 'export-json'])
 
@@ -215,11 +216,11 @@ const canUndo = computed(() => templateStore.canUndo)
 const canRedo = computed(() => templateStore.canRedo)
 const undoTooltip = computed(() => {
   const desc = templateStore.lastUndoDescription
-  return `撤销${desc ? ': ' + desc : ''} (Ctrl+Z)`
+  return `${$t('editor.undoLabel')}${desc ? ': ' + desc : ''} (Ctrl+Z)`
 })
 const redoTooltip = computed(() => {
   const desc = templateStore.lastRedoDescription
-  return `重做${desc ? ': ' + desc : ''} (Ctrl+Y)`
+  return `${$t('editor.redoLabel')}${desc ? ': ' + desc : ''} (Ctrl+Y)`
 })
 const zoomPercentage = computed(() => editorStore.zoomPercentage)
 const showGrid = computed(() => editorStore.showGrid)
@@ -244,7 +245,7 @@ function detectPageSize(w, h) {
   if (Math.abs(w - 297) < 1 && Math.abs(h - 210) < 1) return { name: 'A4', orientation: 'Landscape' }
   if (Math.abs(w - 148) < 1 && Math.abs(h - 210) < 1) return { name: 'A5', orientation: 'Portrait' }
   if (Math.abs(w - 210) < 1 && Math.abs(h - 148) < 1) return { name: 'A5', orientation: 'Landscape' }
-  return { name: '自定义', orientation: h > w ? 'Portrait' : 'Landscape' }
+  return { name: $t('pageSettings.custom'), orientation: h > w ? 'Portrait' : 'Landscape' }
 }
 
 const previewStyle = computed(() => {
@@ -303,9 +304,9 @@ async function applyPageSettings() {
   if (hasElements) {
     try {
       await ElMessageBox.confirm(
-        '切换页面设置可能导致部分元素超出页面范围，是否继续？',
-        '页面设置变更',
-        { confirmButtonText: '继续', cancelButtonText: '取消', type: 'warning' }
+        $t('pageSettings.confirmMessage'),
+        $t('pageSettings.confirmTitle'),
+        { confirmButtonText: $t('pageSettings.confirmButton'), cancelButtonText: $t('pageSettings.confirmCancel'), type: 'warning' }
       )
     } catch {
       return
@@ -323,7 +324,7 @@ async function applyPageSettings() {
   })
 
   showPageSettings.value = false
-  ElMessage.success('页面设置已更新')
+  ElMessage.success($t('editor.pageSettingsUpdated'))
 }
 </script>
 

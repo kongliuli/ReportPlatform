@@ -432,25 +432,43 @@ public class PdfElementRenderer
             ? val?.ToString() ?? element.Text
             : element.Text;
         if (string.IsNullOrEmpty(text)) text = element.DefaultValue;
-        if (string.IsNullOrEmpty(text)) return;
+
+        var hasLabel = !string.IsNullOrEmpty(element.Label);
+        if (string.IsNullOrEmpty(text) && !hasLabel) return;
+
+        var displayText = hasLabel
+            ? (string.IsNullOrEmpty(text) ? $"{element.Label}: ____" : $"{element.Label}: {text}")
+            : text!;
+
+        using var font = new SKFont
+        {
+            Size = GetFontSize(element)
+        };
+
+        var textColor = (string.IsNullOrEmpty(text) && hasLabel)
+            ? ParseColor("#94A3B8")
+            : ParseColor(element.ForegroundColor);
 
         using var paint = new SKPaint
         {
-            Color = ParseColor(element.ForegroundColor),
-            TextSize = GetFontSize(element),
-            IsAntialias = true,
-            TextAlign = ParseTextAlign(element.TextAlignment)
+            Color = textColor,
+            IsAntialias = true
         };
 
+        SKTypeface? typeface = null;
         if (element.FontStyle?.ToLower() == "italic")
-            paint.Typeface = SKTypeface.FromFamilyName(element.FontFamily, SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Italic);
+            typeface = SKTypeface.FromFamilyName(element.FontFamily, SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Italic);
         else if (element.FontWeight?.ToLower() == "bold")
-            paint.Typeface = SKTypeface.FromFamilyName(element.FontFamily, SKFontStyleWeight.Bold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
+            typeface = SKTypeface.FromFamilyName(element.FontFamily, SKFontStyleWeight.Bold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
 
-        if (!string.IsNullOrEmpty(element.FontFamily) && paint.Typeface == null)
-            paint.Typeface = SKTypeface.FromFamilyName(element.FontFamily);
+        if (!string.IsNullOrEmpty(element.FontFamily) && typeface == null)
+            typeface = SKTypeface.FromFamilyName(element.FontFamily);
 
-        var textX = paint.TextAlign switch
+        if (typeface != null)
+            font.Typeface = typeface;
+
+        var textAlign = ParseTextAlign(element.TextAlignment);
+        var textX = textAlign switch
         {
             SKTextAlign.Center => x + w / 2,
             SKTextAlign.Right => x + w,
@@ -459,14 +477,12 @@ public class PdfElementRenderer
 
         if (w > 0 && h > 0)
         {
-            SKRect bounds = new();
-            paint.MeasureText(text, ref bounds);
-            var textY = y + (h + bounds.Height) / 2 - bounds.Top;
-            canvas.DrawText(text, textX, textY, paint);
+            var textY = y + h / 2 + font.Metrics.Descent / 2;
+            canvas.DrawText(displayText, textX, textY, textAlign, font, paint);
         }
         else
         {
-            canvas.DrawText(text, textX, y + paint.TextSize, paint);
+            canvas.DrawText(displayText, textX, y + font.Size, textAlign, font, paint);
         }
     }
 
@@ -477,24 +493,29 @@ public class PdfElementRenderer
             value = element.DecimalPlaces > 0
                 ? element.Value.ToString($"F{element.DecimalPlaces}")
                 : element.Value.ToString();
-        if (!string.IsNullOrEmpty(element.Unit)) value += $" {element.Unit}";
+        if (!string.IsNullOrEmpty(element.Unit) && !string.IsNullOrEmpty(value)) value += $" {element.Unit}";
 
-        using var paint = new SKPaint
-        {
-            Color = ParseColor(element.ForegroundColor),
-            TextSize = GetFontSize(element),
-            IsAntialias = true,
-            TextAlign = ParseTextAlign(element.TextAlignment)
-        };
+        var hasLabel = !string.IsNullOrEmpty(element.Label);
+        var displayText = hasLabel
+            ? (string.IsNullOrEmpty(value) ? $"{element.Label}: ____" : $"{element.Label}: {value}")
+            : (value ?? string.Empty);
 
-        var textX = paint.TextAlign switch
+        var textColor = (string.IsNullOrEmpty(value) && hasLabel)
+            ? ParseColor("#94A3B8")
+            : ParseColor(element.ForegroundColor);
+
+        using var font = new SKFont { Size = GetFontSize(element) };
+        using var paint = new SKPaint { Color = textColor, IsAntialias = true };
+
+        var textAlign = ParseTextAlign(element.TextAlignment);
+        var textX = textAlign switch
         {
             SKTextAlign.Center => x + w / 2,
             SKTextAlign.Right => x + w,
             _ => x
         };
 
-        canvas.DrawText(value ?? string.Empty, textX, y + paint.TextSize, paint);
+        canvas.DrawText(displayText, textX, y + font.Size, textAlign, font, paint);
     }
 
     private void DrawDate(SKCanvas canvas, ExternalDateElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
@@ -504,22 +525,27 @@ public class PdfElementRenderer
         if (!string.IsNullOrEmpty(value) && DateTime.TryParse(value, out var dt))
             value = dt.ToString(!string.IsNullOrEmpty(element.Format) ? element.Format : "yyyy-MM-dd");
 
-        using var paint = new SKPaint
-        {
-            Color = ParseColor(element.ForegroundColor),
-            TextSize = GetFontSize(element),
-            IsAntialias = true,
-            TextAlign = ParseTextAlign(element.TextAlignment)
-        };
+        var hasLabel = !string.IsNullOrEmpty(element.Label);
+        var displayText = hasLabel
+            ? (string.IsNullOrEmpty(value) ? $"{element.Label}: ____" : $"{element.Label}: {value}")
+            : (value ?? string.Empty);
 
-        var textX = paint.TextAlign switch
+        var textColor = (string.IsNullOrEmpty(value) && hasLabel)
+            ? ParseColor("#94A3B8")
+            : ParseColor(element.ForegroundColor);
+
+        using var font = new SKFont { Size = GetFontSize(element) };
+        using var paint = new SKPaint { Color = textColor, IsAntialias = true };
+
+        var textAlign = ParseTextAlign(element.TextAlignment);
+        var textX = textAlign switch
         {
             SKTextAlign.Center => x + w / 2,
             SKTextAlign.Right => x + w,
             _ => x
         };
 
-        canvas.DrawText(value ?? string.Empty, textX, y + paint.TextSize, paint);
+        canvas.DrawText(displayText, textX, y + font.Size, textAlign, font, paint);
     }
 
     private void DrawImage(SKCanvas canvas, ExternalImageElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
@@ -540,14 +566,18 @@ public class PdfElementRenderer
         }
         else
         {
+            using var font = new SKFont
+            {
+                Size = GetFontSize(element)
+            };
+
             using var paint = new SKPaint
             {
                 Color = SKColors.Gray,
-                TextSize = GetFontSize(element),
                 IsAntialias = true
             };
             var label = !string.IsNullOrEmpty(element.AltText) ? $"[{element.AltText}]" : "[图片]";
-            canvas.DrawText(label, x, y + paint.TextSize, paint);
+            canvas.DrawText(label, x, y + font.Size, SKTextAlign.Left, font, paint);
         }
     }
 
@@ -567,10 +597,14 @@ public class PdfElementRenderer
             IsAntialias = true
         };
 
+        using var font = new SKFont
+        {
+            Size = element.FontSize > 0 ? (float)element.FontSize * 2.835f : 10f * 2.835f
+        };
+
         using var fillPaint = new SKPaint
         {
             Color = ParseColor(element.ForegroundColor),
-            TextSize = element.FontSize > 0 ? (float)element.FontSize * 2.835f : 10f * 2.835f,
             IsAntialias = true
         };
 
@@ -597,7 +631,7 @@ public class PdfElementRenderer
                 if (element.CellData != null && r < element.CellData.Count && c < element.CellData[r].Count)
                 {
                     var cellText = element.CellData[r][c] ?? string.Empty;
-                    canvas.DrawText(cellText, cellX + 4, cellY + rowHeight - 4, fillPaint);
+                    canvas.DrawText(cellText, cellX + 4, cellY + rowHeight - 4, SKTextAlign.Left, font, fillPaint);
                 }
                 else if (element.Cells != null)
                 {
@@ -607,7 +641,7 @@ public class PdfElementRenderer
                         var cellText = !string.IsNullOrEmpty(cell.DataPath) && data.TryGetValue(cell.DataPath, out var v)
                             ? v?.ToString() ?? cell.Text
                             : cell.Text;
-                        canvas.DrawText(cellText, cellX + 4, cellY + rowHeight - 4, fillPaint);
+                        canvas.DrawText(cellText, cellX + 4, cellY + rowHeight - 4, SKTextAlign.Left, font, fillPaint);
                     }
                 }
             }
@@ -620,8 +654,9 @@ public class PdfElementRenderer
         if (string.IsNullOrEmpty(value)) value = element.Value;
         if (string.IsNullOrEmpty(value))
         {
-            using var paint = new SKPaint { Color = SKColors.Gray, TextSize = GetFontSize(element), IsAntialias = true };
-            canvas.DrawText("[条形码]", x, y + paint.TextSize, paint);
+            using var font = new SKFont { Size = GetFontSize(element) };
+            using var paint = new SKPaint { Color = SKColors.Gray, IsAntialias = true };
+            canvas.DrawText("[条形码]", x, y + font.Size, SKTextAlign.Left, font, paint);
             return;
         }
 
@@ -644,8 +679,9 @@ public class PdfElementRenderer
         }
         catch
         {
-            using var paint = new SKPaint { Color = SKColors.Gray, TextSize = GetFontSize(element), IsAntialias = true };
-            canvas.DrawText($"[条形码: {value}]", x, y + paint.TextSize, paint);
+            using var font = new SKFont { Size = GetFontSize(element) };
+            using var paint = new SKPaint { Color = SKColors.Gray, IsAntialias = true };
+            canvas.DrawText($"[条形码: {value}]", x, y + font.Size, SKTextAlign.Left, font, paint);
         }
     }
 
@@ -655,8 +691,9 @@ public class PdfElementRenderer
         if (string.IsNullOrEmpty(value)) value = element.Value;
         if (string.IsNullOrEmpty(value))
         {
-            using var paint = new SKPaint { Color = SKColors.Gray, TextSize = GetFontSize(element), IsAntialias = true };
-            canvas.DrawText("[二维码]", x, y + paint.TextSize, paint);
+            using var font = new SKFont { Size = GetFontSize(element) };
+            using var paint = new SKPaint { Color = SKColors.Gray, IsAntialias = true };
+            canvas.DrawText("[二维码]", x, y + font.Size, SKTextAlign.Left, font, paint);
             return;
         }
 
@@ -697,8 +734,9 @@ public class PdfElementRenderer
         }
         catch
         {
-            using var paint = new SKPaint { Color = SKColors.Gray, TextSize = GetFontSize(element), IsAntialias = true };
-            canvas.DrawText($"[二维码: {value}]", x, y + paint.TextSize, paint);
+            using var font = new SKFont { Size = GetFontSize(element) };
+            using var paint = new SKPaint { Color = SKColors.Gray, IsAntialias = true };
+            canvas.DrawText($"[二维码: {value}]", x, y + font.Size, SKTextAlign.Left, font, paint);
         }
     }
 
@@ -777,37 +815,49 @@ public class PdfElementRenderer
     private void DrawCheckbox(SKCanvas canvas, ExternalCheckboxElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
     {
         var symbol = element.Checked ? "☑" : "☐";
+        using var font = new SKFont
+        {
+            Size = GetFontSize(element)
+        };
+
         using var paint = new SKPaint
         {
             Color = ParseColor(element.ForegroundColor),
-            TextSize = GetFontSize(element),
             IsAntialias = true
         };
-        canvas.DrawText(symbol, x, y + paint.TextSize, paint);
+        canvas.DrawText(symbol, x, y + font.Size, SKTextAlign.Left, font, paint);
     }
 
     private void DrawRadio(SKCanvas canvas, ExternalRadioElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
     {
         var symbol = element.Checked ? "◉" : "○";
+        using var font = new SKFont
+        {
+            Size = GetFontSize(element)
+        };
+
         using var paint = new SKPaint
         {
             Color = ParseColor(element.ForegroundColor),
-            TextSize = GetFontSize(element),
             IsAntialias = true
         };
-        canvas.DrawText(symbol, x, y + paint.TextSize, paint);
+        canvas.DrawText(symbol, x, y + font.Size, SKTextAlign.Left, font, paint);
     }
 
     private void DrawSignature(SKCanvas canvas, ExternalSignatureElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
     {
+        using var font = new SKFont
+        {
+            Size = GetFontSize(element)
+        };
+
         using var paint = new SKPaint
         {
             Color = SKColors.Gray,
-            TextSize = GetFontSize(element),
             IsAntialias = true
         };
         var label = !string.IsNullOrEmpty(element.Placeholder) ? $"[{element.Placeholder}]" : "[签名]";
-        canvas.DrawText(label, x, y + paint.TextSize, paint);
+        canvas.DrawText(label, x, y + font.Size, SKTextAlign.Left, font, paint);
     }
 
     private void DrawHeader(SKCanvas canvas, ExternalHeaderElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
@@ -824,15 +874,19 @@ public class PdfElementRenderer
 
     private void DrawPageNumber(SKCanvas canvas, ExternalPageNumberElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
     {
+        using var font = new SKFont
+        {
+            Size = GetFontSize(element)
+        };
+
         using var paint = new SKPaint
         {
             Color = ParseColor(element.ForegroundColor),
-            TextSize = GetFontSize(element),
             IsAntialias = true
         };
         var format = !string.IsNullOrEmpty(element.Format) ? element.Format : "第 {page} 页";
         var text = format.Replace("{page}", "·").Replace("{Page}", "·");
-        canvas.DrawText(text, x, y + paint.TextSize, paint);
+        canvas.DrawText(text, x, y + font.Size, SKTextAlign.Left, font, paint);
     }
 
     private void DrawWatermark(SKCanvas canvas, ExternalWatermarkElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
@@ -842,19 +896,22 @@ public class PdfElementRenderer
         var alpha = (byte)(element.Opacity < 1 ? element.Opacity * 255 : 40);
         var color = !string.IsNullOrEmpty(element.Color) ? ParseColor(element.Color, alpha) : SKColors.Gray.WithAlpha(alpha);
 
+        using var font = new SKFont
+        {
+            Size = element.FontSize > 0 ? (float)element.FontSize * 2.835f : 48f * 2.835f
+        };
+
         using var paint = new SKPaint
         {
             Color = color,
-            TextSize = element.FontSize > 0 ? (float)element.FontSize * 2.835f : 48f * 2.835f,
-            IsAntialias = true,
-            TextAlign = SKTextAlign.Center
+            IsAntialias = true
         };
 
         canvas.Save();
         var centerX = x + w / 2;
         var centerY = y + h / 2;
         canvas.RotateDegrees((float)element.Angle, centerX, centerY);
-        canvas.DrawText(element.Text, centerX, centerY, paint);
+        canvas.DrawText(element.Text, centerX, centerY, SKTextAlign.Center, font, paint);
         canvas.Restore();
     }
 
@@ -889,10 +946,14 @@ public class PdfElementRenderer
 
     private void DrawRepeat(SKCanvas canvas, ExternalRepeatElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
     {
+        using var font = new SKFont
+        {
+            Size = GetFontSize(element)
+        };
+
         using var paint = new SKPaint
         {
             Color = ParseColor(element.ForegroundColor),
-            TextSize = GetFontSize(element),
             IsAntialias = true
         };
 
@@ -901,19 +962,19 @@ public class PdfElementRenderer
             if (itemsObj is System.Collections.IList items)
             {
                 var gap = element.Gap > 0 ? layout.ConvertSize(element.Gap) : 4f;
-                var itemHeight = paint.TextSize + 2;
+                var itemHeight = font.Size + 2;
                 for (int i = 0; i < items.Count; i++)
                 {
                     var itemText = !string.IsNullOrEmpty(element.ItemTemplate)
                         ? element.ItemTemplate.Replace("{value}", items[i]?.ToString() ?? string.Empty)
                         : items[i]?.ToString() ?? string.Empty;
-                    canvas.DrawText(itemText, x, y + (i + 1) * (itemHeight + gap), paint);
+                    canvas.DrawText(itemText, x, y + (i + 1) * (itemHeight + gap), SKTextAlign.Left, font, paint);
                 }
             }
         }
         else
         {
-            canvas.DrawText(element.ItemTemplate, x, y + paint.TextSize, paint);
+            canvas.DrawText(element.ItemTemplate, x, y + font.Size, SKTextAlign.Left, font, paint);
         }
     }
 
@@ -922,14 +983,18 @@ public class PdfElementRenderer
         var text = !string.IsNullOrEmpty(element.Text) ? element.Text : element.Url;
         var fontSize = GetFontSize(element);
 
+        using var font = new SKFont
+        {
+            Size = fontSize
+        };
+
         using var paint = new SKPaint
         {
             Color = SKColors.Blue,
-            TextSize = fontSize,
             IsAntialias = true
         };
 
-        canvas.DrawText(text, x, y + fontSize, paint);
+        canvas.DrawText(text, x, y + fontSize, SKTextAlign.Left, font, paint);
 
         // 手动绘制下划线
         using var underlinePaint = new SKPaint
@@ -946,28 +1011,36 @@ public class PdfElementRenderer
         var color = !string.IsNullOrEmpty(element.Color) ? ParseColor(element.Color) : ParseColor(element.ForegroundColor);
         var size = element.Size > 0 ? (float)element.Size * 2.835f : GetFontSize(element);
 
+        using var font = new SKFont
+        {
+            Size = size
+        };
+
         using var paint = new SKPaint
         {
             Color = color,
-            TextSize = size,
             IsAntialias = true
         };
 
         var label = !string.IsNullOrEmpty(element.IconName) ? $"[{element.IconName}]" : "[图标]";
-        canvas.DrawText(label, x, y + paint.TextSize, paint);
+        canvas.DrawText(label, x, y + font.Size, SKTextAlign.Left, font, paint);
     }
 
     private void DrawChart(SKCanvas canvas, ExternalChartElement element, Dictionary<string, object> data, float x, float y, float w, float h, PdfPageLayoutEngine layout)
     {
+        using var font = new SKFont
+        {
+            Size = GetFontSize(element)
+        };
+
         using var paint = new SKPaint
         {
             Color = SKColors.Gray,
-            TextSize = GetFontSize(element),
             IsAntialias = true
         };
 
         var label = !string.IsNullOrEmpty(element.ChartType) ? $"[图表: {element.ChartType}]" : "[图表]";
-        canvas.DrawText(label, x, y + paint.TextSize, paint);
+        canvas.DrawText(label, x, y + font.Size, SKTextAlign.Left, font, paint);
     }
 
     #endregion

@@ -41,7 +41,7 @@ public class ExcelSchemaExporter
             cell.Value = schema.Fields[i].DataType.ToString().ToLower();
             cell.Style.Font.FontColor = XLColor.LightGray;
             if (schema.Fields[i].DataType == FieldDataType.Dropdown && schema.Fields[i].Options?.Count > 0)
-                cell.Value += $" [{string.Join(",", schema.Fields[i].Options)}]";
+                cell.Value += $" [{string.Join(",", schema.Fields[i].Options ?? Enumerable.Empty<string>())}]";
             if (schema.Fields[i].DataType == FieldDataType.Number && schema.Fields[i].DecimalPlaces.HasValue)
                 cell.Value += $" (D{schema.Fields[i].DecimalPlaces})";
         }

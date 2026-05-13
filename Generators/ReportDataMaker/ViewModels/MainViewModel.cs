@@ -28,7 +28,6 @@ public class MainViewModel : ViewModelBase
     private readonly IPdfExportService _pdfExportService;
     private readonly BatchExportService _batchExportService;
     private readonly ExportHistoryStore _exportHistoryStore;
-    private readonly DataBindingService _concreteDataBindingService;
 
     /// <summary>初始化主视图模型</summary>
     /// <param name="templateLoader">模板加载服务</param>
@@ -49,8 +48,7 @@ public class MainViewModel : ViewModelBase
         ContextAdapterFactory contextFactory,
         IPdfExportService pdfExportService,
         BatchExportService batchExportService,
-        ExportHistoryStore exportHistoryStore,
-        DataBindingService concreteDataBindingService)
+        ExportHistoryStore exportHistoryStore)
     {
         _templateLoader = templateLoader;
         _dataBindingService = dataBindingService;
@@ -63,7 +61,6 @@ public class MainViewModel : ViewModelBase
         _pdfExportService = pdfExportService;
         _batchExportService = batchExportService;
         _exportHistoryStore = exportHistoryStore;
-        _concreteDataBindingService = concreteDataBindingService;
 
         Tabs = new ObservableCollection<TabViewModelBase>();
         Adapters = new ObservableCollection<AdapterItemViewModel>();
@@ -153,27 +150,49 @@ public class MainViewModel : ViewModelBase
 
     private void ExecuteLoadTemplate()
     {
+        FileLogger.Instance.WriteLine("[MainVM] 用户执行加载模板命令");
+        
         var filePath = _dialogService.OpenFile("JSON 文件 (*.json)|*.json|所有文件 (*.*)|*.*", "选择模板文件");
-        if (string.IsNullOrEmpty(filePath)) return;
+        
+        FileLogger.Instance.WriteLine($"[MainVM] 用户选择文件: {filePath}");
+        
+        if (string.IsNullOrEmpty(filePath))
+        {
+            FileLogger.Instance.WriteLine("[MainVM] 用户取消选择");
+            return;
+        }
+        
         try
         {
+            FileLogger.Instance.WriteLine("[MainVM] 调用模板加载服务...");
             var template = _templateLoader.LoadFromFile(filePath);
+            FileLogger.Instance.WriteLine("[MainVM] 模板加载成功，开始初始化...");
             LoadTemplate(template);
+            FileLogger.Instance.WriteLine("[MainVM] 模板初始化完成");
         }
         catch (Exception ex)
         {
+            FileLogger.Instance.WriteLine($"[MainVM] 加载失败: {ex.GetType().Name} - {ex.Message}");
+            FileLogger.Instance.WriteLine($"[MainVM] 异常堆栈: {ex.StackTrace}");
             _dialogService.ShowError($"加载模板失败: {ex.Message}", "错误");
         }
     }
 
     private void LoadTemplate(ExternalTemplateDefinition template)
     {
+        FileLogger.Instance.WriteLine($"[MainVM.LoadTemplate] 开始处理模板: {template.Name}");
+        
         CurrentTemplate = template;
+        FileLogger.Instance.WriteLine($"[MainVM.LoadTemplate] CurrentTemplate 设置完成");
 
+        FileLogger.Instance.WriteLine("[MainVM.LoadTemplate] 加载上下文配置...");
         var contextConfig = _contextFactory.LoadProfile("default");
+        FileLogger.Instance.WriteLine("[MainVM.LoadTemplate] 填充上下文数据...");
         var contextResult = _contextFactory.Fill(template, contextConfig);
+        
         if (contextResult.Success && contextResult.Data.Count > 0)
         {
+            FileLogger.Instance.WriteLine($"[MainVM.LoadTemplate] 上下文数据填充成功，共 {contextResult.Data.Count} 项");
             foreach (var element in template.Elements)
             {
                 if (element.Group == ElementGroup.Context && !string.IsNullOrEmpty(element.DataPath)
@@ -183,31 +202,36 @@ public class MainViewModel : ViewModelBase
                 }
             }
         }
+        else
+        {
+            FileLogger.Instance.WriteLine("[MainVM.LoadTemplate] 上下文数据为空或填充失败");
+        }
 
         StatusInfo = $"模板: {template.Name}";
+        FileLogger.Instance.WriteLine("[MainVM.LoadTemplate] 清空标签页和适配器...");
         Tabs.Clear();
         Adapters.Clear();
 
-        var dataEntryTab = new DataEntryTabViewModel(template, _dataBindingService);
-        dataEntryTab.CloseRequested += OnTabCloseRequested;
-        Tabs.Add(dataEntryTab);
+        FileLogger.Instance.WriteLine("[MainVM.LoadTemplate] 创建主标签页（数据录入+预览）...");
+        var mainTab = new MainTabViewModel(template, _dataBindingService, _previewService);
+        mainTab.CloseRequested += OnTabCloseRequested;
+        Tabs.Add(mainTab);
+        FileLogger.Instance.WriteLine("[MainVM.LoadTemplate] 主标签页创建完成");
 
-        var previewTab = new PreviewTabViewModel(template, _previewService);
-        previewTab.CloseRequested += OnTabCloseRequested;
-        Tabs.Add(previewTab);
-
-        var exportTab = new ExportTabViewModel(template, _pdfExportService, _batchExportService, _exportHistoryStore, _dialogService, _concreteDataBindingService);
+        FileLogger.Instance.WriteLine("[MainVM.LoadTemplate] 创建导出标签页...");
+        var dataBindingSvc = _dataBindingService as DataBindingService ?? new DataBindingService();
+        var exportTab = new ExportTabViewModel(template, _pdfExportService, _batchExportService, _exportHistoryStore, _dialogService, dataBindingSvc);
         exportTab.CloseRequested += OnTabCloseRequested;
         Tabs.Add(exportTab);
+        FileLogger.Instance.WriteLine("[MainVM.LoadTemplate] 导出标签页创建完成");
 
-        var savedConfigs = _configStore.Load(template.Name);
-        foreach (var config in savedConfigs) AddAdapterTab(config);
-
+        FileLogger.Instance.WriteLine("[MainVM.LoadTemplate] 设置活动标签页...");
         ActiveTab = Tabs[0];
         OnPropertyChanged(nameof(TemplateName));
         OnPropertyChanged(nameof(TemplateVersion));
         OnPropertyChanged(nameof(FieldSummary));
         OnPropertyChanged(nameof(StatusColor));
+        FileLogger.Instance.WriteLine("[MainVM.LoadTemplate] 所有属性通知完成");
     }
 
     private void ExecuteAddExcelAdapter()
@@ -263,7 +287,7 @@ public class MainViewModel : ViewModelBase
         if (CurrentTemplate == null) return;
         var existingTab = Tabs.OfType<ExportTabViewModel>().FirstOrDefault();
         if (existingTab != null) { ActiveTab = existingTab; return; }
-        var tab = new ExportTabViewModel(CurrentTemplate, _pdfExportService, _batchExportService, _exportHistoryStore, _dialogService, _concreteDataBindingService);
+        var tab = new ExportTabViewModel(CurrentTemplate, _pdfExportService, _batchExportService, _exportHistoryStore, _dialogService, (DataBindingService)_dataBindingService);
         tab.CloseRequested += OnTabCloseRequested;
         Tabs.Add(tab);
         ActiveTab = tab;

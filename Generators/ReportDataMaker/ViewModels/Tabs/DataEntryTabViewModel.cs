@@ -38,8 +38,8 @@ public class DataEntryTabViewModel : TabViewModelBase
                 Fields.Add(new FieldViewModel
                 {
                     ElementId = element.Id,
-                    Label = element.Label,
-                    DataPath = element.DataPath,
+                    Label = element.Label ?? string.Empty,
+                    DataPath = element.DataPath ?? string.Empty,
                     Value = element.DefaultValue
                 });
             }
@@ -56,17 +56,55 @@ public class DataEntryTabViewModel : TabViewModelBase
     }
 }
 
+public enum FieldDataType { Text, Dropdown, Number, Date, Boolean, ReadOnly }
+
 /// <summary>字段视图模型，表示单个可编辑字段</summary>
 public class FieldViewModel : ViewModelBase
 {
-    /// <summary>元素标识</summary>
     public string ElementId { get; set; } = string.Empty;
-    /// <summary>字段标签</summary>
     public string Label { get; set; } = string.Empty;
-    /// <summary>数据路径</summary>
     public string DataPath { get; set; } = string.Empty;
 
     private string _value = string.Empty;
-    /// <summary>字段值</summary>
     public string Value { get => _value; set => SetProperty(ref _value, value); }
+
+    public FieldDataType FieldType { get; set; } = FieldDataType.Text;
+    public bool IsMultiLine { get; set; }
+
+    public List<string> Options { get; set; } = new();
+    public string GroupName { get; set; } = string.Empty;
+
+    private string _selectedOption = string.Empty;
+    public string SelectedOption
+    {
+        get => _selectedOption;
+        set { if (SetProperty(ref _selectedOption, value)) Value = value ?? string.Empty; }
+    }
+
+    public string Unit { get; set; } = string.Empty;
+    public int DecimalPlaces { get; set; } = 2;
+
+    public string DateFormat { get; set; } = "yyyy-MM-dd";
+    private DateTime? _dateValue;
+    public DateTime? DateValue
+    {
+        get => _dateValue;
+        set { if (SetProperty(ref _dateValue, value)) Value = value?.ToString(DateFormat) ?? string.Empty; }
+    }
+
+    private bool _isChecked;
+    public bool IsChecked
+    {
+        get => _isChecked;
+        set { if (SetProperty(ref _isChecked, value)) Value = value ? "true" : "false"; }
+    }
+}
+
+/// <summary>表单分组视图模型</summary>
+public class SectionViewModel : ViewModelBase
+{
+    public string Title { get; set; } = string.Empty;
+    public ObservableCollection<FieldViewModel> Fields { get; } = new();
+    private bool _isExpanded = true;
+    public bool IsExpanded { get => _isExpanded; set => SetProperty(ref _isExpanded, value); }
 }

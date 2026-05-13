@@ -1,10 +1,9 @@
 import { Group, Rect } from 'fabric'
 import { MM_TO_PX, CANVAS_PADDING, round2 } from '@/utils/constants'
+import { BaseElementRenderer } from './BaseElementRenderer'
 
-export class QrCodeElementRenderer {
+export class QrCodeElementRenderer extends BaseElementRenderer {
   create(canvas, element, mmToPx) {
-    const left = mmToPx(element.x) + CANVAS_PADDING
-    const top = mmToPx(element.y) + CANVAS_PADDING
     const size = mmToPx(element.size || 100)
     const value = element.value || 'https://example.com'
     const moduleCount = 25
@@ -29,16 +28,11 @@ export class QrCodeElementRenderer {
     }
 
     const group = new Group(objects, {
-      left,
-      top,
+      ...this._applyCommonOptions(element, mmToPx),
       width: size,
       height: size,
       opacity: element.opacity ?? 1,
-      angle: element.rotation || 0,
-      borderColor: '#409eff',
-      cornerColor: '#409eff',
-      cornerSize: 8,
-      transparentCorners: false
+      angle: element.rotation || 0
     })
 
     return group
@@ -109,20 +103,12 @@ export class QrCodeElementRenderer {
         obj.set('fill', props.foregroundColor)
       })
     }
-    if (props.opacity !== undefined) fabricObj.set('opacity', props.opacity)
-    if (props.rotation !== undefined) fabricObj.set('angle', props.rotation)
-    if (props.x !== undefined || props.y !== undefined) {
-      fabricObj.set({
-        left: (props.x !== undefined ? props.x * MM_TO_PX : fabricObj.left - CANVAS_PADDING) + CANVAS_PADDING,
-        top: (props.y !== undefined ? props.y * MM_TO_PX : fabricObj.top - CANVAS_PADDING) + CANVAS_PADDING
-      })
-    }
+    this._applyCommonUpdate(fabricObj, props)
   }
 
   toModel(fabricObj) {
     return {
-      x: round2((fabricObj.left - CANVAS_PADDING) / MM_TO_PX),
-      y: round2((fabricObj.top - CANVAS_PADDING) / MM_TO_PX),
+      ...this._applyCommonToModel(fabricObj),
       size: round2(fabricObj.getScaledWidth() / MM_TO_PX),
       rotation: round2(fabricObj.angle || 0),
       opacity: fabricObj.opacity

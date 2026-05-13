@@ -1,7 +1,8 @@
 import { Rect, Circle, Triangle, Polygon } from 'fabric'
 import { MM_TO_PX, CANVAS_PADDING, round2 } from '@/utils/constants'
+import { BaseElementRenderer } from './BaseElementRenderer'
 
-export class ShapeElementRenderer {
+export class ShapeElementRenderer extends BaseElementRenderer {
   create(canvas, element, mmToPx) {
     const left = mmToPx(element.x) + CANVAS_PADDING
     const top = mmToPx(element.y) + CANVAS_PADDING
@@ -11,18 +12,13 @@ export class ShapeElementRenderer {
     let fabricObj
 
     const commonProps = {
-      left,
-      top,
+      ...this._applyCommonOptions(element, mmToPx),
       fill: element.fillColor || 'transparent',
       stroke: element.strokeColor || '#000000',
       strokeWidth: element.strokeWidth || 1,
       strokeDashArray: element.strokeStyle === 'dashed' ? [5, 5] : null,
       opacity: element.opacity ?? 1,
-      angle: element.rotation || 0,
-      borderColor: '#409eff',
-      cornerColor: '#409eff',
-      cornerSize: 8,
-      transparentCorners: false
+      angle: element.rotation || 0
     }
 
     switch (element.shapeType) {
@@ -73,18 +69,11 @@ export class ShapeElementRenderer {
     if (props.strokeStyle !== undefined) {
       fabricObj.set('strokeDashArray', props.strokeStyle === 'dashed' ? [5, 5] : null)
     }
-    if (props.opacity !== undefined) fabricObj.set('opacity', props.opacity)
-    if (props.rotation !== undefined) fabricObj.set('angle', props.rotation)
     if (props.cornerRadius !== undefined) {
       fabricObj.set('rx', props.cornerRadius)
       fabricObj.set('ry', props.cornerRadius)
     }
-    if (props.x !== undefined || props.y !== undefined) {
-      fabricObj.set({
-        left: (props.x !== undefined ? props.x * MM_TO_PX : fabricObj.left - CANVAS_PADDING) + CANVAS_PADDING,
-        top: (props.y !== undefined ? props.y * MM_TO_PX : fabricObj.top - CANVAS_PADDING) + CANVAS_PADDING
-      })
-    }
+    this._applyCommonUpdate(fabricObj, props)
     if (props.width !== undefined || props.height !== undefined) {
       const width = props.width !== undefined ? props.width * MM_TO_PX : fabricObj.width
       const height = props.height !== undefined ? props.height * MM_TO_PX : fabricObj.height
@@ -94,8 +83,7 @@ export class ShapeElementRenderer {
 
   toModel(fabricObj) {
     return {
-      x: round2((fabricObj.left - CANVAS_PADDING) / MM_TO_PX),
-      y: round2((fabricObj.top - CANVAS_PADDING) / MM_TO_PX),
+      ...this._applyCommonToModel(fabricObj),
       width: round2(fabricObj.getScaledWidth() / MM_TO_PX),
       height: round2(fabricObj.getScaledHeight() / MM_TO_PX),
       fillColor: fabricObj.fill,

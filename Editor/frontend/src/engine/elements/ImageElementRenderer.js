@@ -1,30 +1,25 @@
 import { Rect, Text, Group, FabricImage } from 'fabric'
 import { MM_TO_PX, CANVAS_PADDING, round2 } from '@/utils/constants'
+import { BaseElementRenderer } from './BaseElementRenderer'
 
-export class ImageElementRenderer {
+export class ImageElementRenderer extends BaseElementRenderer {
   async create(canvas, element, mmToPx) {
     if (element.imageData) {
       const img = await FabricImage.fromURL(
         element.imageData.startsWith('data:') ? element.imageData : `data:image/png;base64,${element.imageData}`
       )
       img.set({
-        left: mmToPx(element.x) + CANVAS_PADDING,
-        top: mmToPx(element.y) + CANVAS_PADDING,
+        ...this._applyCommonOptions(element, mmToPx),
         scaleX: mmToPx(element.width) / (img.width || 1),
         scaleY: mmToPx(element.height) / (img.height || 1),
         opacity: element.opacity ?? 1,
-        angle: element.rotation || 0,
-        borderColor: '#409eff',
-        cornerColor: '#409eff',
-        cornerSize: 8,
-        transparentCorners: false
+        angle: element.rotation || 0
       })
       return img
     }
 
     const placeholder = new Rect({
-      left: mmToPx(element.x) + CANVAS_PADDING,
-      top: mmToPx(element.y) + CANVAS_PADDING,
+      ...this._applyCommonOptions(element, mmToPx),
       width: mmToPx(element.width),
       height: mmToPx(element.height),
       fill: '#f5f5f5',
@@ -32,11 +27,7 @@ export class ImageElementRenderer {
       strokeWidth: 1,
       strokeDashArray: [5, 5],
       opacity: element.opacity ?? 1,
-      angle: element.rotation || 0,
-      borderColor: '#409eff',
-      cornerColor: '#409eff',
-      cornerSize: 8,
-      transparentCorners: false
+      angle: element.rotation || 0
     })
 
     const label = new Text('图片', {
@@ -50,25 +41,19 @@ export class ImageElementRenderer {
       evented: false
     })
 
-    const group = new Group([placeholder, label], {
-      borderColor: '#409eff',
-      cornerColor: '#409eff',
-      cornerSize: 8,
-      transparentCorners: false
-    })
+    const { left: _pl, top: _pt, ...groupStyle } = this._applyCommonOptions(element, mmToPx)
+    const group = new Group([placeholder, label], groupStyle)
 
     return group
   }
 
   update(fabricObj, props) {
-    if (props.opacity !== undefined) fabricObj.set('opacity', props.opacity)
-    if (props.rotation !== undefined) fabricObj.set('angle', props.rotation)
+    this._applyCommonUpdate(fabricObj, props)
   }
 
   toModel(fabricObj) {
     return {
-      x: round2((fabricObj.left - CANVAS_PADDING) / MM_TO_PX),
-      y: round2((fabricObj.top - CANVAS_PADDING) / MM_TO_PX),
+      ...this._applyCommonToModel(fabricObj),
       width: round2(fabricObj.getScaledWidth() / MM_TO_PX),
       height: round2(fabricObj.getScaledHeight() / MM_TO_PX),
       rotation: round2(fabricObj.angle || 0),

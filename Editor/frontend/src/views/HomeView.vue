@@ -2,11 +2,11 @@
   <div class="home-view">
     <div class="home-header animate-slide-up">
       <div class="welcome-section">
-        <h1 class="welcome-title">欢迎回来</h1>
-        <p class="welcome-subtitle">开始创建和管理您的报告模板</p>
+        <h1 class="welcome-title">{{ $t('home.welcome') }}</h1>
+        <p class="welcome-subtitle">{{ $t('home.subtitle') }}</p>
       </div>
       <el-button type="primary" size="large" :icon="Plus" @click="$router.push('/editor')">
-        新建模板
+        {{ $t('home.newTemplate') }}
       </el-button>
     </div>
 
@@ -17,11 +17,11 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ animatedStats.total }}</div>
-          <div class="stat-label">模板总数</div>
+          <div class="stat-label">{{ $t('home.totalTemplates') }}</div>
         </div>
         <div class="stat-trend stat-trend--up" v-if="stats.total > 0">
           <el-icon><TrendCharts /></el-icon>
-          <span>活跃</span>
+          <span>{{ $t('home.active') }}</span>
         </div>
       </div>
 
@@ -31,7 +31,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ animatedStats.published }}</div>
-          <div class="stat-label">已发布</div>
+          <div class="stat-label">{{ $t('home.published') }}</div>
         </div>
         <div class="stat-percentage" v-if="stats.total > 0">
           {{ Math.round((stats.published / stats.total) * 100) }}%
@@ -44,10 +44,10 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ animatedStats.draft }}</div>
-          <div class="stat-label">草稿</div>
+          <div class="stat-label">{{ $t('home.draft') }}</div>
         </div>
         <div class="stat-badge" v-if="stats.draft > 0">
-          待处理
+          {{ $t('home.pending') }}
         </div>
       </div>
 
@@ -57,11 +57,11 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ animatedStats.todayEdited }}</div>
-          <div class="stat-label">今日编辑</div>
+          <div class="stat-label">{{ $t('home.todayEdited') }}</div>
         </div>
         <div class="stat-trend stat-trend--neutral" v-if="stats.todayEdited > 0">
           <el-icon><Sunny /></el-icon>
-          <span>今日</span>
+          <span>{{ $t('home.today') }}</span>
         </div>
       </div>
     </div>
@@ -71,10 +71,10 @@
         <div class="section-header">
           <h2 class="section-title">
             <el-icon><Clock /></el-icon>
-            最近编辑
+            {{ $t('home.recentEdited') }}
           </h2>
           <el-button text type="primary" @click="$router.push('/templates')">
-            查看全部
+            {{ $t('home.viewAll') }}
             <el-icon class="el-icon--right"><ArrowRight /></el-icon>
           </el-button>
         </div>
@@ -100,7 +100,7 @@
               </div>
               <div class="recent-item-status">
                 <el-tag :type="template.isPublished ? 'success' : 'info'" size="small">
-                  {{ template.isPublished ? '已发布' : '草稿' }}
+                  {{ template.isPublished ? $t('home.published') : $t('home.draft') }}
                 </el-tag>
               </div>
               <el-icon class="recent-item-arrow"><ArrowRight /></el-icon>
@@ -110,9 +110,9 @@
             <div class="empty-icon">
               <el-icon><FolderOpened /></el-icon>
             </div>
-            <p class="empty-text">暂无模板</p>
+            <p class="empty-text">{{ $t('home.noTemplates') }}</p>
             <el-button type="primary" :icon="Plus" @click="$router.push('/editor')">
-              创建第一个模板
+              {{ $t('home.createFirst') }}
             </el-button>
           </div>
         </div>
@@ -122,7 +122,7 @@
         <div class="section-header">
           <h2 class="section-title">
             <el-icon><Operation /></el-icon>
-            快捷操作
+            {{ $t('home.quickActions') }}
           </h2>
         </div>
 
@@ -131,37 +131,37 @@
             <div class="quick-action-icon">
               <el-icon><Plus /></el-icon>
             </div>
-            <span class="quick-action-label">新建模板</span>
+            <span class="quick-action-label">{{ $t('home.newTemplate') }}</span>
           </div>
           <div class="quick-action" @click="$router.push('/templates')">
             <div class="quick-action-icon">
               <el-icon><List /></el-icon>
             </div>
-            <span class="quick-action-label">模板列表</span>
+            <span class="quick-action-label">{{ $t('home.templateList') }}</span>
           </div>
           <div class="quick-action" @click="$router.push('/templates')">
             <div class="quick-action-icon">
               <el-icon><Search /></el-icon>
             </div>
-            <span class="quick-action-label">搜索模板</span>
+            <span class="quick-action-label">{{ $t('home.searchTemplate') }}</span>
           </div>
           <div class="quick-action" @click="$router.push('/settings')">
             <div class="quick-action-icon">
               <el-icon><Setting /></el-icon>
             </div>
-            <span class="quick-action-label">系统设置</span>
+            <span class="quick-action-label">{{ $t('home.systemSettings') }}</span>
           </div>
         </div>
 
         <div class="tips-card">
           <div class="tips-header">
             <el-icon><InfoFilled /></el-icon>
-            <span>使用提示</span>
+            <span>{{ $t('home.tips') }}</span>
           </div>
           <ul class="tips-list">
-            <li>使用拖拽方式在画布上添加元素</li>
-            <li>双击元素可快速编辑内容</li>
-            <li>Ctrl+S 快速保存模板</li>
+            <li>{{ $t('home.tip1') }}</li>
+            <li>{{ $t('home.tip2') }}</li>
+            <li>{{ $t('home.tip3') }}</li>
           </ul>
         </div>
       </div>
@@ -172,6 +172,7 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useTemplateStore } from '@/stores/template'
+import $t from '@/locales/zh-CN'
 import {
   Plus,
   Document,

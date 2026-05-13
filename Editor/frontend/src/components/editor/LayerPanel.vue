@@ -1,7 +1,7 @@
 <template>
   <div class="layer-panel">
     <div v-if="elements.length === 0" class="layer-empty">
-      <span>暂无元素</span>
+      <span>{{ $t('layers.empty') }}</span>
     </div>
     <div
       v-for="(el, index) in sortedElements"
@@ -38,8 +38,9 @@
 </template>
 
 <script setup>
+import $t from '@/locales/zh-CN'
 import { computed } from 'vue'
-import { View, Hide, Top, Bottom, Delete, Document, Picture, Minus, Grid, Calendar, ArrowDown, Histogram } from '@element-plus/icons-vue'
+import { useEditorStore } from '@/stores/editor'
 import { useTemplateStore } from '@/stores/template'
 import { useEditorStore } from '@/stores/editor'
 

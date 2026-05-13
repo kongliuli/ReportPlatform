@@ -20,6 +20,7 @@ public class ContextAdapterTabViewModel : TabViewModelBase
         ContextAdapterFactory factory,
         IDialogService dialogService)
     {
+        FileLogger.Instance.WriteLine("[LOG] ===== ContextAdapterTabViewModel 构造 =====");
         _template = template;
         _factory = factory;
         _dialogService = dialogService;
@@ -27,10 +28,9 @@ public class ContextAdapterTabViewModel : TabViewModelBase
         IsClosable = true;
 
         SourceList = Enum.GetValues(typeof(ContextValueSource)).Cast<ContextValueSource>().ToList();
-        AvailableProfiles = _factory.GetProfileNames();
+        FileLogger.Instance.WriteLine($"[LOG] ContextVM: SourceList 已加载, 共 {SourceList.Count} 个源类型");
 
-        _selectedProfileName = AvailableProfiles.Count > 0 ? AvailableProfiles[0] : "default";
-        LoadProfile(_selectedProfileName);
+        _selectedProfileName = "default";
 
         NewProfileCommand = new RelayCommand(_ => ExecuteNewProfile());
         DeleteProfileCommand = new RelayCommand(_ => ExecuteDeleteProfile(), _ => !string.IsNullOrEmpty(SelectedProfileName) && AvailableProfiles.Count > 0);
@@ -42,6 +42,48 @@ public class ContextAdapterTabViewModel : TabViewModelBase
         PreviewCommand = new RelayCommand(_ => ExecutePreview());
         SaveCommand = new RelayCommand(_ => ExecuteSave());
         ApplyCommand = new RelayCommand(_ => ExecuteApply());
+
+        FileLogger.Instance.WriteLine("[LOG] ContextVM: 调度 DeferredInit...");
+        // Defer file I/O to avoid blocking UI thread in constructor
+        System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(
+            System.Windows.Threading.DispatcherPriority.Loaded,
+            new Action(DeferredInit));
+        FileLogger.Instance.WriteLine("[LOG] ===== ContextAdapterTabViewModel 构造完成 =====");
+    }
+
+    private void DeferredInit()
+    {
+        FileLogger.Instance.WriteLine("[LOG] ===== ContextVM.DeferredInit 开始 =====");
+        try
+        {
+            FileLogger.Instance.WriteLine("[LOG] DeferredInit: 调用 GetProfileNames...");
+            var profiles = _factory.GetProfileNames();
+            FileLogger.Instance.WriteLine($"[LOG] DeferredInit: GetProfileNames 返回 {profiles?.Count ?? 0} 个");
+            AvailableProfiles = profiles ?? new List<string>();
+            
+            if (AvailableProfiles.Count > 0)
+            {
+                _selectedProfileName = AvailableProfiles[0];
+                FileLogger.Instance.WriteLine($"[LOG] DeferredInit: 选择配置文件 '{_selectedProfileName}'");
+                OnPropertyChanged(nameof(SelectedProfileName));
+            }
+            else
+            {
+                FileLogger.Instance.WriteLine("[LOG] DeferredInit: 无已保存配置文件，使用 default");
+            }
+
+            FileLogger.Instance.WriteLine($"[LOG] DeferredInit: 加载配置文件 '{_selectedProfileName}'...");
+            LoadProfile(_selectedProfileName);
+            StatusText = "就绪";
+            FileLogger.Instance.WriteLine("[LOG] DeferredInit: 完成");
+        }
+        catch (Exception ex)
+        {
+            FileLogger.Instance.WriteLine($"[LOG] DeferredInit 异常: {ex.GetType().Name} - {ex.Message}");
+            FileLogger.Instance.WriteLine($"[LOG] 堆栈: {ex.StackTrace}");
+            StatusText = $"初始化失败: {ex.Message}";
+        }
+        FileLogger.Instance.WriteLine("[LOG] ===== ContextVM.DeferredInit 结束 =====");
     }
 
     private ContextAdapterConfig _config = new();
