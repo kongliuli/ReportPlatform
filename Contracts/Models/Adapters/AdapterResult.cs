@@ -16,6 +16,12 @@ public class AdapterResult
 
     /// <summary>批量数据</summary>
     public List<Dictionary<string, object>> BatchData { get; set; } = new();
+
+    /// <summary>表格数据列表（BatchData的强类型映射）</summary>
+    public List<TableDataValue> TableDataList { get; set; } = new();
+
+    /// <summary>数据源URL</summary>
+    public string? DataSourceUrl { get; set; }
 }
 
 /// <summary>验证结果</summary>

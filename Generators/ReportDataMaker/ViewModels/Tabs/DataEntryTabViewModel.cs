@@ -33,30 +33,46 @@ public class DataEntryTabViewModel : TabViewModelBase
         Fields.Clear();
         foreach (var element in Template.Elements)
         {
-            if (!string.IsNullOrEmpty(element.DataPath))
+            if (string.IsNullOrEmpty(element.DataPath))
+                continue;
+
+            var field = new FieldViewModel
             {
-                Fields.Add(new FieldViewModel
-                {
-                    ElementId = element.Id,
-                    Label = element.Label ?? string.Empty,
-                    DataPath = element.DataPath ?? string.Empty,
-                    Value = element.DefaultValue
-                });
+                ElementId = element.Id,
+                Label = element.Label ?? string.Empty,
+                DataPath = element.DataPath ?? string.Empty,
+                Value = element.DefaultValue
+            };
+
+            if (element is ExternalTableElement table)
+            {
+                field.FieldType = FieldDataType.Table;
+                field.TableRows = table.Rows;
+                field.TableColumns = table.Columns;
+                field.TableHeaderRows = table.HeaderRows;
+                field.TableCellData = table.CellData ?? new List<List<string>>();
             }
+
+            Fields.Add(field);
         }
     }
 
-    /// <summary>从适配器应用数据到指定字段</summary>
-    /// <param name="dataPath">数据路径</param>
-    /// <param name="value">数据值</param>
     public void ApplyDataFromAdapter(string dataPath, object value)
     {
         var field = Fields.FirstOrDefault(f => f.DataPath == dataPath);
-        if (field != null) field.Value = value?.ToString() ?? string.Empty;
+        if (field == null) return;
+
+        if (field.FieldType == FieldDataType.Table && value is List<List<string>> cellData)
+        {
+            field.TableCellData = cellData;
+            return;
+        }
+
+        field.Value = value?.ToString() ?? string.Empty;
     }
 }
 
-public enum FieldDataType { Text, Dropdown, Number, Date, Boolean, ReadOnly }
+public enum FieldDataType { Text, Dropdown, Number, Date, Boolean, ReadOnly, Table }
 
 /// <summary>字段视图模型，表示单个可编辑字段</summary>
 public class FieldViewModel : ViewModelBase
@@ -98,6 +114,11 @@ public class FieldViewModel : ViewModelBase
         get => _isChecked;
         set { if (SetProperty(ref _isChecked, value)) Value = value ? "true" : "false"; }
     }
+
+    public int TableRows { get; set; }
+    public int TableColumns { get; set; }
+    public int TableHeaderRows { get; set; } = 1;
+    public List<List<string>> TableCellData { get; set; } = new();
 }
 
 /// <summary>表单分组视图模型</summary>

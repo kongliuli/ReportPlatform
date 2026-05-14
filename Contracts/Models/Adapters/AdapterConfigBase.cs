@@ -22,4 +22,7 @@ public abstract class AdapterConfigBase
 
     /// <summary>是否启用</summary>
     public bool IsEnabled { get; set; } = true;
+
+    /// <summary>数据源URL（URL-based适配器核心配置）</summary>
+    public string? DataSourceUrl { get; set; }
 }

@@ -16,36 +16,67 @@ public enum FieldDataType
     Dropdown,
 
     /// <summary>布尔类型</summary>
-    Boolean
+    Boolean,
+
+    // ===== 表格填值抽象 =====
+
+    /// <summary>表格类型</summary>
+    Table,
+
+    // ===== 适配预留桩（暂不实现完整填值UI）=====
+
+    /// <summary>图片类型（预留）</summary>
+    Image,
+
+    /// <summary>图表类型（预留）</summary>
+    Chart,
+
+    /// <summary>条形码类型（预留）</summary>
+    Barcode,
+
+    /// <summary>二维码类型（预留）</summary>
+    QrCode,
+
+    /// <summary>签名类型（预留）</summary>
+    Signature,
+
+    /// <summary>超链接类型（预留）</summary>
+    Hyperlink,
+
+    /// <summary>列表/重复项类型（预留）</summary>
+    List
+}
+
+/// <summary>表格列模式定义（描述表格中每列的结构）</summary>
+public class TableColumnSchema
+{
+    public int ColumnIndex { get; set; }
+    public string? Header { get; set; }
+    public FieldDataType CellDataType { get; set; } = FieldDataType.Text;
+    public string? DataPath { get; set; }
+    public string? Format { get; set; }
+    public List<string>? Options { get; set; }
 }
 
 /// <summary>字段模式定义</summary>
 public class FieldSchema
 {
-    /// <summary>字段数据路径</summary>
     public string DataPath { get; set; } = string.Empty;
-
-    /// <summary>字段标签</summary>
     public string Label { get; set; } = string.Empty;
-
-    /// <summary>字段数据类型</summary>
     public FieldDataType DataType { get; set; } = FieldDataType.Text;
-
-    /// <summary>字段格式</summary>
     public string? Format { get; set; }
-
-    /// <summary>选项列表</summary>
     public List<string>? Options { get; set; }
-
-    /// <summary>是否必填</summary>
     public bool IsRequired { get; set; }
-
-    /// <summary>最小值</summary>
     public double? MinValue { get; set; }
-
-    /// <summary>最大值</summary>
     public double? MaxValue { get; set; }
-
-    /// <summary>小数位数</summary>
     public int? DecimalPlaces { get; set; }
+
+    /// <summary>表格列模式（仅 DataType=Table 时有效）</summary>
+    public List<TableColumnSchema>? TableColumns { get; set; }
+
+    /// <summary>表格行数（仅 DataType=Table 时有效）</summary>
+    public int? TableRows { get; set; }
+
+    /// <summary>表头行数（仅 DataType=Table 时有效）</summary>
+    public int? TableHeaderRows { get; set; }
 }

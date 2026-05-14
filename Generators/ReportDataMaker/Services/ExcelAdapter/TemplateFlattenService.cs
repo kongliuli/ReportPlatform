@@ -4,12 +4,8 @@ using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services.ExcelAdapter;
 
-/// <summary>模板扁平化服务，将模板元素结构展平为字段列表</summary>
 public class TemplateFlattenService
 {
-    /// <summary>将外部模板定义扁平化为字段模式</summary>
-    /// <param name="template">外部模板定义</param>
-    /// <returns>模板字段模式</returns>
     public TemplateFieldSchema Flatten(ExternalTemplateDefinition template)
     {
         var schema = new TemplateFieldSchema
@@ -49,7 +45,7 @@ public class TemplateFlattenService
                 AddField(fields, element, FieldDataType.Boolean);
                 break;
             case ExternalTableElement table:
-                FlattenTable(table, fields);
+                AddTableField(fields, table);
                 break;
             default:
                 AddField(fields, element, FieldDataType.Text);
@@ -57,35 +53,53 @@ public class TemplateFlattenService
         }
     }
 
-    private void FlattenTable(ExternalTableElement table, List<FlatField> fields)
+    private void AddTableField(List<FlatField> fields, ExternalTableElement table)
     {
-        for (int row = table.HeaderRows; row < table.Rows; row++)
-        {
-            for (int col = 0; col < table.Columns; col++)
-            {
-                var cell = table.Cells?.FirstOrDefault(c => c.Row == row && c.Col == col);
-                if (cell?.IsEditable == true && !string.IsNullOrEmpty(cell.DataPath))
-                {
-                    var dataType = cell.InputType?.ToLower() switch
-                    {
-                        "number" => FieldDataType.Number,
-                        "date" => FieldDataType.Date,
-                        "dropdown" => FieldDataType.Dropdown,
-                        _ => FieldDataType.Text
-                    };
+        var columns = BuildTableColumns(table);
 
-                    fields.Add(new FlatField
-                    {
-                        DataPath = cell.DataPath,
-                        Label = cell.Text ?? $"表格[{row}][{col}]",
-                        DataType = dataType,
-                        Options = cell.Options,
-                        IsRequired = false,
-                        ElementId = cell.DataPath
-                    });
-                }
-            }
+        fields.Add(new FlatField
+        {
+            DataPath = !string.IsNullOrEmpty(table.DataPath) ? table.DataPath : table.Id,
+            Label = !string.IsNullOrEmpty(table.Label) ? table.Label : table.DataPath ?? table.Id,
+            DataType = FieldDataType.Table,
+            IsRequired = table.IsRequired,
+            ElementId = table.Id,
+            TableColumns = columns,
+            TableRows = table.Rows,
+            TableHeaderRows = table.HeaderRows
+        });
+    }
+
+    private static List<TableColumnSchema> BuildTableColumns(ExternalTableElement table)
+    {
+        var columns = new List<TableColumnSchema>();
+
+        for (int col = 0; col < table.Columns; col++)
+        {
+            var header = table.CellData?.Count > 0 && table.CellData[0].Count > col
+                ? table.CellData[0][col]
+                : $"列{col + 1}";
+
+            var cellDef = table.Cells?.FirstOrDefault(c => c.Row >= table.HeaderRows && c.Col == col);
+            var cellType = cellDef?.InputType?.ToLower() switch
+            {
+                "number" => FieldDataType.Number,
+                "date" => FieldDataType.Date,
+                "dropdown" => FieldDataType.Dropdown,
+                _ => FieldDataType.Text
+            };
+
+            columns.Add(new TableColumnSchema
+            {
+                ColumnIndex = col,
+                Header = header,
+                CellDataType = cellType,
+                DataPath = cellDef?.DataPath,
+                Options = cellDef?.Options
+            });
         }
+
+        return columns;
     }
 
     private void AddField(List<FlatField> fields, ReportExternalElementBase element,
