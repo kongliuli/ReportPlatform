@@ -8,6 +8,7 @@
     <UserControl.Resources>
         <converters:StringNotEmptyToVisibilityConverter x:Key="StringNotEmptyToVisibility"/>
         <converters:CountToVisibilityConverter x:Key="CountToVisibility"/>
+        <converters:TableDataConverter x:Key="TableDataConverter"/>
 
         <!-- ReadOnly field (gray label display) -->
         <DataTemplate x:Key="ReadOnlyFieldTemplate">
@@ -92,6 +93,30 @@
             <CheckBox Content="{Binding Label}" IsChecked="{Binding IsChecked}"
                       Margin="0,0,0,10" FontSize="13" VerticalContentAlignment="Center"/>
         </DataTemplate>
+
+        <!-- Table field -->
+        <DataTemplate x:Key="TableFieldTemplate">
+            <Border BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="4" Margin="0,0,0,10">
+                <StackPanel>
+                    <TextBlock Text="{Binding Label}" Foreground="#475569" FontSize="13" Margin="12,8"/>
+                    <DataGrid AutoGenerateColumns="True"
+                              CanUserAddRows="True"
+                              CanUserDeleteRows="False"
+                              MinHeight="100"
+                              MaxHeight="300"
+                              Margin="12,0,12,8"
+                              CellEditEnding="DataGrid_CellEditEnding"
+                              AutoGeneratingColumn="DataGrid_AutoGeneratingColumn">
+                        <DataGrid.ItemsSource>
+                            <MultiBinding Converter="{StaticResource TableDataConverter}">
+                                <Binding Path="TableCellData" />
+                                <Binding Path="TableHeaderRows" />
+                            </MultiBinding>
+                        </DataGrid.ItemsSource>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
     </UserControl.Resources>
 
     <Grid>
@@ -129,7 +154,8 @@
             </Grid.ColumnDefinitions>
 
             <!-- Left: Form with Expanders -->
-            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="0">
+            <ScrollViewer Grid.Column="0" x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto" Padding="0"
+                          PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
                 <StackPanel Margin="12,8,12,8">
                     <ItemsControl ItemsSource="{Binding Sections}">
                         <ItemsControl.ItemTemplate>
@@ -145,7 +171,8 @@
                                                 DateTemplate="{StaticResource DateFieldTemplate}"
                                                 CheckboxTemplate="{StaticResource CheckboxFieldTemplate}"
                                                 RadioTemplate="{StaticResource DropdownFieldTemplate}"
-                                                ReadOnlyTemplate="{StaticResource ReadOnlyFieldTemplate}"/>
+                                                ReadOnlyTemplate="{StaticResource ReadOnlyFieldTemplate}"
+                                                TableTemplate="{StaticResource TableFieldTemplate}"/>
                                         </ItemsControl.ItemTemplateSelector>
                                     </ItemsControl>
                                 </Expander>
