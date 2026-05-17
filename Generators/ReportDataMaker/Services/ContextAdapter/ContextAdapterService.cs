@@ -9,11 +9,13 @@ public class ContextAdapterService
     public AdapterResult FillContext(ExternalTemplateDefinition template, ContextAdapterConfig config)
     {
         var data = new Dictionary<string, object>();
+        var dataPathsSeen = new HashSet<string>();
 
         foreach (var element in template.Elements)
         {
-            if (element.Group != ElementGroup.Context) continue;
+            // 扫描所有有 DataPath 的元素，不限 Group（自动检测未配置字段）
             if (string.IsNullOrEmpty(element.DataPath)) continue;
+            if (!dataPathsSeen.Add(element.DataPath)) continue; // 跳过重复
 
             if (config.StaticValues.TryGetValue(element.DataPath, out var staticVal))
             {
@@ -28,7 +30,9 @@ public class ContextAdapterService
                 continue;
             }
 
-            data[element.DataPath] = ResolveBuiltIn(element.DataPath);
+            var builtIn = ResolveBuiltIn(element.DataPath);
+            if (builtIn is string s && !string.IsNullOrEmpty(s))
+                data[element.DataPath] = builtIn;
         }
 
         return new AdapterResult { Success = true, Data = data };
