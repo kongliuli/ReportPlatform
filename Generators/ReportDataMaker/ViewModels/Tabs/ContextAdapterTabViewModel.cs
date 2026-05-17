@@ -15,6 +15,8 @@ public class ContextAdapterTabViewModel : TabViewModelBase
     private readonly ContextAdapterFactory _factory;
     private readonly IDialogService _dialogService;
 
+    public event Action<Dictionary<string, object>>? ContextApplied;
+
     public ContextAdapterTabViewModel(
         ExternalTemplateDefinition template,
         ContextAdapterFactory factory,
@@ -39,6 +41,7 @@ public class ContextAdapterTabViewModel : TabViewModelBase
         AddDynamicRuleCommand = new RelayCommand(_ => ExecuteAddDynamicRule());
         RemoveDynamicRuleCommand = new RelayCommand(p => { if (p is DynamicContextRule rule) DynamicRules.Remove(rule); });
         DetectUnconfiguredCommand = new RelayCommand(_ => ExecuteDetectUnconfigured());
+        AddFromUnconfiguredCommand = new RelayCommand(_ => ExecuteAddFromUnconfigured(), _ => SelectedUnconfiguredField != null);
         PreviewCommand = new RelayCommand(_ => ExecutePreview());
         SaveCommand = new RelayCommand(_ => ExecuteSave());
         ApplyCommand = new RelayCommand(_ => ExecuteApply());
@@ -91,7 +94,7 @@ public class ContextAdapterTabViewModel : TabViewModelBase
 
     public ObservableCollection<ContextStaticItem> StaticValues { get; } = new();
     public ObservableCollection<DynamicContextRule> DynamicRules { get; } = new();
-    public ObservableCollection<string> UnconfiguredFields { get; } = new();
+    public ObservableCollection<UnconfiguredFieldInfo> UnconfiguredFields { get; } = new();
     public ObservableCollection<ContextPreviewItem> PreviewItems { get; } = new();
     public List<ContextValueSource> SourceList { get; }
 
@@ -124,6 +127,14 @@ public class ContextAdapterTabViewModel : TabViewModelBase
     public RelayCommand PreviewCommand { get; }
     public RelayCommand SaveCommand { get; }
     public RelayCommand ApplyCommand { get; }
+    public RelayCommand AddFromUnconfiguredCommand { get; }
+
+    private UnconfiguredFieldInfo? _selectedUnconfiguredField;
+    public UnconfiguredFieldInfo? SelectedUnconfiguredField
+    {
+        get => _selectedUnconfiguredField;
+        set => SetProperty(ref _selectedUnconfiguredField, value);
+    }
 
     private void LoadProfile(string profileName)
     {
@@ -131,15 +142,31 @@ public class ContextAdapterTabViewModel : TabViewModelBase
         Config = _factory.LoadProfile(profileName);
         Config.Type = AdapterType.Context;
 
+        var labelMap = BuildLabelMap();
+
         StaticValues.Clear();
         foreach (var kvp in Config.StaticValues)
-            StaticValues.Add(new ContextStaticItem { DataPath = kvp.Key, Value = kvp.Value });
+            StaticValues.Add(new ContextStaticItem { DataPath = kvp.Key, Value = kvp.Value, Label = labelMap.TryGetValue(kvp.Key, out var lbl) ? lbl : kvp.Key });
 
         DynamicRules.Clear();
         foreach (var rule in Config.DynamicRules)
             DynamicRules.Add(rule);
 
         StatusText = $"已加载配置文件: {profileName}";
+    }
+
+    private Dictionary<string, string> BuildLabelMap()
+    {
+        var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (_template.Elements != null)
+        {
+            foreach (var e in _template.Elements)
+            {
+                if (!string.IsNullOrEmpty(e.DataPath) && !string.IsNullOrEmpty(e.Label))
+                    map[e.DataPath] = e.Label;
+            }
+        }
+        return map;
     }
 
     private void ExecuteNewProfile()
@@ -190,8 +217,32 @@ public class ContextAdapterTabViewModel : TabViewModelBase
         SyncConfig();
         var fields = _factory.DetectUnconfiguredFields(_template, Config);
         UnconfiguredFields.Clear();
-        foreach (var f in fields) UnconfiguredFields.Add(f);
+        SelectedUnconfiguredField = null;
+
+        var labelMap = BuildLabelMap();
+
+        foreach (var dp in fields)
+            UnconfiguredFields.Add(new UnconfiguredFieldInfo { DataPath = dp, Label = labelMap.TryGetValue(dp, out var lbl) ? lbl : dp });
+
         StatusText = fields.Count > 0 ? $"发现 {fields.Count} 个未配置字段" : "所有上下文字段均已配置";
+    }
+
+    private void ExecuteAddFromUnconfigured()
+    {
+        if (SelectedUnconfiguredField == null) return;
+
+        var existing = StaticValues.FirstOrDefault(s =>
+            string.Equals(s.DataPath, SelectedUnconfiguredField.DataPath, StringComparison.OrdinalIgnoreCase));
+        if (existing != null)
+        {
+            _dialogService.ShowError($"字段 \"{SelectedUnconfiguredField.Label}\" 已在静态值列表中", "重复字段");
+            return;
+        }
+
+        StaticValues.Add(new ContextStaticItem { DataPath = SelectedUnconfiguredField.DataPath, Value = string.Empty, Label = SelectedUnconfiguredField.Label });
+        UnconfiguredFields.Remove(SelectedUnconfiguredField);
+        SelectedUnconfiguredField = null;
+        StatusText = $"已添加字段: {SelectedUnconfiguredField.Label}";
     }
 
     private void ExecutePreview()
@@ -262,6 +313,7 @@ public class ContextAdapterTabViewModel : TabViewModelBase
                     }
                 }
                 StatusText = $"已应用上下文填充, {result.Data.Count} 个字段";
+                ContextApplied?.Invoke(result.Data);
                 _dialogService.ShowSuccess($"已填充 {result.Data.Count} 个上下文字段");
             }
             else
@@ -289,6 +341,7 @@ public class ContextStaticItem : ViewModelBase
 {
     public string DataPath { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
+    public string Label { get; set; } = string.Empty;
 }
 
 public class ContextPreviewItem : ViewModelBase
@@ -296,4 +349,11 @@ public class ContextPreviewItem : ViewModelBase
     public string DataPath { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
     public string Source { get; set; } = string.Empty;
+}
+
+public class UnconfiguredFieldInfo : ViewModelBase
+{
+    public string DataPath { get; set; } = string.Empty;
+    public string Label { get; set; } = string.Empty;
+    public string DisplayText => string.IsNullOrEmpty(Label) ? DataPath : $"{Label} ({DataPath})";
 }
