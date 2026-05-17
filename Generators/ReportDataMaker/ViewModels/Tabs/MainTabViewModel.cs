@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Threading;
@@ -55,9 +56,9 @@ public class MainTabViewModel : TabViewModelBase
         Sections.Clear();
         Fields.Clear();
 
-        var fixedSection = new SectionViewModel { Title = "固定内容", IsExpanded = false };
+        var fixedSection = new SectionViewModel { Title = "布局固定内容", IsExpanded = false };
         var manualSection = new SectionViewModel { Title = "手动录入" };
-        var adapterSection = new SectionViewModel { Title = "适配器数据" };
+        var adapterSection = new SectionViewModel { Title = "适配器已匹配/已配置" };
 
         var ordered = Template.Elements.OrderBy(e => e.Y).ThenBy(e => e.X).ToList();
 
@@ -91,8 +92,7 @@ public class MainTabViewModel : TabViewModelBase
             var field = CreateFieldViewModel(element);
             field.PropertyChanged += OnFieldPropertyChanged;
 
-            if (element.Group == ElementGroup.Context || element.Group == ElementGroup.DataAdapter
-                || !string.IsNullOrEmpty(element.DefaultValue))
+            if (element.Group == ElementGroup.Context || element.Group == ElementGroup.DataAdapter)
             {
                 adapterSection.Fields.Add(field);
             }
@@ -148,9 +148,34 @@ public class MainTabViewModel : TabViewModelBase
                 field.FieldType = FieldDataType.Text;
                 field.IsMultiLine = element.Height > 12;
                 break;
+            case ExternalTableElement table:
+                field.FieldType = FieldDataType.Table;
+                field.TableRows = table.Rows;
+                field.TableColumns = table.Columns;
+                field.TableHeaderRows = table.HeaderRows;
+                field.TableCellData = table.CellData ?? new();
+                break;
             default:
                 field.FieldType = FieldDataType.Text;
                 break;
+        }
+
+        // Heuristic fallback: when template JSON $type is missing/wrong,
+        // detect 日期/性别 by label to show correct control (DatePicker/ComboBox)
+        if (field.FieldType == FieldDataType.Text)
+        {
+            var label = (element.Label ?? "").Trim().ToLowerInvariant();
+
+            if (label.Contains("日期") || label.Contains("date"))
+            {
+                field.FieldType = FieldDataType.Date;
+            }
+            else if (label.Contains("性别") || (element.Options?.Any() == true && label.Contains("性别")))
+            {
+                field.FieldType = FieldDataType.Dropdown;
+                if (element.Options?.Any() == true)
+                    field.Options = element.Options.ToList();
+            }
         }
 
         return field;
@@ -184,6 +209,16 @@ public class MainTabViewModel : TabViewModelBase
     {
         var field = Fields.FirstOrDefault(f => f.DataPath == dataPath);
         if (field != null) field.Value = value?.ToString() ?? string.Empty;
+    }
+
+    public void ApplyContextData(Dictionary<string, object> data)
+    {
+        foreach (var field in Fields)
+        {
+            if (!string.IsNullOrEmpty(field.DataPath) && data.TryGetValue(field.DataPath, out var value))
+                field.Value = value?.ToString() ?? string.Empty;
+        }
+        RefreshPreview();
     }
 
     public void RefreshPreview()
