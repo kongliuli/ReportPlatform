@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
-const HomeView = () => import(/* webpackPrefetch: true */ '@/views/HomeView.vue')
-const LoginView = () => import(/* webpackPrefetch: true */ '@/views/LoginView.vue')
-const TemplatesView = () => import(/* webpackPrefetch: true */ '@/views/TemplatesView.vue')
-const EditorView = () => import(/* webpackChunkName: "editor" */ '@/views/EditorView.vue')
-const TemplateVersionsView = () => import(/* webpackChunkName: "versions" */ '@/views/TemplateVersionsView.vue')
-const SettingsView = () => import(/* webpackChunkName: "settings" */ '@/views/SettingsView.vue')
+const HomeView = () => import('@/views/HomeView.vue')
+const LoginView = () => import('@/views/LoginView.vue')
+const TemplatesView = () => import('@/views/TemplatesView.vue')
+const EditorView = () => import('@/views/EditorView.vue')
+const TemplateVersionsView = () => import('@/views/TemplateVersionsView.vue')
+const SettingsView = () => import('@/views/SettingsView.vue')
 
 const routes = [
   {

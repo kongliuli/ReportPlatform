@@ -2,6 +2,7 @@ using System.IO;
 using Newtonsoft.Json;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Models;
+using Xinglin.ReportEditor.Contracts.Enums;
 
 namespace ReportDataMaker.Services;
 
@@ -86,6 +87,8 @@ public class TemplateLoaderService : ITemplateLoaderService
                 nestedCount += template.Elements.OfType<ExternalHeaderElement>().Sum(h => h.Children.Count);
                 nestedCount += template.Elements.OfType<ExternalFooterElement>().Sum(f => f.Children.Count);
                 FileLogger.Instance.WriteLine($"[TemplateLoader] 嵌套子元素数量: {nestedCount}");
+
+                PostProcessElements(template.Elements);
             }
             else
             {
@@ -118,5 +121,24 @@ public class TemplateLoaderService : ITemplateLoaderService
     {
         FileLogger.Instance.WriteLine($"[TemplateLoader] LoadFromServerAsync 未实现，templateId: {templateId}");
         throw new NotImplementedException();
+    }
+
+    /// <summary>后处理元素列表：修正自动分类不准确的情况</summary>
+    private static void PostProcessElements(List<ReportExternalElementBase> elements)
+    {
+        foreach (var element in elements)
+        {
+            // 表格元素：如果包含 CellData（即有可填充数据），应标记为 Editable
+            if (element is ExternalTableElement table && table.CellData.Count > 0)
+            {
+                table.Group = ElementGroup.Editable;
+                // 如果没有 DataPath，自动使用 Id 作为 DataPath
+                if (string.IsNullOrEmpty(table.DataPath))
+                {
+                    table.DataPath = table.Id;
+                }
+                FileLogger.Instance.WriteLine($"[TemplateLoader] 表格元素 {table.Id}: 已标记为 Editable，DataPath={table.DataPath}");
+            }
+        }
     }
 }

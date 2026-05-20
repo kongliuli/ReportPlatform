@@ -1,0 +1,23 @@
+{
+  "active_plan": "/mnt/d/Code/OpenSource/ReportPlatform/.sisyphus/plans/five-issues.md",
+  "started_at": "2026-05-16T15:18:47.553Z",
+  "session_ids": [
+    "ses_1dde9acb4ffezaszo68LqsIb3L"
+  ],
+  "session_origins": {
+    "ses_1dde9acb4ffezaszo68LqsIb3L": "direct"
+  },
+  "plan_name": "five-issues",
+  "agent": "atlas",
+  "task_sessions": {
+    "final-wave:f1": {
+      "task_key": "final-wave:f1",
+      "task_label": "F1",
+      "task_title": "**Plan Compliance Audit** — `oracle`",
+      "session_id": "ses_1ce6a12fdffeIyZLXASzo5GF86",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "updated_at": "2026-05-16T16:20:03.854Z"
+    }
+  }
+}

@@ -53,18 +53,19 @@ public class VersionService : IVersionService
 
     public async Task<TemplateVersionDto> RollbackAsync(Guid templateId, Guid versionId, string? createdBy)
     {
-        var targetVersion = await _dbContext.TemplateVersions
-            .FirstOrDefaultAsync(v => v.TemplateId == templateId && v.Id == versionId);
-
-        if (targetVersion == null)
-            throw new KeyNotFoundException($"版本 {versionId} 不存在");
-
         var template = await _dbContext.Templates.FindAsync(templateId)
             ?? throw new KeyNotFoundException($"模板 {templateId} 不存在");
 
-        var maxVersion = await _dbContext.TemplateVersions
+        var allVersions = await _dbContext.TemplateVersions
             .Where(v => v.TemplateId == templateId)
-            .MaxAsync(v => (int?)v.VersionNumber) ?? 0;
+            .ToListAsync();
+
+        var targetVersion = allVersions.FirstOrDefault(v => v.Id == versionId)
+            ?? throw new KeyNotFoundException($"版本 {versionId} 不存在");
+
+        var maxVersion = allVersions.Count > 0
+            ? allVersions.Max(v => v.VersionNumber)
+            : 0;
 
         var newVersion = new Data.TemplateVersionEntity
         {

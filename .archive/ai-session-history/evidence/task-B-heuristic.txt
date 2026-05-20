@@ -1,0 +1,7 @@
+Task B: Date/Gender heuristic
+Commit: 3c57c8a (combined with Task D)
+File: Generators/ReportDataMaker/ViewModels/Tabs/MainTabViewModel.cs
+Key changes:
+  - Line 169: if (label.Contains("日期") || label.Contains("date"))
+  - Line 173: else if (label.Contains("性别") || ...)
+Verified: grep found heuristic logic.

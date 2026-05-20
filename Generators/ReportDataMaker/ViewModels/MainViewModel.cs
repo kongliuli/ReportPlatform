@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -30,37 +31,27 @@ public class MainViewModel : ViewModelBase
     private readonly ExportHistoryStore _exportHistoryStore;
 
     /// <summary>初始化主视图模型</summary>
-    /// <param name="templateLoader">模板加载服务</param>
-    /// <param name="dataBindingService">数据绑定服务</param>
-    /// <param name="previewService">模板预览服务</param>
+    /// <param name="templateServices">模板服务聚合</param>
+    /// <param name="adapterServices">适配器服务聚合</param>
+    /// <param name="exportServices">导出服务聚合</param>
     /// <param name="dialogService">对话框服务</param>
-    /// <param name="configStore">适配器配置存储</param>
-    /// <param name="excelFactory">Excel适配器工厂</param>
-    /// <param name="dbFactory">数据库适配器工厂</param>
     public MainViewModel(
-        ITemplateLoaderService templateLoader,
-        IDataBindingService dataBindingService,
-        ITemplatePreviewService previewService,
-        IDialogService dialogService,
-        AdapterConfigStore configStore,
-        ExcelAdapterFactory excelFactory,
-        DatabaseAdapterFactory dbFactory,
-        ContextAdapterFactory contextFactory,
-        IPdfExportService pdfExportService,
-        BatchExportService batchExportService,
-        ExportHistoryStore exportHistoryStore)
+        TemplateServices templateServices,
+        AdapterServices adapterServices,
+        ExportServices exportServices,
+        IDialogService dialogService)
     {
-        _templateLoader = templateLoader;
-        _dataBindingService = dataBindingService;
-        _previewService = previewService;
+        _templateLoader = templateServices.TemplateLoader;
+        _dataBindingService = templateServices.DataBindingService;
+        _previewService = templateServices.PreviewService;
         _dialogService = dialogService;
-        _configStore = configStore;
-        _excelFactory = excelFactory;
-        _dbFactory = dbFactory;
-        _contextFactory = contextFactory;
-        _pdfExportService = pdfExportService;
-        _batchExportService = batchExportService;
-        _exportHistoryStore = exportHistoryStore;
+        _excelFactory = adapterServices.ExcelFactory;
+        _dbFactory = adapterServices.DbFactory;
+        _contextFactory = adapterServices.ContextFactory;
+        _configStore = adapterServices.ConfigStore;
+        _pdfExportService = exportServices.PdfExportService;
+        _batchExportService = exportServices.BatchExportService;
+        _exportHistoryStore = exportServices.ExportHistoryStore;
 
         Tabs = new ObservableCollection<TabViewModelBase>();
         Adapters = new ObservableCollection<AdapterItemViewModel>();
@@ -195,7 +186,7 @@ public class MainViewModel : ViewModelBase
             FileLogger.Instance.WriteLine($"[MainVM.LoadTemplate] 上下文数据填充成功，共 {contextResult.Data.Count} 项");
             foreach (var element in template.Elements)
             {
-                if (element.Group == ElementGroup.Context && !string.IsNullOrEmpty(element.DataPath)
+                if (!string.IsNullOrEmpty(element.DataPath)
                     && contextResult.Data.TryGetValue(element.DataPath, out var value))
                 {
                     element.DefaultValue = value?.ToString() ?? string.Empty;
@@ -278,6 +269,7 @@ public class MainViewModel : ViewModelBase
         if (existingTab != null) { ActiveTab = existingTab; return; }
         var tab = new ContextAdapterTabViewModel(CurrentTemplate, _contextFactory, _dialogService);
         tab.CloseRequested += OnTabCloseRequested;
+        tab.ContextApplied += OnContextApplied;
         Tabs.Insert(Tabs.Count - 1, tab);
         ActiveTab = tab;
     }
@@ -324,6 +316,12 @@ public class MainViewModel : ViewModelBase
             var adapter = Adapters.FirstOrDefault(a => tab.Title.Contains(a.DisplayName));
             if (adapter != null) Adapters.Remove(adapter);
         }
+    }
+
+    private void OnContextApplied(Dictionary<string, object> data)
+    {
+        var mainTab = Tabs.OfType<MainTabViewModel>().FirstOrDefault();
+        mainTab?.ApplyContextData(data);
     }
 
     private async Task ExecuteSaveAsync(object? parameter)

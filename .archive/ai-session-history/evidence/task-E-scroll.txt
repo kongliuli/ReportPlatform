@@ -1,0 +1,8 @@
+Task E: Scroll propagation
+Commit: 97e8f35
+Files: Generators/ReportDataMaker/Views/Tabs/MainTab.xaml, MainTab.xaml.cs
+Key changes:
+  - x:Name="MainScrollViewer" added to ScrollViewer
+  - PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" handler added
+  - ScrollViewer_PreviewMouseWheel method in code-behind
+Verified: grep found handler in .cs file. XAML attributes confirmed.

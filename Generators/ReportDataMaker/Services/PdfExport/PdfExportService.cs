@@ -13,8 +13,6 @@ public class PdfExportService : IPdfExportService
 
     public byte[] RenderToPdf(ExternalTemplateDefinition template, Dictionary<string, object> data)
     {
-        QuestPDF.Settings.License = LicenseType.Community;
-
         var layout = new PdfPageLayoutEngine(template);
 
         var document = Document.Create(container =>

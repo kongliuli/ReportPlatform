@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using QuestPDF.Infrastructure;
 using Xinglin.WebReportEditor.Core.Data;
 using Xinglin.WebReportEditor.Core.Extensions;
 using Xinglin.WebReportEditor.Server.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
@@ -93,7 +96,10 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TemplateDbContext>();
     db.Database.Migrate();
-    TemplateSeedData.SeedTemplates(db);
+    if (app.Environment.IsDevelopment())
+    {
+        TemplateSeedData.SeedTemplates(db, app.Configuration);
+    }
 }
 
 app.UseMiddleware<GlobalExceptionMiddleware>();

@@ -14,6 +14,7 @@ public class FieldDataTemplateSelector : DataTemplateSelector
     public DataTemplate? CheckboxTemplate { get; set; }
     public DataTemplate? RadioTemplate { get; set; }
     public DataTemplate? ReadOnlyTemplate { get; set; }
+    public DataTemplate? TableTemplate { get; set; }
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
@@ -29,6 +30,7 @@ public class FieldDataTemplateSelector : DataTemplateSelector
             FieldDataType.Date => DateTemplate,
             FieldDataType.Boolean when field.Options.Count > 0 => RadioTemplate,
             FieldDataType.Boolean => CheckboxTemplate,
+            FieldDataType.Table => TableTemplate,
             _ => TextTemplate
         };
     }

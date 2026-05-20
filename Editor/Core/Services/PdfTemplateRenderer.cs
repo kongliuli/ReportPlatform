@@ -16,12 +16,14 @@ public class PdfTemplateRenderer : IPdfSharpTemplateRenderer
     private const float DefaultPageHeightMm = 297f;
     private const float DefaultMarginMm = 10f;
 
-    public byte[] RenderToPdf(object templateDefinition)
+    public byte[] RenderToPdf(string templateJson)
     {
-        QuestPDF.Settings.License = LicenseType.Community;
+        var template = TemplateSerializer.Deserialize(templateJson);
+        return RenderToPdf(template);
+    }
 
-        var json = templateDefinition as string ?? templateDefinition.ToString()!;
-        var template = TemplateSerializer.Deserialize(json);
+    public byte[] RenderToPdf(TemplateDefinition template)
+    {
         var page = template.PageSettings;
 
         var pageWidth = (page?.PageWidth > 0 ? (float)page.PageWidth : DefaultPageWidthMm) * MmToPoints;

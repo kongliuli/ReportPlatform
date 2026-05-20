@@ -47,16 +47,7 @@ public class PdfElementRenderer
     {
         if (!element.IsVisible) return;
 
-        var x = layout.ConvertX(element.X);
-        var y = layout.ConvertY(element.Y);
-        var w = element.Width > 0 ? layout.ConvertSize(element.Width) : 0;
-        var h = element.Height > 0 ? layout.ConvertSize(element.Height) : 0;
-
-        if (element.Opacity < 1)
-        {
-            using var alphaPaint = new SKPaint { Color = SKColors.White.WithAlpha((byte)(element.Opacity * 255)) };
-            canvas.SaveLayer(alphaPaint);
-        }
+        ApplyCanvasLayout(canvas, element, layout, out var x, out var y, out var w, out var h);
 
         switch (element)
         {
@@ -86,6 +77,21 @@ public class PdfElementRenderer
 
         if (element.Opacity < 1)
             canvas.Restore();
+    }
+
+    private static void ApplyCanvasLayout(SKCanvas canvas, ReportExternalElementBase element, PdfPageLayoutEngine layout,
+        out float x, out float y, out float w, out float h)
+    {
+        x = layout.ConvertX(element.X);
+        y = layout.ConvertY(element.Y);
+        w = element.Width > 0 ? layout.ConvertSize(element.Width) : 0;
+        h = element.Height > 0 ? layout.ConvertSize(element.Height) : 0;
+
+        if (element.Opacity < 1)
+        {
+            using var alphaPaint = new SKPaint { Color = SKColors.White.WithAlpha((byte)(element.Opacity * 255)) };
+            canvas.SaveLayer(alphaPaint);
+        }
     }
 
     private string ResolveValue(ReportExternalElementBase element, Dictionary<string, object> data)

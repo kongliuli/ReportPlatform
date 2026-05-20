@@ -12,26 +12,35 @@ namespace Xinglin.WebReportEditor.Core.Services;
 /// </summary>
 public class DataBindingEngine : IDataBindingEngine
 {
-    public object ApplyDataBinding(object template, object sampleData)
+    public TemplateDefinition ApplyDataBinding(TemplateDefinition template, Dictionary<string, object> sampleData)
     {
-        // 1. 解析模板
-        var templateDef = template switch
-        {
-            string json => TemplateSerializer.Deserialize(json),
-            TemplateDefinition def => def,
-            _ => throw new ArgumentException("template must be JSON string or TemplateDefinition")
-        };
+        ApplyCore(template, sampleData);
+        return template;
+    }
 
-        // 2. 解析样本数据为字典
-        var data = sampleData switch
-        {
-            Dictionary<string, object> dict => dict,
-            string json => JsonConvert.DeserializeObject<Dictionary<string, object>>(json)
-                ?? new Dictionary<string, object>(),
-            _ => new Dictionary<string, object>()
-        };
+    public TemplateDefinition ApplyDataBinding(string templateJson, string sampleDataJson)
+    {
+        var template = TemplateSerializer.Deserialize(templateJson);
+        var data = string.IsNullOrEmpty(sampleDataJson)
+            ? new Dictionary<string, object>()
+            : JsonConvert.DeserializeObject<Dictionary<string, object>>(sampleDataJson)
+                ?? new Dictionary<string, object>();
+        ApplyCore(template, data);
+        return template;
+    }
 
-        // 3. 遍历元素，注入绑定值
+    public TemplateDefinition ApplyDataBinding(string templateJson, Dictionary<string, object> sampleData)
+    {
+        var template = TemplateSerializer.Deserialize(templateJson);
+        ApplyCore(template, sampleData);
+        return template;
+    }
+
+    private static void ApplyCore(TemplateDefinition templateDef, Dictionary<string, object> data)
+    {
+        if (templateDef?.Elements == null) return;
+
+        // 遍历元素，注入绑定值
         foreach (var element in templateDef.Elements)
         {
             if (string.IsNullOrEmpty(element.DataPath))

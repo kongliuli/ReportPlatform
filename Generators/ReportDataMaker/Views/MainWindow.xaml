@@ -68,7 +68,8 @@
             </MenuItem>
         </Menu>
 
-        <Grid Grid.Row="1">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -124,7 +125,7 @@
                 </Grid>
             </Border>
 
-            <TabControl Grid.Column="1" ItemsSource="{Binding Tabs}" SelectedItem="{Binding ActiveTab}" Margin="8">
+            <TabControl Grid.Column="1" ItemsSource="{Binding Tabs}" SelectedItem="{Binding ActiveTab}" Margin="8" Padding="0,0,0,6">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -142,6 +143,7 @@
                 </TabControl.ContentTemplate>
             </TabControl>
         </Grid>
+        </ScrollViewer>
 
         <StatusBar Grid.Row="2">
             <StatusBarItem>

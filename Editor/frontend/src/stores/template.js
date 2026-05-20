@@ -4,6 +4,7 @@ import { createElementByType } from '@/models/elements'
 import { serialize } from '@/utils/serializer'
 import { getCachedTemplates, setCachedTemplates, getDraft, setDraft, clearDraft } from '@/utils/templateCache'
 import { normalizeTemplate } from '@/utils/templateNormalizer'
+import { getTemplates, getTemplate, createTemplateApi, updateTemplateApi, deleteTemplateApi } from '@/api/template'
 
 export const useTemplateStore = defineStore('template', () => {
   const templates = ref([])
@@ -45,7 +46,6 @@ export const useTemplateStore = defineStore('template', () => {
   async function fetchTemplates(params = {}) {
     loading.value = true
     try {
-      const { getTemplates } = await import('@/api/template')
       const result = await getTemplates(params)
       templates.value = result.items || []
       return result
@@ -65,7 +65,6 @@ export const useTemplateStore = defineStore('template', () => {
         return currentTemplate.value
       }
 
-      const { getTemplate } = await import('@/api/template')
       const result = await getTemplate(id)
       currentTemplate.value = normalizeTemplate(result)
       
@@ -80,14 +79,12 @@ export const useTemplateStore = defineStore('template', () => {
   }
 
   async function createTemplate(data) {
-    const { createTemplateApi } = await import('@/api/template')
     const result = await createTemplateApi(data)
     templates.value.unshift(result)
     return result
   }
 
   async function updateTemplate(id, data) {
-    const { updateTemplateApi } = await import('@/api/template')
     const result = await updateTemplateApi(id, data)
     const index = templates.value.findIndex(t => t.id === id)
     if (index !== -1) templates.value[index] = result
@@ -99,7 +96,6 @@ export const useTemplateStore = defineStore('template', () => {
   }
 
   async function deleteTemplate(id) {
-    const { deleteTemplateApi } = await import('@/api/template')
     await deleteTemplateApi(id)
     templates.value = templates.value.filter(t => t.id !== id)
     if (currentTemplate.value?.id === id) {

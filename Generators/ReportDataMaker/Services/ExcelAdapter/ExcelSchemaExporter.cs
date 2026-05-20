@@ -3,12 +3,11 @@ using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services.ExcelAdapter;
 
-/// <summary>Excel模式导出器，将模板字段模式导出为Excel文件</summary>
 public class ExcelSchemaExporter
 {
-    /// <summary>将模板字段模式导出为Excel文件</summary>
-    /// <param name="filePath">导出文件路径</param>
-    /// <param name="schema">模板字段模式</param>
+    private static readonly XLColor TableGroupColor = XLColor.FromArgb(16, 185, 129);
+    private static readonly XLColor NormalHeaderColor = XLColor.FromArgb(37, 99, 235);
+
     public void ExportTemplate(string filePath, TemplateFieldSchema schema)
     {
         using var workbook = new XLWorkbook();
@@ -25,25 +24,23 @@ public class ExcelSchemaExporter
 
         for (int i = 0; i < schema.Fields.Count; i++)
         {
+            var field = schema.Fields[i];
             var cell = ws.Cell(2, i + 1);
-            cell.Value = schema.Fields[i].Label;
+            cell.Value = field.Label;
             cell.Style.Font.Bold = true;
-            cell.Style.Fill.BackgroundColor = XLColor.FromArgb(37, 99, 235);
+            cell.Style.Fill.BackgroundColor = field.TableLabel != null ? TableGroupColor : NormalHeaderColor;
             cell.Style.Font.FontColor = XLColor.White;
             cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            if (schema.Fields[i].IsRequired)
+            if (field.IsRequired)
                 cell.Style.Font.Bold = true;
         }
 
         for (int i = 0; i < schema.Fields.Count; i++)
         {
+            var field = schema.Fields[i];
             var cell = ws.Cell(3, i + 1);
-            cell.Value = schema.Fields[i].DataType.ToString().ToLower();
+            cell.Value = BuildTypeRowValue(field);
             cell.Style.Font.FontColor = XLColor.LightGray;
-            if (schema.Fields[i].DataType == FieldDataType.Dropdown && schema.Fields[i].Options?.Count > 0)
-                cell.Value += $" [{string.Join(",", schema.Fields[i].Options ?? Enumerable.Empty<string>())}]";
-            if (schema.Fields[i].DataType == FieldDataType.Number && schema.Fields[i].DecimalPlaces.HasValue)
-                cell.Value += $" (D{schema.Fields[i].DecimalPlaces})";
         }
         ws.Row(3).Hide();
 
@@ -55,9 +52,21 @@ public class ExcelSchemaExporter
             cell.Style.Font.Italic = true;
         }
 
+        ApplyTableGroupBorders(ws, schema);
+
         AddInstructionSheet(workbook, schema);
         ws.Columns().AdjustToContents(10, 40);
         workbook.SaveAs(filePath);
+    }
+
+    private static string BuildTypeRowValue(FlatField field)
+    {
+        var value = field.DataType.ToString().ToLower();
+        if (field.DataType == FieldDataType.Dropdown && field.Options?.Count > 0)
+            value += $" [{string.Join(",", field.Options)}]";
+        if (field.DataType == FieldDataType.Number && field.DecimalPlaces.HasValue)
+            value += $" (D{field.DecimalPlaces})";
+        return value;
     }
 
     private string GetExampleValue(FlatField field)
@@ -70,6 +79,30 @@ public class ExcelSchemaExporter
             FieldDataType.Boolean => "true/false",
             _ => $"[输入{field.Label}]"
         };
+    }
+
+    private static void ApplyTableGroupBorders(IXLWorksheet ws, TemplateFieldSchema schema)
+    {
+        string? currentTableLabel = null;
+        int groupStartCol = -1;
+
+        for (int i = 0; i <= schema.Fields.Count; i++)
+        {
+            var fieldLabel = i < schema.Fields.Count ? schema.Fields[i].TableLabel : null;
+
+            if (fieldLabel != currentTableLabel)
+            {
+                if (currentTableLabel != null && groupStartCol >= 0)
+                {
+                    var range = ws.Range(2, groupStartCol, 2, i);
+                    range.Style.Border.OutsideBorder = XLBorderStyleValues.Medium;
+                    range.Style.Border.OutsideBorderColor = XLColor.FromArgb(5, 150, 105);
+                }
+
+                currentTableLabel = fieldLabel;
+                groupStartCol = fieldLabel != null ? i + 1 : -1;
+            }
+        }
     }
 
     private void AddInstructionSheet(XLWorkbook workbook, TemplateFieldSchema schema)
@@ -85,7 +118,12 @@ public class ExcelSchemaExporter
         ws.Cell(7, 1).Value = "5. 布尔值: true/false";
         ws.Cell(8, 1).Value = $"6. 模板: {schema.TemplateName} v{schema.TemplateVersion}";
         ws.Cell(9, 1).Value = $"7. 可编辑字段数: {schema.Fields.Count}";
-        ws.Cell(10, 1).Value = "8. 每行数据对应一份报告单（批量模式）";
+
+        var tableCount = schema.Fields.Where(f => f.TableLabel != null)
+            .Select(f => f.TableLabel).Distinct().Count();
+        if (tableCount > 0)
+            ws.Cell(10, 1).Value = $"8. 含 {tableCount} 个表格的可编辑单元格（绿色表头标识）";
+        ws.Cell(11, 1).Value = "9. 每行数据对应一份报告单（批量模式）";
         ws.Column(1).Width = 60;
     }
 }

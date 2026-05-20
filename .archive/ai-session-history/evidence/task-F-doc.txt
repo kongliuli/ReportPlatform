@@ -1,0 +1,5 @@
+Task F: Element type contract doc
+Commit: 284cd88
+File: docs/element-type-contract.md
+Key stats: 109 lines, contains type mapping table, heuristic fallback docs
+Verified: file exists, build passes.

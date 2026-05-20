@@ -1,0 +1,7 @@
+Task C: FillContext skip unconfigured
+Commit: 85744b0
+File: Generators/ReportDataMaker/Services/ContextAdapter/ContextAdapterService.cs
+Key changes:
+  - Line 34: if (builtIn is string s && !string.IsNullOrEmpty(s))
+  - Unconfigured fields (ResolveBuiltIn returns "") are skipped, not added to data dict
+Verified: grep found skip logic. Build passes.

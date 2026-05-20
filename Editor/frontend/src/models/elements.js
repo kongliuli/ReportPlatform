@@ -53,7 +53,7 @@ export class ElementBase {
   }
 
   clone() {
-    const json = JSON.parse(JSON.stringify(this))
+    const json = structuredClone({ ...this })
     json.id = generateId()
     return this.constructor.fromJSON(json)
   }

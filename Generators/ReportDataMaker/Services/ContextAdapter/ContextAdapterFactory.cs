@@ -42,7 +42,7 @@ public class ContextAdapterFactory
         var unconfigured = new List<string>();
         foreach (var element in template.Elements)
         {
-            if (element.Group == ElementGroup.Context && !string.IsNullOrEmpty(element.DataPath) && !configured.Contains(element.DataPath))
+            if (!string.IsNullOrEmpty(element.DataPath) && !configured.Contains(element.DataPath))
                 unconfigured.Add(element.DataPath);
         }
         return unconfigured;

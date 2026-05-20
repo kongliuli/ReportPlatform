@@ -24,20 +24,10 @@ public class ApiLoggingMiddleware
         _logger.LogInformation("[API] Request Started | Method: {Method} | Path: {Path}{Query} | IP: {ClientIp}",
             requestMethod, requestPath, requestQuery, clientIp);
 
-        try
-        {
-            await _next(context);
+        await _next(context);
 
-            stopwatch.Stop();
-            _logger.LogInformation("[API] Request Completed | Method: {Method} | Path: {Path}{Query} | StatusCode: {StatusCode} | Duration: {Duration}ms",
-                requestMethod, requestPath, requestQuery, context.Response.StatusCode, stopwatch.ElapsedMilliseconds);
-        }
-        catch (Exception ex)
-        {
-            stopwatch.Stop();
-            _logger.LogError(ex, "[API] Request Failed | Method: {Method} | Path: {Path}{Query} | Duration: {Duration}ms",
-                requestMethod, requestPath, requestQuery, stopwatch.ElapsedMilliseconds);
-            throw;
-        }
+        stopwatch.Stop();
+        _logger.LogInformation("[API] Request Completed | Method: {Method} | Path: {Path}{Query} | StatusCode: {StatusCode} | Duration: {Duration}ms",
+            requestMethod, requestPath, requestQuery, context.Response.StatusCode, stopwatch.ElapsedMilliseconds);
     }
 }

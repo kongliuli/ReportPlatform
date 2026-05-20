@@ -45,8 +45,35 @@ export function printCanvasAsPdf(canvasEngine, templateName) {
   const widthMm = template.pageWidth
   const heightMm = template.pageHeight
 
-  const printWindow = window.open('', '_blank')
-  if (!printWindow) return
+  const iframe = document.createElement('iframe')
+  iframe.style.position = 'fixed'
+  iframe.style.right = '0'
+  iframe.style.bottom = '0'
+  iframe.style.width = '0'
+  iframe.style.height = '0'
+  iframe.style.border = 'none'
+  document.body.appendChild(iframe)
+
+  const doc = iframe.contentDocument || iframe.contentWindow.document
+  doc.write(`<!DOCTYPE html>
+<html>
+<head>
+<title>${templateName || '模板预览'}</title>
+<style>
+  @page { size: ${widthMm}mm ${heightMm}mm; margin: 0; }
+  body { margin: 0; padding: 0; display: flex; justify-content: center; }
+  img { width: ${widthMm}mm; height: ${heightMm}mm; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<img src="${dataUrl}" onload="window.print();" />
+</body>
+</html>`)
+  doc.close()
+
+  setTimeout(() => document.body.removeChild(iframe), 60000)
+}
 
   printWindow.document.write(`<!DOCTYPE html>
 <html>

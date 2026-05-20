@@ -1,0 +1,7 @@
+Task A: Dropdown dedup
+Commit: 7993c2c
+File: Generators/ReportDataMaker/ViewModels/Tabs/ContextAdapterTabViewModel.cs
+Key changes:
+  - Line 243: UnconfiguredFields.Remove(SelectedUnconfiguredField)
+  - Line 244: SelectedUnconfiguredField = null
+Verified: grep found both lines in file.

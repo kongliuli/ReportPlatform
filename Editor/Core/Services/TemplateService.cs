@@ -20,6 +20,10 @@ public class TemplateService : ITemplateService
 
     public async Task<PagedResponse<TemplateDto>> GetTemplatesAsync(TemplateFilterRequest filter)
     {
+        if (filter.Page < 1) filter.Page = 1;
+        if (filter.PageSize < 1) filter.PageSize = 20;
+        if (filter.PageSize > 100) filter.PageSize = 100;
+
         var query = _dbContext.Templates.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(filter.Name))

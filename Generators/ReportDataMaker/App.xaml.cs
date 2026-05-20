@@ -1,6 +1,7 @@
 using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using QuestPDF.Infrastructure;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Services;
 using ReportDataMaker.Services.ContextAdapter;
@@ -22,6 +23,7 @@ public partial class App : Application
     /// <param name="e">启动事件参数</param>
     protected override void OnStartup(StartupEventArgs e)
     {
+        QuestPDF.Settings.License = LicenseType.Community;
         FileLogger.Initialize();
         FileLogger.Instance.WriteLine("[LOG] ===== App.OnStartup 开始 =====");
         FileLogger.Instance.WriteLine($"[LOG] 基准目录: {AppDomain.CurrentDomain.BaseDirectory}");

@@ -63,30 +63,8 @@ public class TemplateDbContext : DbContext
 
     private static void SeedData(ModelBuilder modelBuilder)
     {
-        var adminId = Guid.Parse("00000000-0000-0000-0000-000000000001");
-        modelBuilder.Entity<UserEntity>().HasData(
-            new UserEntity
-            {
-                Id = adminId,
-                Username = "admin",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
-                DisplayName = "系统管理员",
-                Role = "admin",
-                HospitalId = "H001",
-                IsActive = true,
-                CreateTime = DateTime.UtcNow
-            },
-            new UserEntity
-            {
-                Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
-                Username = "editor",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("editor123"),
-                DisplayName = "编辑员",
-                Role = "editor",
-                HospitalId = "H001",
-                IsActive = true,
-                CreateTime = DateTime.UtcNow
-            }
-        );
+        // User seeding moved to TemplateSeedData.SeedUsers (runtime, config-driven).
+        // Model-level seed (HasData) was removed because BCrypt hashing at migration
+        // time is a side effect and hardcodes credentials.
     }
 }

@@ -1,13 +1,14 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.Configuration;
 
 namespace Xinglin.WebReportEditor.Core.Data;
 
 public static class TemplateSeedData
 {
-    public static void SeedTemplates(TemplateDbContext db)
+    public static void SeedTemplates(TemplateDbContext db, IConfiguration configuration)
     {
-        SeedUsers(db);
+        SeedUsers(db, configuration);
 
         if (db.Templates.Any()) return;
 
@@ -438,17 +439,22 @@ public static class TemplateSeedData
         return doc.ToJsonString();
     }
 
-    private static void SeedUsers(TemplateDbContext db)
+    private static void SeedUsers(TemplateDbContext db, IConfiguration configuration)
     {
         if (db.Users.Any(u => u.Username == "admin")) return;
 
         var now = DateTime.UtcNow;
 
+        var adminUsername = configuration.GetValue<string>("AdminUser:Username") ?? "admin";
+        var adminPassword = configuration.GetValue<string>("AdminUser:Password") ?? "admin123";
+        var editorUsername = configuration.GetValue<string>("EditorUser:Username") ?? "editor";
+        var editorPassword = configuration.GetValue<string>("EditorUser:Password") ?? "editor123";
+
         var adminUser = new UserEntity
         {
             Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
-            Username = "admin",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
+            Username = adminUsername,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
             DisplayName = "系统管理员",
             Role = "admin",
             HospitalId = "H001",
@@ -459,8 +465,8 @@ public static class TemplateSeedData
         var editorUser = new UserEntity
         {
             Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
-            Username = "editor",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("editor123"),
+            Username = editorUsername,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(editorPassword),
             DisplayName = "模板编辑员",
             Role = "editor",
             HospitalId = "H001",

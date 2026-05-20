@@ -33,6 +33,25 @@ public class DataEntryTabViewModel : TabViewModelBase
         Fields.Clear();
         foreach (var element in Template.Elements)
         {
+            // 表格元素：即使 DataPath 为空也展示（自动使用 Id 作为 DataPath）
+            if (element is ExternalTableElement table)
+            {
+                var tableField = new FieldViewModel
+                {
+                    ElementId = element.Id,
+                    Label = element.Label ?? element.Id ?? string.Empty,
+                    DataPath = element.DataPath ?? element.Id ?? string.Empty,
+                    FieldType = FieldDataType.Table,
+                    TableRows = table.Rows,
+                    TableColumns = table.Columns,
+                    TableHeaderRows = table.HeaderRows,
+                    TableCellData = table.CellData ?? new List<List<string>>()
+                };
+                Fields.Add(tableField);
+                continue;
+            }
+
+            // 非表格元素：必须有 DataPath 才展示
             if (string.IsNullOrEmpty(element.DataPath))
                 continue;
 
@@ -43,15 +62,6 @@ public class DataEntryTabViewModel : TabViewModelBase
                 DataPath = element.DataPath ?? string.Empty,
                 Value = element.DefaultValue
             };
-
-            if (element is ExternalTableElement table)
-            {
-                field.FieldType = FieldDataType.Table;
-                field.TableRows = table.Rows;
-                field.TableColumns = table.Columns;
-                field.TableHeaderRows = table.HeaderRows;
-                field.TableCellData = table.CellData ?? new List<List<string>>();
-            }
 
             Fields.Add(field);
         }

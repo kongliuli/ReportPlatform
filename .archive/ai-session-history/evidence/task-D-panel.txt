@@ -1,0 +1,8 @@
+Task D: Panel split
+Commit: 3c57c8a (combined with Task B)
+File: Generators/ReportDataMaker/ViewModels/Tabs/MainTabViewModel.cs
+Key changes:
+  - Section title: "布局固定内容" (was "固定内容")
+  - Section title: "适配器已匹配/已配置" (was "适配器数据")
+  - Adapter criteria tightened to Group-only (removed DefaultValue check)
+Verified: grep found Group.Context || Group.DataAdapter condition.

@@ -1,5 +1,6 @@
 using System.Net;
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Xinglin.WebReportEditor.Contracts.Responses;
 
 namespace Xinglin.WebReportEditor.Server.Middleware;
@@ -45,9 +46,9 @@ public class GlobalExceptionMiddleware
         context.Response.StatusCode = (int)statusCode;
 
         var response = ApiResponse<object>.Fail(message, (int)statusCode);
-        var json = JsonSerializer.Serialize(response, new JsonSerializerOptions
+        var json = JsonConvert.SerializeObject(response, new JsonSerializerSettings
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
         });
 
         await context.Response.WriteAsync(json);

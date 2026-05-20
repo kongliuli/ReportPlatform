@@ -34,14 +34,7 @@ public class PdfRenderService : IPdfRenderService
         var template = await _dbContext.Templates.FindAsync(templateId)
             ?? throw new KeyNotFoundException($"模板 {templateId} 不存在");
 
-        var pdfBytes = _renderer.RenderToPdf(template.ContentJson);
-
-        if (pdfBytes == null || pdfBytes.Length == 0)
-        {
-            return GeneratePlaceholderImage(template.ContentJson);
-        }
-
-        return Convert.ToBase64String(pdfBytes);
+        return GeneratePlaceholderImage(template.ContentJson);
     }
 
     private static string GeneratePlaceholderImage(string contentJson)

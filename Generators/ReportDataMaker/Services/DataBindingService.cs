@@ -11,17 +11,93 @@ public class DataBindingService : IDataBindingService
 
         foreach (var element in template.Elements)
         {
-            if (string.IsNullOrEmpty(element.DataPath) || !data.TryGetValue(element.DataPath, out var value))
+            if (element is ExternalTableElement table)
+            {
+                ApplyTableCellData(table, data);
                 continue;
+            }
 
-            if (element is ExternalTableElement table && TryApplyTableData(table, value))
+            if (string.IsNullOrEmpty(element.DataPath) || !data.TryGetValue(element.DataPath, out var value))
                 continue;
 
             element.DefaultValue = value?.ToString() ?? string.Empty;
         }
     }
 
-    private static bool TryApplyTableData(ExternalTableElement table, object value)
+    private void ApplyTableCellData(ExternalTableElement table, Dictionary<string, object> data)
+    {
+        if (table.Cells == null || table.Cells.Count == 0)
+        {
+            if (!string.IsNullOrEmpty(table.DataPath) && data.TryGetValue(table.DataPath, out var value))
+                TryApplyTableDataWhole(table, value);
+            return;
+        }
+
+        var tableDataPath = !string.IsNullOrEmpty(table.DataPath) ? table.DataPath : table.Id;
+        var editableCells = table.Cells.Where(c => c.IsEditable).ToList();
+        bool hasCellLevelData = editableCells.Any(c =>
+            !string.IsNullOrEmpty(c.DataPath) && data.ContainsKey(c.DataPath));
+
+        if (!hasCellLevelData)
+        {
+            hasCellLevelData = editableCells.Any(c =>
+                data.ContainsKey($"{tableDataPath}.R{c.Row}C{c.Col}"));
+        }
+
+        if (hasCellLevelData)
+        {
+            EnsureCellDataInitialized(table);
+            foreach (var cell in editableCells)
+            {
+                var cellDataPath = !string.IsNullOrEmpty(cell.DataPath)
+                    ? cell.DataPath
+                    : $"{tableDataPath}.R{cell.Row}C{cell.Col}";
+
+                if (data.TryGetValue(cellDataPath, out var value))
+                    table.CellData[cell.Row][cell.Col] = value?.ToString() ?? string.Empty;
+            }
+        }
+        else if (!string.IsNullOrEmpty(table.DataPath) && data.TryGetValue(table.DataPath, out var wholeValue))
+        {
+            TryApplyTableDataWhole(table, wholeValue);
+        }
+    }
+
+    private static void EnsureCellDataInitialized(ExternalTableElement table)
+    {
+        if (table.CellData != null && table.CellData.Count >= table.Rows)
+        {
+            foreach (var row in table.CellData)
+            {
+                if (row.Count < table.Columns)
+                {
+                    while (row.Count < table.Columns)
+                        row.Add(string.Empty);
+                }
+            }
+            return;
+        }
+
+        var newCellData = new List<List<string>>();
+        for (int r = 0; r < table.Rows; r++)
+        {
+            var row = new List<string>();
+            if (table.CellData != null && r < table.CellData.Count)
+            {
+                for (int c = 0; c < table.Columns; c++)
+                    row.Add(c < table.CellData[r].Count ? table.CellData[r][c] : string.Empty);
+            }
+            else
+            {
+                for (int c = 0; c < table.Columns; c++)
+                    row.Add(string.Empty);
+            }
+            newCellData.Add(row);
+        }
+        table.CellData = newCellData;
+    }
+
+    private static bool TryApplyTableDataWhole(ExternalTableElement table, object value)
     {
         switch (value)
         {
@@ -43,23 +119,49 @@ public class DataBindingService : IDataBindingService
 
         foreach (var element in template.Elements)
         {
+            if (element is ExternalTableElement table)
+            {
+                ExtractTableData(table, data);
+                continue;
+            }
+
             if (string.IsNullOrEmpty(element.DataPath))
                 continue;
 
-            if (element is ExternalTableElement table)
-            {
-                data[element.DataPath] = new TableDataValue
-                {
-                    TableElementId = table.Id,
-                    Rows = table.CellData ?? new List<List<string>>()
-                };
-            }
-            else
-            {
-                data[element.DataPath] = element.DefaultValue ?? string.Empty;
-            }
+            data[element.DataPath] = element.DefaultValue ?? string.Empty;
         }
 
         return data;
+    }
+
+    private static void ExtractTableData(ExternalTableElement table, Dictionary<string, object> data)
+    {
+        if (table.Cells != null)
+        {
+            var tableDataPath = !string.IsNullOrEmpty(table.DataPath) ? table.DataPath : table.Id;
+            foreach (var cell in table.Cells.Where(c => c.IsEditable))
+            {
+                var cellDataPath = !string.IsNullOrEmpty(cell.DataPath)
+                    ? cell.DataPath
+                    : $"{tableDataPath}.R{cell.Row}C{cell.Col}";
+
+                var cellValue = table.CellData != null
+                    && cell.Row < table.CellData.Count
+                    && cell.Col < table.CellData[cell.Row].Count
+                    ? table.CellData[cell.Row][cell.Col]
+                    : string.Empty;
+
+                data[cellDataPath] = cellValue;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(table.DataPath))
+        {
+            data[table.DataPath] = new TableDataValue
+            {
+                TableElementId = table.Id,
+                Rows = table.CellData ?? new List<List<string>>()
+            };
+        }
     }
 }
