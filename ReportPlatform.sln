@@ -2,24 +2,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
+
+# Solution Folders
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{10000000-0000-0000-0000-000000000001}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{A73F2606-6D4C-3EEE-1759-0E59DCFEF523}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Editor", "Editor", "{28251423-8E50-9DF4-F913-DC1FAAA673F1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generators", "Generators", "{AD7C8182-B466-96AE-CF31-8AA8EF11C5DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xinglin.WebReportEditor.Contracts", "Contracts\Xinglin.WebReportEditor.Contracts.csproj", "{014360DE-3FAF-AA5F-5DE7-21A236515BC6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{20000000-0000-0000-0000-000000000001}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6997BCD9-4B61-4781-EBF9-298EDE4E942A}"
+
+# Projects
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xinglin.WebReportEditor.Contracts", "src\Contracts\Xinglin.WebReportEditor.Contracts.csproj", "{014360DE-3FAF-AA5F-5DE7-21A236515BC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xinglin.WebReportEditor.Core", "Editor\Core\Xinglin.WebReportEditor.Core.csproj", "{B95B3A38-E1B1-70E4-631F-E9AF31150950}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xinglin.WebReportEditor.Core", "src\Editor\Core\Xinglin.WebReportEditor.Core.csproj", "{B95B3A38-E1B1-70E4-631F-E9AF31150950}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{DED1FE21-033F-91AE-C2F1-A485584BBFFA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xinglin.WebReportEditor.Server", "src\Editor\Server\Xinglin.WebReportEditor.Server.csproj", "{94B86ABD-4F85-3FC9-C4EB-1357F78F35FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xinglin.WebReportEditor.Server", "Editor\Server\Xinglin.WebReportEditor.Server.csproj", "{94B86ABD-4F85-3FC9-C4EB-1357F78F35FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportDataMaker", "src\Generators\ReportDataMaker\ReportDataMaker.csproj", "{5862B40E-D491-045C-209A-ABD039C120CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportDataMaker", "Generators\ReportDataMaker\ReportDataMaker.csproj", "{5862B40E-D491-045C-209A-ABD039C120CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xinglin.WebReportEditor.Server.Tests", "tests\Editor.Server.Tests\Xinglin.WebReportEditor.Server.Tests.csproj", "{30000000-0000-0000-0000-000000000001}"
 EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,17 +49,23 @@ Global
 		{5862B40E-D491-045C-209A-ABD039C120CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5862B40E-D491-045C-209A-ABD039C120CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5862B40E-D491-045C-209A-ABD039C120CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30000000-0000-0000-0000-000000000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30000000-0000-0000-0000-000000000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30000000-0000-0000-0000-000000000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30000000-0000-0000-0000-000000000001}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{A73F2606-6D4C-3EEE-1759-0E59DCFEF523} = {10000000-0000-0000-0000-000000000001}
+		{28251423-8E50-9DF4-F913-DC1FAAA673F1} = {10000000-0000-0000-0000-000000000001}
+		{AD7C8182-B466-96AE-CF31-8AA8EF11C5DF} = {10000000-0000-0000-0000-000000000001}
 		{014360DE-3FAF-AA5F-5DE7-21A236515BC6} = {A73F2606-6D4C-3EEE-1759-0E59DCFEF523}
-		{6997BCD9-4B61-4781-EBF9-298EDE4E942A} = {28251423-8E50-9DF4-F913-DC1FAAA673F1}
-		{B95B3A38-E1B1-70E4-631F-E9AF31150950} = {6997BCD9-4B61-4781-EBF9-298EDE4E942A}
-		{DED1FE21-033F-91AE-C2F1-A485584BBFFA} = {28251423-8E50-9DF4-F913-DC1FAAA673F1}
-		{94B86ABD-4F85-3FC9-C4EB-1357F78F35FE} = {DED1FE21-033F-91AE-C2F1-A485584BBFFA}
+		{B95B3A38-E1B1-70E4-631F-E9AF31150950} = {28251423-8E50-9DF4-F913-DC1FAAA673F1}
+		{94B86ABD-4F85-3FC9-C4EB-1357F78F35FE} = {28251423-8E50-9DF4-F913-DC1FAAA673F1}
 		{5862B40E-D491-045C-209A-ABD039C120CF} = {AD7C8182-B466-96AE-CF31-8AA8EF11C5DF}
+		{30000000-0000-0000-0000-000000000001} = {20000000-0000-0000-0000-000000000001}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B872E9A-16EB-497F-A69D-EB9DCF1E5CCB}

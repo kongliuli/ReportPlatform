@@ -66,3 +66,17 @@ deploy/
 !deploy/editor-server/Dockerfile
 !deploy/nginx/nginx.conf
 !deploy/README.md
+
+# IDE - Visual Studio
+.vs/
+
+# AI assistant internal files
+.sisyphus/
+.trae/
+.codebuddy/
+
+# Git merge backup files
+*.orig
+
+# SQLite database files
+*.db
