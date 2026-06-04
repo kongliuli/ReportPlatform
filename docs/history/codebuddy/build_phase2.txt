@@ -1,0 +1,20 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Xinglin.WebReportEditor.Contracts -> d:\Code\OpenSource\ReportPlatform\src\Contracts\bin\Debug\net8.0\Xinglin.WebReportEditor.Contracts.dll
+  ReportDataMaker -> d:\Code\OpenSource\ReportPlatform\src\Generators\ReportDataMaker\bin\Debug\net8.0-windows\ReportDataMaker.dll
+d:\Code\OpenSource\ReportPlatform\src\Editor\Core\Services\PdfTemplateRenderer.cs(77,17): warning CS0618: “ElementExtensions.Canvas(IContainer, ElementExtensions.DrawOnCanvas)”已过时:“The Canvas API has been deprecated since version 2024.3.0. Please use the .Svg(stringContent) API to provide custom content, and consult documentation webpage regarding integrating SkiaSharp with QuestPDF: https://www.questpdf.com/concepts/skia-sharp-integration.html” [d:\Code\OpenSource\ReportPlatform\src\Editor\Core\Xinglin.WebReportEditor.Core.csproj]
+d:\Code\OpenSource\ReportPlatform\src\Editor\Core\Services\PdfTemplateRenderer.cs(258,25): warning CS0219: 变量“bits”已被赋值，但从未使用过它的值 [d:\Code\OpenSource\ReportPlatform\src\Editor\Core\Xinglin.WebReportEditor.Core.csproj]
+  Xinglin.WebReportEditor.Core -> d:\Code\OpenSource\ReportPlatform\src\Editor\Core\bin\Debug\net8.0\Xinglin.WebReportEditor.Core.dll
+  Xinglin.WebReportEditor.Server -> d:\Code\OpenSource\ReportPlatform\src\Editor\Server\bin\Debug\net8.0\Xinglin.WebReportEditor.Server.dll
+  Xinglin.WebReportEditor.Server.Tests -> d:\Code\OpenSource\ReportPlatform\tests\Editor.Server.Tests\bin\Debug\net8.0\Xinglin.WebReportEditor.Server.Tests.dll
+
+已成功生成。
+
+d:\Code\OpenSource\ReportPlatform\src\Editor\Core\Services\PdfTemplateRenderer.cs(77,17): warning CS0618: “ElementExtensions.Canvas(IContainer, ElementExtensions.DrawOnCanvas)”已过时:“The Canvas API has been deprecated since version 2024.3.0. Please use the .Svg(stringContent) API to provide custom content, and consult documentation webpage regarding integrating SkiaSharp with QuestPDF: https://www.questpdf.com/concepts/skia-sharp-integration.html” [d:\Code\OpenSource\ReportPlatform\src\Editor\Core\Xinglin.WebReportEditor.Core.csproj]
+d:\Code\OpenSource\ReportPlatform\src\Editor\Core\Services\PdfTemplateRenderer.cs(258,25): warning CS0219: 变量“bits”已被赋值，但从未使用过它的值 [d:\Code\OpenSource\ReportPlatform\src\Editor\Core\Xinglin.WebReportEditor.Core.csproj]
+    2 个警告
+    0 个错误
+
+已用时间 00:00:05.88
+
+有可用的工作负载更新。有关详细信息，请运行 `dotnet workload list`。

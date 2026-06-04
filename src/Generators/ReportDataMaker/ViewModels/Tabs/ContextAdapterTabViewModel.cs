@@ -40,6 +40,11 @@ public partial class ContextAdapterTabViewModel : MainTabViewModel
     {
         if (CurrentTemplate == null || string.IsNullOrEmpty(SelectedAdapterId)) return;
         var service = _registry.GetByType("context")?.CreateService(CurrentTemplate);
+        if (service == null)
+        {
+            StatusText = "上下文适配器未找到";
+            return;
+        }
         StatusText = $"已应用上下文适配器: {SelectedAdapterId}";
     }
 }

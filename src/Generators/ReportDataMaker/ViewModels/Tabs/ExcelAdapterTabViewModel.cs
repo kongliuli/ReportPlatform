@@ -23,7 +23,12 @@ public partial class ExcelAdapterTabViewModel : MainTabViewModel
         base.OnTemplateChanged();
         if (CurrentTemplate == null) return;
 
-        var flattenService = ((TemplateFlattenService?)_registry.GetByType("excel")?.CreateService(CurrentTemplate))!;
+        var flattenService = (TemplateFlattenService?)_registry.GetByType("excel")?.CreateService(CurrentTemplate);
+        if (flattenService == null)
+        {
+            StatusText = "Excel适配器未找到";
+            return;
+        }
         var fields = flattenService.FlattenTemplate(CurrentTemplate);
 
         FieldMappings.Clear();

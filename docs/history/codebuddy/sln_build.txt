@@ -1,0 +1,13 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Xinglin.WebReportEditor.Contracts -> d:\Code\OpenSource\ReportPlatform\src\Contracts\bin\Debug\net8.0\Xinglin.WebReportEditor.Contracts.dll
+  ReportDataMaker -> d:\Code\OpenSource\ReportPlatform\src\Generators\ReportDataMaker\bin\Debug\net8.0-windows\ReportDataMaker.dll
+  Xinglin.WebReportEditor.Core -> d:\Code\OpenSource\ReportPlatform\src\Editor\Core\bin\Debug\net8.0\Xinglin.WebReportEditor.Core.dll
+  Xinglin.WebReportEditor.Server -> d:\Code\OpenSource\ReportPlatform\src\Editor\Server\bin\Debug\net8.0\Xinglin.WebReportEditor.Server.dll
+  Xinglin.WebReportEditor.Server.Tests -> d:\Code\OpenSource\ReportPlatform\tests\Editor.Server.Tests\bin\Debug\net8.0\Xinglin.WebReportEditor.Server.Tests.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:07.95
