@@ -13,7 +13,7 @@ namespace ReportDataMaker.Services.PdfExport;
 
 public class PdfElementRenderer
 {
-    public void RenderElement(IContainer container, ExternalElementBase element, Dictionary<string, object> data)
+    public void RenderElement(IContainer container, ElementBase element, Dictionary<string, object> data)
     {
         if (!element.IsVisible) return;
 
@@ -44,7 +44,7 @@ public class PdfElementRenderer
         }
     }
 
-    public void RenderElement(SKCanvas canvas, ExternalElementBase element, Dictionary<string, object> data, PdfPageLayoutEngine layout)
+    public void RenderElement(SKCanvas canvas, ElementBase element, Dictionary<string, object> data, PdfPageLayoutEngine layout)
     {
         if (!element.IsVisible) return;
 
@@ -80,7 +80,7 @@ public class PdfElementRenderer
             canvas.Restore();
     }
 
-    private static void ApplyCanvasLayout(SKCanvas canvas, ExternalElementBase element, PdfPageLayoutEngine layout,
+    private static void ApplyCanvasLayout(SKCanvas canvas, ElementBase element, PdfPageLayoutEngine layout,
         out float x, out float y, out float w, out float h)
     {
         x = layout.ConvertX(element.X);
@@ -95,11 +95,11 @@ public class PdfElementRenderer
         }
     }
 
-    private string ResolveValue(ExternalElementBase element, Dictionary<string, object> data)
+    private string ResolveValue(ElementBase element, Dictionary<string, object> data)
     {
         if (!string.IsNullOrEmpty(element.DataPath) && data.TryGetValue(element.DataPath, out var value))
-            return value?.ToString() ?? element.DefaultValue ?? string.Empty;
-        return element.DefaultValue ?? string.Empty;
+            return value?.ToString() ?? (element is ExternalElementBase eb ? eb.DefaultValue : string.Empty);
+        return element is ExternalElementBase eb2 ? eb2.DefaultValue ?? string.Empty : string.Empty;
     }
 
     private SKColor ParseColor(string color, byte alpha = 255)
@@ -122,7 +122,7 @@ public class PdfElementRenderer
         return QuestPDF.Infrastructure.Color.FromARGB(skColor.Alpha, skColor.Red, skColor.Green, skColor.Blue);
     }
 
-    private float GetFontSize(ExternalElementBase element)
+    private float GetFontSize(ElementBase element)
     {
         return element.FontSize > 0 ? (float)element.FontSize * 2.835f : 12f * 2.835f;
     }

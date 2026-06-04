@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Xinglin.ReportEditor.Contracts.Abstractions;
 using Xinglin.WebReportEditor.Contracts.DTOs;
 using Xinglin.WebReportEditor.Contracts.Responses;
-using Xinglin.ReportEditor.Core.Services;
 using Xinglin.ReportEditor.Server.Controllers;
 
 namespace Xinglin.ReportEditor.Server.Tests.Controllers;

@@ -154,8 +154,9 @@ const handleLogin = async () => {
       password: form.password
     })
     ElMessage.success($t('login.loginSuccess'))
-    const redirect = route.query.redirect || '/'
-    router.push(redirect)
+    const redirect = route.query.redirect
+    // 开放重定向防护：仅允许以 '/' 开头的相对路径
+    router.push(redirect && typeof redirect === 'string' && redirect.startsWith('/') ? redirect : '/')
   } catch (error) {
     ElMessage.error(error.message || $t('login.loginFailed'))
   } finally {

@@ -1,4 +1,5 @@
 using System.IO;
+using ReportDataMaker.Infrastructure;
 using Xinglin.ReportEditor.Contracts;
 using Xinglin.ReportEditor.Contracts.Enums;
 using Xinglin.ReportEditor.Contracts.Models.Elements;
@@ -91,9 +92,9 @@ public class TemplateLoaderService : ITemplateLoaderService
         throw new NotImplementedException();
     }
 
-    private static void PostProcessElements(List<ExternalElementBase> elements)
+    private static void PostProcessElements(List<ElementBase> elements)
     {
-        foreach (var element in elements)
+        foreach (var element in elements.OfType<ExternalElementBase>())
         {
             if (element is TableElement table && (table.CellData?.Count ?? 0) > 0)
             {

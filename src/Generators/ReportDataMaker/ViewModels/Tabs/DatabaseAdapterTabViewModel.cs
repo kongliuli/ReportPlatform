@@ -12,6 +12,7 @@ public partial class DatabaseAdapterTabViewModel : MainTabViewModel
     [ObservableProperty] private string _connectionString = string.Empty;
     [ObservableProperty] private string _query = string.Empty;
     [ObservableProperty] private ObservableCollection<DatabaseFieldMapping> _fieldMappings = new();
+    [ObservableProperty] private ObservableCollection<string> _selectedColumnNames = new();
 
     private readonly DatabaseAdapterFactory _databaseAdapterFactory = new();
 

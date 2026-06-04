@@ -4,6 +4,7 @@ using Xinglin.ReportEditor.Contracts.Registry;
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
 [ElementAdaptationGroup(ElementAdaptationGroup.Basic)]
+[ElementType("line")]
 /// <summary>线条元素</summary>
 public class LineElement : ElementBase
 {

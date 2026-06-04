@@ -25,8 +25,8 @@ public partial class ContextAdapterTabViewModel : MainTabViewModel
 
         Adapters.Clear();
         var adapterIds = CurrentTemplate.Elements
-            .Where(e => e.Group == ElementGroup.Editable && !string.IsNullOrEmpty(e.AdapterId))
-            .Select(e => e.AdapterId)
+            .Where(e => e is ExternalElementBase eb && eb.Group == ElementGroup.Editable && !string.IsNullOrEmpty(eb.AdapterId))
+            .Select(e => ((ExternalElementBase)e).AdapterId)
             .Distinct();
 
         foreach (var id in adapterIds)

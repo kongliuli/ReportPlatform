@@ -85,7 +85,7 @@ public sealed class SqliteDatabaseService : IDisposable
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[SqliteDatabaseService] 适配器配置迁移失败: {ex.Message}"); }
         }
 
         var profilesJsonPath = Path.Combine(appDataPath, "context-profiles.json");
@@ -113,7 +113,7 @@ public sealed class SqliteDatabaseService : IDisposable
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[SqliteDatabaseService] ContextProfiles迁移失败: {ex.Message}"); }
         }
     }
 

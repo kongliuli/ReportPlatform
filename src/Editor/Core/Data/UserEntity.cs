@@ -29,6 +29,11 @@ public class UserEntity
 
     public bool IsActive { get; set; } = true;
 
+    /// <summary>
+    /// S3: 标记用户是否需要在首次登录时修改密码
+    /// </summary>
+    public bool PasswordChangeRequired { get; set; } = false;
+
     public DateTime CreateTime { get; set; } = DateTime.UtcNow;
 
     public virtual ICollection<RefreshTokenEntity> RefreshTokens { get; set; } = new List<RefreshTokenEntity>();

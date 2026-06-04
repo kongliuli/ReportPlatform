@@ -4,6 +4,7 @@ using Xinglin.ReportEditor.Contracts.Registry;
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
 [ElementAdaptationGroup(ElementAdaptationGroup.Basic)]
+[ElementType("shape")]
 /// <summary>形状元素</summary>
 public class ShapeElement : ElementBase
 {

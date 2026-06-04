@@ -5,6 +5,7 @@ using Xinglin.ReportEditor.Contracts.Registry;
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
 [ElementAdaptationGroup(ElementAdaptationGroup.Data)]
+[ElementType("table")]
 /// <summary>表格元素</summary>
 public class TableElement : ExternalElementBase
 {

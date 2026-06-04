@@ -77,6 +77,6 @@ public class ContextProfileStore
         {
             _db.DeleteContextProfile(profileName);
         }
-        catch { }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[ContextProfileStore] 删除配置失败: {ex.Message}"); }
     }
 }

@@ -20,7 +20,7 @@ public class TemplateFlattenService
         return fields;
     }
 
-    private void FlattenElement(ExternalElementBase element, List<FlatField> fields)
+    private void FlattenElement(ElementBase element, List<FlatField> fields)
     {
         switch (element)
         {
@@ -46,7 +46,7 @@ public class TemplateFlattenService
                 AddTableField(fields, tb);
                 break;
             case SignatureElement sg:
-                AddField(fields, sg, FieldDataType.Signature, sg.Value ?? string.Empty);
+                AddField(fields, sg, FieldDataType.Signature, sg.SignatureData ?? string.Empty);
                 break;
             case ContainerElement ct:
                 foreach (var child in ct.Children)
@@ -66,9 +66,10 @@ public class TemplateFlattenService
         }
     }
 
-    private static void AddField(List<FlatField> fields, ExternalElementBase element, FieldDataType dataType, string value)
+    private static void AddField(List<FlatField> fields, ElementBase element, FieldDataType dataType, string value)
     {
-        if (string.IsNullOrEmpty(element.DataPath) && element.Group != ElementGroup.Editable) return;
+        var extElem = element as ExternalElementBase;
+        if (string.IsNullOrEmpty(element.DataPath) && (extElem == null || extElem.Group != ElementGroup.Editable)) return;
 
         fields.Add(new FlatField
         {
@@ -76,7 +77,7 @@ public class TemplateFlattenService
             DataPath = element.DataPath ?? element.Id,
             Label = element.Label ?? element.Id,
             DataType = dataType,
-            IsRequired = element.IsRequired
+            IsRequired = extElem?.IsRequired ?? false
         });
     }
 
@@ -102,7 +103,7 @@ public class TemplateFlattenService
                 {
                     ElementId = $"{table.Id}_R{cell.Row}C{cell.Col}",
                     DataPath = cellDataPath,
-                    Label = cell.Label ?? $"R{cell.Row + 1}C{cell.Col + 1}",
+                    Label = cell.Text ?? $"R{cell.Row + 1}C{cell.Col + 1}",
                     DataType = FieldDataType.Text,
                     IsRequired = false,
                     TableRow = cell.Row,

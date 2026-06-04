@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Xinglin.ReportEditor.Contracts.Abstractions;
 using Xinglin.ReportEditor.Core.Data;
 using Xinglin.ReportEditor.Core.Services;
 using Xinglin.ReportEditor.Core.SharedInterfaces;
@@ -32,9 +33,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPdfRenderService, PdfRenderService>();
         services.AddScoped<IJsonTemplateSerializer, JsonTemplateSerializer>();
         services.AddScoped<IDataBindingEngine, DataBindingEngine>();
-#pragma warning disable CS0618
         services.AddScoped<IPdfSharpTemplateRenderer, PdfTemplateRenderer>();
-#pragma warning restore CS0618
 
         services.AddSingleton(TimeProvider.System);
         services.AddScoped<ContextService>();
@@ -77,7 +76,7 @@ public static class ServiceCollectionExtensions
         var dir = AppContext.BaseDirectory;
         while (dir != null)
         {
-            if (File.Exists(Path.Combine(dir, "Xinglin.WebReportEditor.sln")))
+            if (File.Exists(Path.Combine(dir, "ReportPlatform.sln")))
                 return dir;
             dir = Directory.GetParent(dir)?.FullName;
         }

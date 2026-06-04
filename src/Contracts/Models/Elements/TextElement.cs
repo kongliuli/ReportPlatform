@@ -4,6 +4,7 @@ using Xinglin.ReportEditor.Contracts.Registry;
 namespace Xinglin.ReportEditor.Contracts.Models.Elements;
 
 [ElementAdaptationGroup(ElementAdaptationGroup.Form)]
+[ElementType("text")]
 /// <summary>文本元素</summary>
 public class TextElement : ExternalElementBase
 {

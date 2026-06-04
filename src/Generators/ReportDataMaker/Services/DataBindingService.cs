@@ -21,7 +21,8 @@ public class DataBindingService : IDataBindingService
             if (string.IsNullOrEmpty(element.DataPath) || !data.TryGetValue(element.DataPath, out var value))
                 continue;
 
-            element.DefaultValue = value?.ToString() ?? string.Empty;
+            if (element is ExternalElementBase extElem)
+                extElem.DefaultValue = value?.ToString() ?? string.Empty;
         }
     }
 
@@ -129,7 +130,8 @@ public class DataBindingService : IDataBindingService
             if (string.IsNullOrEmpty(element.DataPath))
                 continue;
 
-            data[element.DataPath] = element.DefaultValue ?? string.Empty;
+            if (element is ExternalElementBase extElem)
+                data[extElem.DataPath] = extElem.DefaultValue ?? string.Empty;
         }
 
         return data;

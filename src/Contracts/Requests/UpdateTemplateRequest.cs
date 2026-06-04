@@ -10,6 +10,7 @@ public class UpdateTemplateRequest
     [StringLength(50)]
     public string? Type { get; set; }
 
+    [MaxLength(5_000_000)]
     public string? ContentJson { get; set; }
 
     public bool? IsPublished { get; set; }

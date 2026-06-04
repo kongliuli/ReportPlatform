@@ -12,7 +12,6 @@ public interface IPdfRenderService
 public class PdfRenderService : IPdfRenderService
 {
     private readonly TemplateDbContext _dbContext;
-#pragma warning disable CS0618
     private readonly IPdfSharpTemplateRenderer _renderer;
 
     public PdfRenderService(TemplateDbContext dbContext, IPdfSharpTemplateRenderer renderer)
@@ -20,17 +19,13 @@ public class PdfRenderService : IPdfRenderService
         _dbContext = dbContext;
         _renderer = renderer;
     }
-#pragma warning restore CS0618
 
     public async Task<byte[]> RenderToPdfAsync(Guid templateId)
     {
         var template = await _dbContext.Templates.FindAsync(templateId)
             ?? throw new KeyNotFoundException($"模板 {templateId} 不存在");
 
-#pragma warning disable CS0618
-        var pdfBytes = _renderer.RenderToPdf(template.ContentJson);
-#pragma warning restore CS0618
-        return pdfBytes;
+        return _renderer.RenderToPdf(template.ContentJson);
     }
 
     public async Task<string> RenderToImageAsync(Guid templateId)
@@ -38,18 +33,7 @@ public class PdfRenderService : IPdfRenderService
         var template = await _dbContext.Templates.FindAsync(templateId)
             ?? throw new KeyNotFoundException($"模板 {templateId} 不存在");
 
-        return GeneratePlaceholderImage(template.ContentJson);
-    }
-
-    private static string GeneratePlaceholderImage(string contentJson)
-    {
-        var placeholderSvg = $@"
-<svg xmlns='http://www.w3.org/2000/svg' width='794' height='1123' viewBox='0 0 794 1123'>
-  <rect width='794' height='1123' fill='white' stroke='#ccc' stroke-width='1'/>
-  <text x='397' y='561' text-anchor='middle' font-size='24' fill='#999'>预览占位图</text>
-  <text x='397' y='591' text-anchor='middle' font-size='14' fill='#bbb'>PDF 渲染服务待配置</text>
-</svg>";
-        var svgBytes = System.Text.Encoding.UTF8.GetBytes(placeholderSvg);
-        return Convert.ToBase64String(svgBytes);
+        var imageBytes = _renderer.RenderToImage(template.ContentJson);
+        return Convert.ToBase64String(imageBytes);
     }
 }

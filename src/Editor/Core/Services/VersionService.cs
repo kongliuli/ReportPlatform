@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xinglin.WebReportEditor.Contracts.DTOs;
@@ -9,10 +10,12 @@ namespace Xinglin.ReportEditor.Core.Services;
 public class VersionService : IVersionService
 {
     private readonly TemplateDbContext _dbContext;
+    private readonly ILogger<VersionService> _logger;
 
-    public VersionService(TemplateDbContext dbContext)
+    public VersionService(TemplateDbContext dbContext, ILogger<VersionService> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<List<TemplateVersionDto>> GetVersionsAsync(Guid templateId)
@@ -56,16 +59,14 @@ public class VersionService : IVersionService
         var template = await _dbContext.Templates.FindAsync(templateId)
             ?? throw new KeyNotFoundException($"模板 {templateId} 不存在");
 
-        var allVersions = await _dbContext.TemplateVersions
-            .Where(v => v.TemplateId == templateId)
-            .ToListAsync();
-
-        var targetVersion = allVersions.FirstOrDefault(v => v.Id == versionId)
+        // B2: 使用数据库端聚合，避免全量加载到内存
+        var targetVersion = await _dbContext.TemplateVersions
+            .FirstOrDefaultAsync(v => v.TemplateId == templateId && v.Id == versionId)
             ?? throw new KeyNotFoundException($"版本 {versionId} 不存在");
 
-        var maxVersion = allVersions.Count > 0
-            ? allVersions.Max(v => v.VersionNumber)
-            : 0;
+        var maxVersion = await _dbContext.TemplateVersions
+            .Where(v => v.TemplateId == templateId)
+            .MaxAsync(v => (int?)v.VersionNumber) ?? 0;
 
         var newVersion = new Data.TemplateVersionEntity
         {
@@ -187,8 +188,11 @@ public class VersionService : IVersionService
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
+            // B5: 记录异常日志，便于排查解析失败原因
+            _logger.LogWarning(ex, "版本对比 JSON 解析失败 TemplateId={TemplateId} VersionA={VersionIdA} VersionB={VersionIdB}",
+                templateId, versionIdA, versionIdB);
             diffs.PropertyDiffs.Add(new PropertyDiff
             {
                 PropertyName = "contentJson",

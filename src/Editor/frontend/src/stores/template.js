@@ -3,6 +3,8 @@ import { ref, computed, watch } from 'vue'
 import { createElementByType } from '@/models/elements'
 import { serialize } from '@/utils/serializer'
 import { getCachedTemplates, setCachedTemplates, getDraft, setDraft, clearDraft } from '@/utils/templateCache'
+
+const CACHE_MAX_SIZE = 10
 import { normalizeTemplate } from '@/utils/templateNormalizer'
 import { getTemplates, getTemplate, createTemplateApi, updateTemplateApi, deleteTemplateApi } from '@/api/template'
 
@@ -341,7 +343,7 @@ export const useTemplateStore = defineStore('template', () => {
   }
 
   function _addToCache(id, data) {
-    if (templateCache.value.size >= CACHE_SIZE) {
+    if (templateCache.value.size >= CACHE_MAX_SIZE) {
       const firstKey = templateCache.value.keys().next().value
       templateCache.value.delete(firstKey)
     }

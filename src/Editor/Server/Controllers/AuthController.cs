@@ -1,12 +1,16 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Xinglin.ReportEditor.Contracts.Abstractions;
 using Xinglin.WebReportEditor.Contracts.DTOs;
 using Xinglin.WebReportEditor.Contracts.Responses;
-using Xinglin.ReportEditor.Core.Services;
 
 namespace Xinglin.ReportEditor.Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous]
+[EnableRateLimiting("AuthRateLimit")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;

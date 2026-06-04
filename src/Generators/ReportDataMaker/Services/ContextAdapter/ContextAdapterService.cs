@@ -13,10 +13,10 @@ public class ContextAdapterService
 
         foreach (var element in template.Elements)
         {
-            if (element.Group != ElementGroup.Editable) continue;
-            if (string.IsNullOrEmpty(element.DataPath)) continue;
+            if (element is not ExternalElementBase extElem || extElem.Group != ElementGroup.Editable) continue;
+            if (string.IsNullOrEmpty(extElem.DataPath)) continue;
 
-            var value = element switch
+            var value = extElem switch
             {
                 TextElement te => (object)(te.Text ?? te.DefaultValue ?? string.Empty),
                 NumberElement ne => ne.Value ?? ne.DefaultValue ?? string.Empty,
@@ -25,10 +25,10 @@ public class ContextAdapterService
                 CheckboxElement cb => cb.Checked,
                 RadioElement re => re.IsChecked,
                 TableElement tb => (object)(tb.CellData ?? new List<List<string>>()),
-                _ => element.DefaultValue ?? string.Empty
+                _ => extElem.DefaultValue ?? string.Empty
             };
 
-            data[element.DataPath] = value;
+            data[extElem.DataPath] = value;
         }
 
         return data;
@@ -40,11 +40,11 @@ public class ContextAdapterService
 
         foreach (var element in template.Elements)
         {
-            if (element.Group != ElementGroup.Editable) continue;
-            if (string.IsNullOrEmpty(element.DataPath)) continue;
-            if (!data.TryGetValue(element.DataPath, out var value)) continue;
+            if (element is not ExternalElementBase extElem || extElem.Group != ElementGroup.Editable) continue;
+            if (string.IsNullOrEmpty(extElem.DataPath)) continue;
+            if (!data.TryGetValue(extElem.DataPath, out var value)) continue;
 
-            switch (element)
+            switch (extElem)
             {
                 case TextElement te:
                     te.Text = value?.ToString();
@@ -69,7 +69,7 @@ public class ContextAdapterService
                         tb.CellData = cellData;
                     break;
                 default:
-                    element.DefaultValue = value?.ToString() ?? string.Empty;
+                    extElem.DefaultValue = value?.ToString() ?? string.Empty;
                     break;
             }
         }

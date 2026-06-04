@@ -34,9 +34,8 @@ public class ContextService
             ["DateTime.Time"] = now.ToString("HH:mm:ss"),
             ["DateTime.Year"] = now.Year,
             ["DateTime.Month"] = now.Month,
-            ["DateTime.Day"] = now.Day,
-            ["System.UserName"] = Environment.UserName,
-            ["System.MachineName"] = Environment.MachineName
+            ["DateTime.Day"] = now.Day
+            // S7: 移除 System.UserName 和 System.MachineName，避免暴露服务器敏感信息
         };
     }
 }

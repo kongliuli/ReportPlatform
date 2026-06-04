@@ -23,14 +23,14 @@ public partial class DataEntryTabViewModel : MainTabViewModel
         Fields.Clear();
         foreach (var element in CurrentTemplate.Elements)
         {
-            if (element.Group != ElementGroup.Editable) continue;
+            if (element is not ExternalElementBase extElem || extElem.Group != ElementGroup.Editable) continue;
 
             var field = new EditableFieldItem
             {
-                ElementId = element.Id,
-                DataPath = element.DataPath ?? element.Id,
-                Label = element.Label ?? element.Id,
-                FieldType = element switch
+                ElementId = extElem.Id,
+                DataPath = extElem.DataPath ?? extElem.Id,
+                Label = extElem.Label ?? extElem.Id,
+                FieldType = extElem switch
                 {
                     TextElement => "文本",
                     NumberElement => "数字",
@@ -42,8 +42,8 @@ public partial class DataEntryTabViewModel : MainTabViewModel
                     SignatureElement => "签名",
                     _ => "其他"
                 },
-                Value = element.DefaultValue ?? string.Empty,
-                IsRequired = element.IsRequired
+                Value = extElem.DefaultValue ?? string.Empty,
+                IsRequired = extElem.IsRequired
             };
             Fields.Add(field);
         }

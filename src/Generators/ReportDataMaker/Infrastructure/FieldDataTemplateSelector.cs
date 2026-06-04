@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ReportDataMaker.ViewModels.Tabs;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Infrastructure;
 

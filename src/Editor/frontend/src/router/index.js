@@ -6,7 +6,6 @@ const LoginView = () => import('@/views/LoginView.vue')
 const TemplatesView = () => import('@/views/TemplatesView.vue')
 const EditorView = () => import('@/views/EditorView.vue')
 const TemplateVersionsView = () => import('@/views/TemplateVersionsView.vue')
-const SettingsView = () => import('@/views/SettingsView.vue')
 
 const routes = [
   {
@@ -39,12 +38,6 @@ const routes = [
     component: TemplateVersionsView,
     meta: { requiresAuth: true }
   },
-  {
-    path: '/settings',
-    name: 'Settings',
-    component: SettingsView,
-    meta: { requiresAuth: true, requiredRole: 'admin' }
-  }
 ]
 
 const router = createRouter({

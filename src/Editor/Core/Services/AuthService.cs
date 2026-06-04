@@ -1,21 +1,15 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Xinglin.ReportEditor.Contracts.Abstractions;
 using Xinglin.WebReportEditor.Contracts.DTOs;
 using Xinglin.ReportEditor.Core.Data;
 
 namespace Xinglin.ReportEditor.Core.Services;
-
-public interface IAuthService
-{
-    Task<LoginResponse> LoginAsync(LoginRequest request);
-    Task<RefreshTokenResponse> RefreshTokenAsync(string refreshToken);
-    Task RevokeTokenAsync(string refreshToken);
-    Task<UserDto?> GetUserByCredentialsAsync(string username, string password);
-}
 
 public class AuthService : IAuthService
 {
@@ -68,9 +62,11 @@ public class AuthService : IAuthService
 
         await _dbContext.SaveChangesAsync();
 
+        // S5: 返回新的 RefreshToken 让客户端能够继续刷新
         return new RefreshTokenResponse
         {
-            AccessToken = newAccessToken
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshToken
         };
     }
 
@@ -132,7 +128,8 @@ public class AuthService : IAuthService
     private async Task<string> GenerateRefreshTokenAsync(Guid userId)
     {
         var expirationDays = _configuration.GetValue<int>("Jwt:RefreshTokenExpirationDays", 7);
-        var token = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
+        // S4: 使用密码学安全随机数生成 RefreshToken
+        var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
 
         var entity = new RefreshTokenEntity
         {

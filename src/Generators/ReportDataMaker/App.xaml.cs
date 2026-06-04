@@ -10,6 +10,7 @@ using ReportDataMaker.Services.ExcelAdapter;
 using ReportDataMaker.Services.PdfExport;
 using ReportDataMaker.ViewModels;
 using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
 
 namespace ReportDataMaker;
 
@@ -102,7 +103,7 @@ public partial class App : Application
                 var template = templateLoader.LoadFromFile(testPath);
                 
                 FileLogger.Instance.WriteLine($"[LOG] 加载成功！模板名称: {template.Name}, 元素数量: {template.Elements.Count}");
-                FileLogger.Instance.WriteLine($"[LOG] 页面尺寸: {template.PageWidth}x{template.PageHeight}, DataBindings: {template.DataBindings.Count}");
+                FileLogger.Instance.WriteLine($"[LOG] 页面尺寸: {template.PageSettings.PageWidth}x{template.PageSettings.PageHeight}, DataBindings: {template.DataBindings.Count}");
                 
                 int dataPathCount = 0;
                 for (int i = 0; i < template.Elements.Count; i++)
@@ -111,13 +112,15 @@ public partial class App : Application
                     var typeName = el.GetType().Name;
                     var dataPath = el.DataPath;
                     var label = el.Label ?? "(空)";
-                    FileLogger.Instance.WriteLine($"[LOG]   元素[{i}]: {typeName} DataPath='{dataPath}' Label='{label}' Group={el.Group} DefaultValue='{el.DefaultValue}'");
+                    var elGroup = el is ExternalElementBase eeb ? eeb.Group : ElementGroup.Fixed;
+                    var elDefault = el is ExternalElementBase eeb2 ? eeb2.DefaultValue : "";
+                    FileLogger.Instance.WriteLine($"[LOG]   元素[{i}]: {typeName} DataPath='{dataPath}' Label='{label}' Group={elGroup} DefaultValue='{elDefault}'");
                     if (!string.IsNullOrEmpty(dataPath)) dataPathCount++;
                 }
                 FileLogger.Instance.WriteLine($"[LOG] 有 DataPath 的元素: {dataPathCount}");
                 
                 // 额外检查：可录入元素数量
-                var entryCount = template.Elements.Count(e => !string.IsNullOrEmpty(e.DataPath) || e.Group == ElementGroup.Editable);
+                var entryCount = template.Elements.Count(e => !string.IsNullOrEmpty(e.DataPath) || (e is ExternalElementBase eeb3 && eeb3.Group == ElementGroup.Editable));
                 FileLogger.Instance.WriteLine($"[LOG] DataEntry 分组或 DataPath 非空的元素数: {entryCount}");
             }
             else

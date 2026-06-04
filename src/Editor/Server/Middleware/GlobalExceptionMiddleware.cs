@@ -39,7 +39,7 @@ public class GlobalExceptionMiddleware
             KeyNotFoundException => (HttpStatusCode.NotFound, exception.Message),
             UnauthorizedAccessException => (HttpStatusCode.Unauthorized, exception.Message),
             ArgumentException => (HttpStatusCode.BadRequest, exception.Message),
-            InvalidOperationException => (HttpStatusCode.Conflict, exception.Message),
+            InvalidOperationException => (HttpStatusCode.InternalServerError, "服务器内部错误，请稍后重试"),
             _ => (HttpStatusCode.InternalServerError, "服务器内部错误，请稍后重试")
         };
 

@@ -20,9 +20,9 @@ public class TemplateService : ITemplateService
 
     public async Task<PagedResponse<TemplateDto>> GetTemplatesAsync(TemplateFilterRequest filter)
     {
-        if (filter.Page < 1) filter.Page = 1;
-        if (filter.PageSize < 1) filter.PageSize = 20;
-        if (filter.PageSize > 100) filter.PageSize = 100;
+        // B3: 不直接修改输入参数，使用局部变量避免副作用
+        var page = Math.Max(1, filter.Page);
+        var pageSize = Math.Clamp(filter.PageSize, 1, 100);
 
         var query = _dbContext.Templates.AsQueryable();
 
@@ -42,8 +42,8 @@ public class TemplateService : ITemplateService
 
         var items = await query
             .OrderByDescending(t => t.UpdateTime)
-            .Skip((filter.Page - 1) * filter.PageSize)
-            .Take(filter.PageSize)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(t => MapToDto(t))
             .ToListAsync();
 
@@ -51,8 +51,8 @@ public class TemplateService : ITemplateService
         {
             Items = items,
             TotalCount = totalCount,
-            Page = filter.Page,
-            PageSize = filter.PageSize
+            Page = page,
+            PageSize = pageSize
         };
     }
 
@@ -113,19 +113,22 @@ public class TemplateService : ITemplateService
         if (request.ContentJson != null)
         {
             entity.ContentJson = request.ContentJson;
-            entity.Version += 1;
 
+            // B1: 使用数据库端聚合计算版本号，保持 Template.Version 与 TemplateVersion 记录一致
             var maxVersion = await _dbContext.TemplateVersions
                 .Where(v => v.TemplateId == id)
                 .MaxAsync(v => (int?)v.VersionNumber) ?? 0;
+
+            var newVersion = maxVersion + 1;
+            entity.Version = newVersion;
 
             var version = new TemplateVersionEntity
             {
                 Id = Guid.NewGuid(),
                 TemplateId = id,
-                VersionNumber = maxVersion + 1,
+                VersionNumber = newVersion,
                 ContentJson = request.ContentJson,
-                ChangeDescription = request.ChangeDescription ?? $"更新至版本 {maxVersion + 1}",
+                ChangeDescription = request.ChangeDescription ?? $"更新至版本 {newVersion}",
                 CreateTime = DateTime.UtcNow,
                 CreatedBy = entity.CreatedBy
             };

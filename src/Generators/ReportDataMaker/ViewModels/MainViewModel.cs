@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -22,9 +23,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private TabViewModelBase? _selectedTab;
 
     private readonly ITemplateLoaderService _templateLoaderService;
-    private readonly IDataBindingService _dataBindingService;
+    internal readonly IDataBindingService _dataBindingService;
     private readonly ITemplatePreviewService _previewService;
-    private readonly IPdfExportService _pdfExportService;
+    internal readonly IPdfExportService _pdfExportService;
 
     public MainViewModel(
         ITemplateLoaderService templateLoaderService,
@@ -77,7 +78,7 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void RefreshPreview()
+    internal void RefreshPreview()
     {
         if (CurrentTemplate == null) return;
         foreach (var tab in Tabs.OfType<PreviewTabViewModel>())

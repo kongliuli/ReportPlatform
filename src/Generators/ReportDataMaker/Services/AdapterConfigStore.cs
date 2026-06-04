@@ -23,7 +23,7 @@ public class AdapterConfigStore
             var configs = JsonSerializer.Deserialize<List<AdapterConfigBase>>(json);
             return configs ?? new List<AdapterConfigBase>();
         }
-        catch { return new List<AdapterConfigBase>(); }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[AdapterConfigStore] 加载配置失败: {ex.Message}"); return new List<AdapterConfigBase>(); }
     }
 
     public void Save(string templateName, List<AdapterConfigBase> configs)
@@ -42,7 +42,7 @@ public class AdapterConfigStore
             ProcessConnectionStrings(node, encrypt: true);
             json = node.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
         }
-        catch { }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[AdapterConfigStore] 加密连接串失败: {ex.Message}"); }
     }
 
     private static void DecryptConnectionStrings(ref string json)
@@ -54,7 +54,7 @@ public class AdapterConfigStore
             ProcessConnectionStrings(node, encrypt: false);
             json = node.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
         }
-        catch { }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[AdapterConfigStore] 解密连接串失败: {ex.Message}"); }
     }
 
     private static void ProcessConnectionStrings(JsonNode node, bool encrypt)

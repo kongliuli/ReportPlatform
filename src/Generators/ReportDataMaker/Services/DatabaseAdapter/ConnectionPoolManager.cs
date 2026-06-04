@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Data.Common;
+using System.Text;
 
 namespace ReportDataMaker.Services.DatabaseAdapter;
 
@@ -16,7 +17,8 @@ public class ConnectionPoolManager : IDisposable
 
     public async Task<PooledConnection> AcquireAsync(IDatabaseProvider provider, string connectionString)
     {
-        var key = $"{provider.ProviderType}:{connectionString.GetHashCode():X}";
+        // 使用连接字符串本身而非 GetHashCode() 避免 hash 冲突
+        var key = $"{provider.ProviderType}:{Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(connectionString ?? string.Empty)))}";
         var throttle = _throttles.GetOrAdd(key, _ => new SemaphoreSlim(_maxConcurrentPerKey));
         await throttle.WaitAsync();
 

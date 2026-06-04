@@ -459,6 +459,7 @@ public static class TemplateSeedData
             Role = "admin",
             HospitalId = "H001",
             IsActive = true,
+            PasswordChangeRequired = true,
             CreateTime = now
         };
 
@@ -471,6 +472,7 @@ public static class TemplateSeedData
             Role = "editor",
             HospitalId = "H001",
             IsActive = true,
+            PasswordChangeRequired = true,
             CreateTime = now
         };
 

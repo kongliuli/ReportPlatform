@@ -1,5 +1,7 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -15,7 +17,9 @@ QuestPDF.Settings.License = LicenseType.Community;
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
-        options.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+        // S1: 关闭危险的类型自动解析，防止反序列化 RCE 攻击
+        // 多态序列化通过 ElementJsonConverter 显式处理
+        options.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.None;
     });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -71,7 +75,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+// S6: 添加全局 [Authorize] 保护，所有端点默认需要认证
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
     ?? new[] { "http://localhost:5173" };
@@ -88,16 +98,30 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddCoreServices(builder.Configuration);
 
+// A6: 添加速率限制，保护认证端点免受暴力破解
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter("AuthRateLimit", config =>
+    {
+        config.PermitLimit = 10;
+        config.Window = TimeSpan.FromMinutes(1);
+        config.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        config.QueueLimit = 2;
+    });
+});
+
 builder.Services.AddSignalR();
 
 var app = builder.Build();
 
+// A1: 仅开发环境自动执行数据库迁移，生产环境应使用独立迁移工具
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TemplateDbContext>();
-    db.Database.Migrate();
     if (app.Environment.IsDevelopment())
     {
+        db.Database.Migrate();
         TemplateSeedData.SeedTemplates(db, app.Configuration);
     }
 }
@@ -115,7 +139,16 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+// A4: 生产环境使用 HTTPS 和 HSTS 保护
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+app.UseHttpsRedirection();
+
 app.UseCors("XinglinCorsPolicy");
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

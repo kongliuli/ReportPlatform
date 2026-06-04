@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -25,28 +26,29 @@ public class CanvasRenderer
 
         foreach (var element in template.Elements)
         {
-            if (!element.IsVisible) continue;
+            if (element is not ExternalElementBase extElement) continue;
+            if (!extElement.IsVisible) continue;
 
             try
             {
-                var uiElement = RenderElement(element) ?? RenderPlaceholder(element);
-                var w = Math.Max(element.Width * MM_TO_PX, 1);
-                var h = Math.Max(element.Height * MM_TO_PX, 1);
+                var uiElement = RenderElement(extElement) ?? RenderPlaceholder(extElement);
+                var w = Math.Max(extElement.Width * MM_TO_PX, 1);
+                var h = Math.Max(extElement.Height * MM_TO_PX, 1);
                 if (uiElement is FrameworkElement fe)
                 {
                     if (double.IsNaN(fe.Width) || fe.Width <= 0) fe.Width = w;
                     if (double.IsNaN(fe.Height) || fe.Height <= 0) fe.Height = h;
                 }
-                Canvas.SetLeft(uiElement, element.X * MM_TO_PX);
-                Canvas.SetTop(uiElement, element.Y * MM_TO_PX);
-                Canvas.SetZIndex(uiElement, element.ZIndex);
+                Canvas.SetLeft(uiElement, extElement.X * MM_TO_PX);
+                Canvas.SetTop(uiElement, extElement.Y * MM_TO_PX);
+                Canvas.SetZIndex(uiElement, extElement.ZIndex);
                 canvas.Children.Add(uiElement);
             }
-            catch { }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[CanvasRenderer] 渲染元素失败 IsVisible={extElement.IsVisible}: {ex.Message}"); }
         }
     }
 
-    private static UIElement? RenderElement(ExternalElementBase element)
+    private static UIElement? RenderElement(ElementBase element)
     {
         return element switch
         {
@@ -66,8 +68,8 @@ public class CanvasRenderer
             WatermarkElement wm => RenderWatermarkElement(wm),
             PageNumberElement pn => RenderPageNumberElement(pn),
             ContainerElement ct => RenderContainerElement(ct),
-            HeaderElement hd => RenderHeaderFooter(hd.Children, hd),
-            FooterElement ft => RenderHeaderFooter(ft.Children, ft),
+            HeaderElement hd => RenderHeaderFooter(hd.Children.Cast<ElementBase>().ToList(), hd),
+            FooterElement ft => RenderHeaderFooter(ft.Children.Cast<ElementBase>().ToList(), ft),
             _ => null
         };
     }
@@ -264,7 +266,7 @@ public class CanvasRenderer
                 var bmp = new ZXing.BarcodeWriter<WriteableBitmap> { Format = fmt, Options = new ZXing.Common.EncodingOptions { Width = (int)(element.Width * MM_TO_PX), Height = (int)(element.Height * MM_TO_PX), Margin = 1 } }.Write(element.Value);
                 if (bmp != null) { c.Child = new Image { Source = bmp, Stretch = Stretch.Uniform }; return c; }
             }
-            catch { }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[CanvasRenderer] RenderBarcode 失败: {ex.Message}"); }
         }
         c.Child = new TextBlock { Text = "[条码]", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)), FontSize = 10 };
         return c;
@@ -281,7 +283,7 @@ public class CanvasRenderer
                 var bmp = new ZXing.BarcodeWriter<WriteableBitmap> { Format = ZXing.BarcodeFormat.QR_CODE, Options = new ZXing.Common.EncodingOptions { Width = (int)sz, Height = (int)sz, Margin = 1 } }.Write(element.Value);
                 if (bmp != null) { c.Child = new Image { Source = bmp, Stretch = Stretch.Uniform }; return c; }
             }
-            catch { }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[CanvasRenderer] RenderQRCode 失败: {ex.Message}"); }
         }
         c.Child = new TextBlock { Text = "[二维码]", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)), FontSize = 9 };
         return c;
@@ -289,7 +291,7 @@ public class CanvasRenderer
 
     private static UIElement RenderWatermarkElement(WatermarkElement element)
     {
-        return new TextBlock { Text = element.Text ?? "", FontSize = element.FontSize > 0 ? (double)element.FontSize : 48, Foreground = ParseBrush(element.Color ?? "#CBD5E1"), Opacity = element.Opacity > 0 ? element.Opacity : 0.15, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, RenderTransform = new RotateTransform(element.Angle > 0 ? element.Angle : -30), RenderTransformOrigin = new Point(0.5, 0.5) };
+        return new TextBlock { Text = element.Text ?? "", FontSize = (double)(element.FontSize > 0 ? element.FontSize : 48) }; // FontSize is nullable
     }
 
     private static UIElement RenderPageNumberElement(PageNumberElement element)
@@ -304,20 +306,20 @@ public class CanvasRenderer
         var cv = new Canvas { Width = element.Width * MM_TO_PX, Height = element.Height * MM_TO_PX, Background = ParseBrush(element.BackgroundColor), ClipToBounds = element.ClipContent };
         if (element.Children != null)
             foreach (var ch in element.Children)
-                if (ch.IsVisible) try { var u = RenderElement(ch); if (u != null) { Canvas.SetLeft(u, ch.X * MM_TO_PX); Canvas.SetTop(u, ch.Y * MM_TO_PX); cv.Children.Add(u); } } catch { }
+                if (ch.IsVisible) try { var u = RenderElement(ch); if (u != null) { Canvas.SetLeft(u, ch.X * MM_TO_PX); Canvas.SetTop(u, ch.Y * MM_TO_PX); cv.Children.Add(u); } } catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[CanvasRenderer] Container子元素渲染失败: {ex.Message}"); }
         return cv;
     }
 
-    private static UIElement RenderHeaderFooter(List<ExternalElementBase> children, ExternalElementBase e)
+    private static UIElement RenderHeaderFooter(List<ElementBase> children, ElementBase e)
     {
         var cv = new Canvas { Width = e.Width * MM_TO_PX, Height = e.Height * MM_TO_PX, Background = ParseBrush(e.BackgroundColor) };
         if (children != null)
             foreach (var ch in children)
-                if (ch.IsVisible) try { var u = RenderElement(ch); if (u != null) { Canvas.SetLeft(u, ch.X * MM_TO_PX); Canvas.SetTop(u, ch.Y * MM_TO_PX); cv.Children.Add(u); } } catch { }
+                if (ch.IsVisible) try { var u = RenderElement(ch); if (u != null) { Canvas.SetLeft(u, ch.X * MM_TO_PX); Canvas.SetTop(u, ch.Y * MM_TO_PX); cv.Children.Add(u); } } catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[CanvasRenderer] HeaderFooter子元素渲染失败: {ex.Message}"); }
         return cv;
     }
 
-    private static UIElement RenderPlaceholder(ExternalElementBase element)
+    private static UIElement RenderPlaceholder(ElementBase element)
     {
         var w = Math.Max(element.Width * MM_TO_PX, 20);
         var h = Math.Max(element.Height * MM_TO_PX, 14);
@@ -327,12 +329,13 @@ public class CanvasRenderer
         return b;
     }
 
-    private static TextBlock MakeTextBlock(string text, bool hasValue, ExternalElementBase element)
+    private static TextBlock MakeTextBlock(string text, bool hasValue, ElementBase element)
     {
-        if (element.Group == ElementGroup.Editable && !string.IsNullOrEmpty(element.Label))
-            text = hasValue ? element.Label + ": " + text : element.Label + ": —";
-        else if (!hasValue && element.Group == ElementGroup.Editable)
-            text = $"[{element.DataPath ?? element.Id}]";
+        var extElem = element as ExternalElementBase;
+        if (extElem?.Group == ElementGroup.Editable && !string.IsNullOrEmpty(extElem.Label))
+            text = hasValue ? extElem.Label + ": " + text : extElem.Label + ": —";
+        else if (!hasValue && extElem?.Group == ElementGroup.Editable)
+            text = $"[{extElem.DataPath ?? extElem.Id}]";
 
         var tb = new TextBlock
         {

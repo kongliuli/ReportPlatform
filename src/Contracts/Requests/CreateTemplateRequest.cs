@@ -16,6 +16,7 @@ public class CreateTemplateRequest
     public string? HospitalId { get; set; }
 
     [Required]
+    [MaxLength(5_000_000)]
     public string ContentJson { get; set; } = string.Empty;
 
     [StringLength(100)]

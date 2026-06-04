@@ -43,6 +43,9 @@ public enum FieldDataType
     /// <summary>超链接类型（预留）</summary>
     Hyperlink,
 
+    /// <summary>只读/预览类型</summary>
+    ReadOnly,
+
     /// <summary>列表/重复项类型（预留）</summary>
     List
 }

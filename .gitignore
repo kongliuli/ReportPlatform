@@ -80,3 +80,5 @@ deploy/
 
 # SQLite database files
 *.db
+# Only allow deploy/.env.example to be tracked
+!deploy/.env.example

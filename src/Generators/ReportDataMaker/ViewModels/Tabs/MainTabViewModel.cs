@@ -37,6 +37,11 @@ public partial class MainTabViewModel
         PageInfo = $"{PageWidth}×{PageHeight}mm ({Orientation})";
     }
 
+    public virtual void RefreshPreview()
+    {
+        MainViewModel.RefreshPreviewCommand.Execute(null);
+    }
+
     [RelayCommand]
     private void CloneTemplate()
     {
@@ -60,7 +65,8 @@ public partial class MainTabViewModel
         if (CurrentTemplate == null) return;
         foreach (var element in CurrentTemplate.Elements)
         {
-            element.DefaultValue = string.Empty;
+            if (element is ExternalElementBase extElem)
+                extElem.DefaultValue = string.Empty;
         }
         StatusText = "数据已重置";
     }
