@@ -10,8 +10,7 @@
                             Command="{Binding ExportPdfCommand}"
                             Style="{StaticResource ButtonPrimary}"
                             Margin="0,0,8,0"/>
-                    <Button Content="打印预览"
-                            Command="{Binding PrintPreviewCommand}"/>
+
                 </StackPanel>
             </GroupBox>
 

@@ -14,16 +14,16 @@ public partial class ExcelAdapterTabViewModel : MainTabViewModel
     [ObservableProperty] private bool _hasHeader = true;
     [ObservableProperty] private ObservableCollection<ExcelFieldMapping> _fieldMappings = new();
 
-    private readonly ExcelAdapterFactory _excelAdapterFactory = new();
+    private readonly AdapterRegistry _registry;
 
-    public ExcelAdapterTabViewModel(MainViewModel mainViewModel) : base(mainViewModel) { }
+    public ExcelAdapterTabViewModel(MainViewModel mainViewModel, AdapterRegistry registry) : base(mainViewModel) { _registry = registry; }
 
     public override void OnTemplateChanged()
     {
         base.OnTemplateChanged();
         if (CurrentTemplate == null) return;
 
-        var flattenService = _excelAdapterFactory.Create(CurrentTemplate);
+        var flattenService = ((TemplateFlattenService?)_registry.GetByType("excel")?.CreateService(CurrentTemplate))!;
         var fields = flattenService.FlattenTemplate(CurrentTemplate);
 
         FieldMappings.Clear();

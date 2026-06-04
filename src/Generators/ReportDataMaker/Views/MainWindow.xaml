@@ -61,7 +61,6 @@
             <MenuItem Header="导出">
                 <MenuItem Header="导出 PDF" Command="{Binding ExportPdfCommand}"/>
                 <MenuItem Header="批量导出..." Command="{Binding BatchExportCommand}"/>
-                <MenuItem Header="打印预览" Command="{Binding PrintPreviewCommand}"/>
             </MenuItem>
             <MenuItem Header="视图">
                 <MenuItem Header="切换侧边栏" Command="{Binding ToggleSidePanelCommand}"/>

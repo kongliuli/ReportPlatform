@@ -14,9 +14,9 @@ public partial class DatabaseAdapterTabViewModel : MainTabViewModel
     [ObservableProperty] private ObservableCollection<DatabaseFieldMapping> _fieldMappings = new();
     [ObservableProperty] private ObservableCollection<string> _selectedColumnNames = new();
 
-    private readonly DatabaseAdapterFactory _databaseAdapterFactory = new();
+    private readonly AdapterRegistry _registry;
 
-    public DatabaseAdapterTabViewModel(MainViewModel mainViewModel) : base(mainViewModel) { }
+    public DatabaseAdapterTabViewModel(MainViewModel mainViewModel, AdapterRegistry registry) : base(mainViewModel) { _registry = registry; }
 
     public override void OnTemplateChanged()
     {

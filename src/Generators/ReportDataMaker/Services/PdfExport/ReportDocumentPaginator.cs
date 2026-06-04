@@ -8,22 +8,14 @@ namespace ReportDataMaker.Services.PdfExport;
 public class ReportDocumentPaginator : DocumentPaginator
 {
     private readonly TemplateDefinition _template;
-    private readonly Dictionary<string, object> _data;
-    private readonly IPdfExportService _pdfExportService;
-    private readonly byte[]? _pdfBytes;
 
-    public ReportDocumentPaginator(TemplateDefinition template, Dictionary<string, object> data, IPdfExportService pdfExportService)
+    public ReportDocumentPaginator(TemplateDefinition template)
     {
         _template = template;
-        _data = data;
-        _pdfExportService = pdfExportService;
 
         var widthPx = template.PageSettings.PageWidth / 25.4 * 96;
         var heightPx = template.PageSettings.PageHeight / 25.4 * 96;
         PageSize = new Size(widthPx, heightPx);
-
-        try { _pdfBytes = _pdfExportService.RenderToPdf(template, data); }
-        catch { _pdfBytes = null; }
     }
 
     public override bool IsPageCountValid => true;
@@ -76,9 +68,9 @@ public class ReportDocumentPaginator : DocumentPaginator
 
 public static class PrintHelper
 {
-    public static void ShowPrintPreview(TemplateDefinition template, Dictionary<string, object> data, IPdfExportService pdfExportService)
+    public static void ShowPrintPreview(TemplateDefinition template)
     {
-        var paginator = new ReportDocumentPaginator(template, data, pdfExportService);
+        var paginator = new ReportDocumentPaginator(template);
         var dialog = new System.Windows.Controls.PrintDialog();
 
         if (dialog.ShowDialog() == true)

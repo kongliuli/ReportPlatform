@@ -14,9 +14,9 @@ public partial class ContextAdapterTabViewModel : MainTabViewModel
     [ObservableProperty] private string _selectedAdapterId = string.Empty;
     [ObservableProperty] private ObservableCollection<AdapterItem> _adapters = new();
 
-    private readonly ContextAdapterFactory _contextAdapterFactory = new();
+    private readonly AdapterRegistry _registry;
 
-    public ContextAdapterTabViewModel(MainViewModel mainViewModel) : base(mainViewModel) { }
+    public ContextAdapterTabViewModel(MainViewModel mainViewModel, AdapterRegistry registry) : base(mainViewModel) { _registry = registry; }
 
     public override void OnTemplateChanged()
     {
@@ -39,7 +39,7 @@ public partial class ContextAdapterTabViewModel : MainTabViewModel
     private void ApplyAdapter()
     {
         if (CurrentTemplate == null || string.IsNullOrEmpty(SelectedAdapterId)) return;
-        var service = _contextAdapterFactory.Create(CurrentTemplate);
+        var service = _registry.GetByType("context")?.CreateService(CurrentTemplate);
         StatusText = $"已应用上下文适配器: {SelectedAdapterId}";
     }
 }

@@ -26,17 +26,20 @@ public partial class MainViewModel : ObservableObject
     internal readonly IDataBindingService _dataBindingService;
     private readonly ITemplatePreviewService _previewService;
     internal readonly IPdfExportService _pdfExportService;
+    private readonly AdapterRegistry _adapterRegistry;
 
     public MainViewModel(
         ITemplateLoaderService templateLoaderService,
         IDataBindingService dataBindingService,
         ITemplatePreviewService previewService,
-        IPdfExportService pdfExportService)
+        IPdfExportService pdfExportService,
+        AdapterRegistry adapterRegistry)
     {
         _templateLoaderService = templateLoaderService;
         _dataBindingService = dataBindingService;
         _previewService = previewService;
         _pdfExportService = pdfExportService;
+        _adapterRegistry = adapterRegistry;
 
         InitializeTabs();
     }
@@ -47,9 +50,9 @@ public partial class MainViewModel : ObservableObject
         Tabs.Add(new DataEntryTabViewModel(this) { Header = "数据录入" });
         Tabs.Add(new PreviewTabViewModel(this) { Header = "预览" });
         Tabs.Add(new ExportTabViewModel(this) { Header = "导出" });
-        Tabs.Add(new ContextAdapterTabViewModel(this) { Header = "上下文适配" });
-        Tabs.Add(new ExcelAdapterTabViewModel(this) { Header = "Excel适配" });
-        Tabs.Add(new DatabaseAdapterTabViewModel(this) { Header = "数据库适配" });
+        Tabs.Add(new ContextAdapterTabViewModel(this, _adapterRegistry) { Header = "上下文适配" });
+        Tabs.Add(new ExcelAdapterTabViewModel(this, _adapterRegistry) { Header = "Excel适配" });
+        Tabs.Add(new DatabaseAdapterTabViewModel(this, _adapterRegistry) { Header = "数据库适配" });
         SelectedTab = Tabs.FirstOrDefault();
     }
 

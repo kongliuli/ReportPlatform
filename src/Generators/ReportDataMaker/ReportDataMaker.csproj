@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Xinglin.WebReportEditor.Contracts.csproj" />
+    <ProjectReference Include="..\ReportDataMaker.Core\ReportDataMaker.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

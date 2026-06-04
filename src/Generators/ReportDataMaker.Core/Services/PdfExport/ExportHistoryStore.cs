@@ -1,6 +1,5 @@
 using System.IO;
 using Newtonsoft.Json;
-using ReportDataMaker.Models;
 
 namespace ReportDataMaker.Services.PdfExport;
 

@@ -41,13 +41,16 @@ public partial class App : Application
         services.AddSingleton<IDataBindingService, DataBindingService>();
         services.AddSingleton<SqliteDatabaseService>();
         services.AddSingleton<AdapterConfigStore>();
-        services.AddSingleton<ExcelAdapterFactory>();
         services.AddSingleton<DatabaseProviderRegistry>(sp => DatabaseProviderRegistry.CreateDefault());
         services.AddSingleton<ConnectionPoolManager>();
-        services.AddSingleton<DatabaseAdapterFactory>();
         services.AddSingleton<ContextProfileStore>();
         services.AddSingleton<ContextAdapterService>();
-        services.AddSingleton<ContextAdapterFactory>();
+
+        services.AddSingleton<AdapterRegistry>();
+        services.AddSingleton<IAdapterPlugin, ExcelAdapterPlugin>();
+        services.AddSingleton<IAdapterPlugin, DatabaseAdapterPlugin>();
+        services.AddSingleton<IAdapterPlugin, ContextAdapterPlugin>();
+        services.AddSingleton<IAdapterPlugin, ExportAdapterPlugin>();
 
         services.AddSingleton<IPdfExportService, PdfExportService>();
         services.AddSingleton<BatchExportService>();
@@ -59,6 +62,11 @@ public partial class App : Application
         FileLogger.Instance.WriteLine("[LOG] DI 注册完成，开始 BuildServiceProvider...");
         Services = services.BuildServiceProvider();
         FileLogger.Instance.WriteLine("[LOG] BuildServiceProvider 完成");
+
+        var registry = Services.GetRequiredService<AdapterRegistry>();
+        foreach (var plugin in Services.GetServices<IAdapterPlugin>())
+            registry.Register(plugin);
+        FileLogger.Instance.WriteLine("[LOG] AdapterRegistry 初始化完成");
 
         FileLogger.Instance.WriteLine("[LOG] 执行 TestTemplateLoading...");
         TestTemplateLoading();
