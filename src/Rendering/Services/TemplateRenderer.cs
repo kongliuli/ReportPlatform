@@ -3,6 +3,7 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using SkiaSharp;
 using Xinglin.ReportEditor.Contracts;
+using Xinglin.ReportEditor.Contracts.Models.Elements;
 using Xinglin.ReportEditor.Contracts.Models.Template;
 
 namespace Xinglin.ReportEditor.Rendering.Services;
@@ -20,10 +21,19 @@ public class TemplateRenderer
     {
         var layout = new PdfPageLayoutEngine(template);
         var contentWidth = layout.PageWidth - layout.MarginLeft - layout.MarginRight;
-        var contentHeight = layout.PageHeight - layout.MarginTop - layout.MarginBottom;
 
-        var allElements = template.Elements
-            .Where(e => e.IsVisible)
+        var headerElements = template.Elements
+            .Where(e => e.IsVisible && e is HeaderElement)
+            .OrderBy(e => e.ZIndex)
+            .ToList();
+
+        var footerElements = template.Elements
+            .Where(e => e.IsVisible && e is FooterElement)
+            .OrderBy(e => e.ZIndex)
+            .ToList();
+
+        var contentElements = template.Elements
+            .Where(e => e.IsVisible && e is not HeaderElement && e is not FooterElement)
             .OrderBy(e => e.ZIndex)
             .ToList();
 
@@ -37,11 +47,40 @@ public class TemplateRenderer
                 page.MarginTop(layout.MarginTop);
                 page.MarginBottom(layout.MarginBottom);
 
+                if (headerElements.Count > 0)
+                {
+                    var headerHeight = headerElements.Max(e => layout.ConvertY(e.Y) + layout.ConvertSize(e.Height));
+                    page.Header().Element(c =>
+                    {
+                        var imageBytes = RenderToImage(canvas =>
+                        {
+                            foreach (var el in headerElements)
+                                _elementRenderer.RenderElement(canvas, el, data, layout);
+                        }, contentWidth, headerHeight);
+                        c.Image(imageBytes);
+                    });
+                }
+
+                if (footerElements.Count > 0)
+                {
+                    var footerHeight = footerElements.Max(e => layout.ConvertY(e.Y) + layout.ConvertSize(e.Height));
+                    page.Footer().Element(c =>
+                    {
+                        var imageBytes = RenderToImage(canvas =>
+                        {
+                            foreach (var el in footerElements)
+                                _elementRenderer.RenderElement(canvas, el, data, layout);
+                        }, contentWidth, footerHeight);
+                        c.Image(imageBytes);
+                    });
+                }
+
                 page.Content().Element(c =>
                 {
+                    var contentHeight = layout.PageHeight - layout.MarginTop - layout.MarginBottom;
                     var imageBytes = RenderToImage(canvas =>
                     {
-                        foreach (var el in allElements)
+                        foreach (var el in contentElements)
                             _elementRenderer.RenderElement(canvas, el, data, layout);
                     }, contentWidth, contentHeight);
                     c.Image(imageBytes);

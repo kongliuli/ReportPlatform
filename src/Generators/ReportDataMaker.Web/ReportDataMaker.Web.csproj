@@ -18,6 +18,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Xinglin.WebReportEditor.Contracts.csproj" />
     <ProjectReference Include="..\Adapter.Excel\Adapter.Excel.csproj" />
+    <ProjectReference Include="..\Adapter.Database.Common\Adapter.Database.Common.csproj" />
+    <ProjectReference Include="..\ReportDataMaker.Core\ReportDataMaker.Core.csproj" />
   </ItemGroup>
 
 </Project>

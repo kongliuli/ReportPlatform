@@ -22,28 +22,32 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string _templateFilePath = string.Empty;
     [ObservableProperty] private ObservableCollection<TabViewModelBase> _tabs = new();
     [ObservableProperty] private TabViewModelBase? _selectedTab;
-    [ObservableProperty] private bool _isSidePanelExpanded = true;
     [ObservableProperty] private string _statusColor = "#4CAF50";
     [ObservableProperty] private string _statusInfo = string.Empty;
 
     private readonly ITemplateLoaderService _templateLoaderService;
-    internal readonly IDataBindingService _dataBindingService;
+    private readonly IDataBindingService _dataBindingService;
     private readonly ITemplatePreviewService _previewService;
-    internal readonly IPdfExportService _pdfExportService;
+    private readonly IPdfExportService _pdfExportService;
     private readonly AdapterRegistry _adapterRegistry;
+    private readonly IDialogService _dialogService;
 
     public MainViewModel(
         ITemplateLoaderService templateLoaderService,
         IDataBindingService dataBindingService,
         ITemplatePreviewService previewService,
         IPdfExportService pdfExportService,
-        AdapterRegistry adapterRegistry)
+        AdapterRegistry adapterRegistry,
+        IDialogService dialogService,
+        SidePanelViewModel sidePanel)
     {
         _templateLoaderService = templateLoaderService;
         _dataBindingService = dataBindingService;
         _previewService = previewService;
         _pdfExportService = pdfExportService;
         _adapterRegistry = adapterRegistry;
+        _dialogService = dialogService;
+        SidePanel = sidePanel;
 
         InitializeTabs();
         LoadAdapters();
@@ -59,9 +63,9 @@ public partial class MainViewModel : ObservableObject
     private void InitializeTabs()
     {
         Tabs.Clear();
-        Tabs.Add(new DataEntryTabViewModel(this) { Header = "数据录入" });
+        Tabs.Add(new DataEntryTabViewModel(this, _dataBindingService) { Header = "数据录入" });
         Tabs.Add(new PreviewTabViewModel(this) { Header = "预览" });
-        Tabs.Add(new ExportTabViewModel(this) { Header = "导出" });
+        Tabs.Add(new ExportTabViewModel(this, _dataBindingService, _pdfExportService) { Header = "导出" });
         Tabs.Add(CreateClosableTab(new ContextAdapterTabViewModel(this, _adapterRegistry) { Header = "上下文适配" }));
         Tabs.Add(CreateClosableTab(new ExcelAdapterTabViewModel(this, _adapterRegistry) { Header = "Excel适配" }));
         Tabs.Add(CreateClosableTab(new DatabaseAdapterTabViewModel(this, _adapterRegistry) { Header = "数据库适配" }));
@@ -88,7 +92,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task LoadTemplate()
     {
-        var filePath = _dialogService?.OpenFile("模板文件 (*.json)|*.json|所有文件 (*.*)|*.*", "选择模板文件");
+        var filePath = _dialogService.OpenFile("模板文件 (*.json)|*.json|所有文件 (*.*)|*.*", "选择模板文件");
         if (string.IsNullOrEmpty(filePath)) return;
 
         IsBusy = true;
@@ -116,31 +120,6 @@ public partial class MainViewModel : ObservableObject
         foreach (var tab in Tabs.OfType<PreviewTabViewModel>())
             tab.RefreshPreview();
     }
-
-    [RelayCommand]
-    private async Task ExportPdf()
-    {
-        if (CurrentTemplate == null) return;
-        var data = _dataBindingService.ExtractData(CurrentTemplate);
-        try
-        {
-            var pdfBytes = await Task.Run(() => _pdfExportService.RenderToPdf(CurrentTemplate, data));
-            var filePath = _dialogService?.SaveFile("PDF 文件 (*.pdf)|*.pdf", "保存PDF", CurrentTemplate.Name);
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                await File.WriteAllBytesAsync(filePath, pdfBytes);
-                StatusText = $"已导出: {filePath}";
-            }
-        }
-        catch (Exception ex)
-        {
-            StatusText = $"导出失败: {ex.Message}";
-            MessageBox.Show($"导出PDF失败:\n{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
-    private IDialogService? _dialogService;
-    public void SetDialogService(IDialogService dialogService) => _dialogService = dialogService;
 
     public string TemplateName => CurrentTemplate?.Name ?? "未加载模板";
     public string TemplateVersion => CurrentTemplate?.Version.ToString() ?? "";
@@ -172,8 +151,7 @@ public partial class MainViewModel : ObservableObject
         StatusColor = value.Contains("失败") || value.Contains("错误") ? "#F44336" : "#4CAF50";
     }
 
-    [RelayCommand]
-    private void ToggleSidePanel() => IsSidePanelExpanded = !IsSidePanelExpanded;
+    public SidePanelViewModel SidePanel { get; }
 
     [RelayCommand]
     private void Save()

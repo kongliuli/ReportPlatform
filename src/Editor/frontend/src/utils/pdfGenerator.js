@@ -74,21 +74,3 @@ export function printCanvasAsPdf(canvasEngine, templateName) {
 
   setTimeout(() => document.body.removeChild(iframe), 60000)
 }
-
-  printWindow.document.write(`<!DOCTYPE html>
-<html>
-<head>
-<title>${templateName || '模板预览'}</title>
-<style>
-  @page { size: ${widthMm}mm ${heightMm}mm; margin: 0; }
-  body { margin: 0; padding: 0; display: flex; justify-content: center; }
-  img { width: ${widthMm}mm; height: ${heightMm}mm; }
-  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
-</style>
-</head>
-<body>
-<img src="${dataUrl}" onload="window.print(); window.close();" />
-</body>
-</html>`)
-  printWindow.document.close()
-}

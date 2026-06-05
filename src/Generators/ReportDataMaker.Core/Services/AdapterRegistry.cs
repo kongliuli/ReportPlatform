@@ -1,3 +1,4 @@
+using Xinglin.ReportEditor.Contracts.Enums;
 using Xinglin.ReportEditor.Contracts.Models.Adapters;
 
 namespace ReportDataMaker.Services;
@@ -5,7 +6,7 @@ namespace ReportDataMaker.Services;
 /// <summary>适配器注册表，管理所有已注册的适配器插件</summary>
 public class AdapterRegistry
 {
-    private readonly Dictionary<string, IAdapterPlugin> _plugins = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<AdapterType, IAdapterPlugin> _plugins = new();
 
     /// <summary>注册适配器插件</summary>
     public void Register(IAdapterPlugin plugin)
@@ -14,13 +15,13 @@ public class AdapterRegistry
     }
 
     /// <summary>根据适配器类型获取插件</summary>
-    public IAdapterPlugin? GetByType(string adapterType)
+    public IAdapterPlugin? GetByType(AdapterType adapterType)
     {
         return _plugins.GetValueOrDefault(adapterType);
     }
 
     /// <summary>获取所有已注册的适配器类型</summary>
-    public IReadOnlyList<string> GetAllTypes() => _plugins.Keys.ToList().AsReadOnly();
+    public IReadOnlyList<AdapterType> GetAllTypes() => _plugins.Keys.ToList().AsReadOnly();
 
     /// <summary>获取所有已注册的适配器插件</summary>
     public IReadOnlyList<IAdapterPlugin> GetAllPlugins() => _plugins.Values.ToList().AsReadOnly();

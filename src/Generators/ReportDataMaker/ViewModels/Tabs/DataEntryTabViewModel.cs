@@ -13,7 +13,9 @@ public partial class DataEntryTabViewModel : MainTabViewModel
     [ObservableProperty] private ObservableCollection<EditableFieldItem> _fields = new();
     [ObservableProperty] private EditableFieldItem? _selectedField;
 
-    public DataEntryTabViewModel(MainViewModel mainViewModel) : base(mainViewModel) { }
+    private readonly IDataBindingService _dataBindingService;
+
+    public DataEntryTabViewModel(MainViewModel mainViewModel, IDataBindingService dataBindingService) : base(mainViewModel) { _dataBindingService = dataBindingService; }
 
     public override void OnTemplateChanged()
     {
@@ -55,7 +57,7 @@ public partial class DataEntryTabViewModel : MainTabViewModel
         if (CurrentTemplate == null) return;
         var data = Fields.Where(f => !string.IsNullOrEmpty(f.DataPath))
             .ToDictionary(f => f.DataPath, f => (object)f.Value);
-        MainViewModel._dataBindingService.ApplyData(CurrentTemplate, data);
+        _dataBindingService.ApplyData(CurrentTemplate, data);
         StatusText = $"已应用 {data.Count} 个字段的数据";
     }
 }

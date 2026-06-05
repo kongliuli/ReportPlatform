@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPdfRenderService, PdfRenderService>();
         services.AddScoped<IJsonTemplateSerializer, JsonTemplateSerializer>();
         services.AddScoped<IDataBindingEngine, DataBindingEngine>();
-        services.AddScoped<IPdfSharpTemplateRenderer, PdfTemplateRenderer>();
+        services.AddScoped<IPdfTemplateRenderer, PdfTemplateRenderer>();
 
         services.AddSingleton(TimeProvider.System);
         services.AddScoped<ContextService>();

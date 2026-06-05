@@ -2,8 +2,8 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReportDataMaker.Services;
-using ReportDataMaker.Services.ContextAdapter;
 using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 using Xinglin.ReportEditor.Contracts.Models.Elements;
 using Xinglin.ReportEditor.Contracts.Models.Template;
 
@@ -15,6 +15,7 @@ public partial class ContextAdapterTabViewModel : MainTabViewModel
     [ObservableProperty] private ObservableCollection<AdapterItem> _adapters = new();
 
     private readonly AdapterRegistry _registry;
+    private IDataAdapter? _dataAdapter;
 
     public ContextAdapterTabViewModel(MainViewModel mainViewModel, AdapterRegistry registry) : base(mainViewModel) { _registry = registry; }
 
@@ -22,6 +23,8 @@ public partial class ContextAdapterTabViewModel : MainTabViewModel
     {
         base.OnTemplateChanged();
         if (CurrentTemplate == null) return;
+
+        _dataAdapter = _registry.GetByType(AdapterType.Context)?.CreateService(CurrentTemplate);
 
         Adapters.Clear();
         var adapterIds = CurrentTemplate.Elements
@@ -36,16 +39,13 @@ public partial class ContextAdapterTabViewModel : MainTabViewModel
     }
 
     [RelayCommand]
-    private void ApplyAdapter()
+    private async Task ApplyAdapterAsync()
     {
-        if (CurrentTemplate == null || string.IsNullOrEmpty(SelectedAdapterId)) return;
-        var service = _registry.GetByType("context")?.CreateService(CurrentTemplate);
-        if (service == null)
-        {
-            StatusText = "上下文适配器未找到";
-            return;
-        }
-        StatusText = $"已应用上下文适配器: {SelectedAdapterId}";
+        if (CurrentTemplate == null || string.IsNullOrEmpty(SelectedAdapterId) || _dataAdapter == null) return;
+        var result = await _dataAdapter.ReadDataAsync();
+        StatusText = result.Success
+            ? $"已应用上下文适配器: {SelectedAdapterId}"
+            : $"应用失败: {result.ErrorMessage}";
     }
 }
 

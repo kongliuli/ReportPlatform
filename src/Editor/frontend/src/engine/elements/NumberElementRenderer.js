@@ -5,6 +5,7 @@ import { BaseElementRenderer } from './BaseElementRenderer'
 export class NumberElementRenderer extends BaseElementRenderer {
   create(canvas, element, mmToPx) {
     const displayValue = element.value !== undefined ? String(element.value) : '0'
+    const unit = element.unit || ''
     const group = new Group(
       [
         new Rect({
@@ -22,7 +23,7 @@ export class NumberElementRenderer extends BaseElementRenderer {
           top: mmToPx(element.height) / 2 - 8,
           fontSize: 14
         }),
-        new Text(displayValue + (element.unit || ''), {
+        new Text(displayValue + unit, {
           left: 24,
           top: mmToPx(element.height) / 2 - 6,
           fontSize: 11,
@@ -36,10 +37,25 @@ export class NumberElementRenderer extends BaseElementRenderer {
         angle: element.rotation || 0
       }
     )
+    group._numberValue = displayValue
+    group._numberUnit = unit
     return group
   }
 
   update(fabricObj, props) {
+    if (props.value !== undefined || props.unit !== undefined) {
+      if (props.value !== undefined) {
+        fabricObj._numberValue = String(props.value)
+      }
+      if (props.unit !== undefined) {
+        fabricObj._numberUnit = props.unit
+      }
+      const objects = fabricObj.getObjects()
+      if (objects[2]) {
+        objects[2].set('text', fabricObj._numberValue + fabricObj._numberUnit)
+      }
+      fabricObj.dirty = true
+    }
     this._applyCommonUpdate(fabricObj, props)
   }
 

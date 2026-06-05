@@ -6,14 +6,35 @@ namespace ReportDataMaker.Adapter.Database.Common.Services;
 
 public class DatabaseAdapterService : IDataAdapter
 {
+    private DatabaseAdapterBase? _baseAdapter;
+
     public string AdapterId => "database-default";
     public string AdapterName => "数据库适配器";
     public AdapterType Type => AdapterType.Database;
-    public IReadOnlyList<string> TargetDataPaths => Array.Empty<string>();
+    public IReadOnlyList<string> TargetDataPaths => _baseAdapter?.TargetDataPaths ?? Array.Empty<string>();
 
-    public Task<AdapterResult> ReadDataAsync() => throw new NotImplementedException();
-    public Task<AdapterResult> ReadBatchDataAsync() => throw new NotImplementedException();
-    public Task<ValidationResult> ValidateConfigAsync() => Task.FromResult(ValidationResult.Success);
+    public Task<AdapterResult> ReadDataAsync()
+    {
+        if (_baseAdapter == null)
+            return Task.FromResult(new AdapterResult { Success = false, ErrorMessage = "未配置数据库适配器" });
+        return _baseAdapter.ReadDataAsync();
+    }
+
+    public Task<AdapterResult> ReadBatchDataAsync()
+    {
+        if (_baseAdapter == null)
+            return Task.FromResult(new AdapterResult { Success = false, ErrorMessage = "未配置数据库适配器" });
+        return _baseAdapter.ReadBatchDataAsync();
+    }
+
+    public Task<ValidationResult> ValidateConfigAsync()
+    {
+        if (_baseAdapter == null)
+            return Task.FromResult(ValidationResult.Success);
+        return _baseAdapter.ValidateConfigAsync();
+    }
+
+    public void SetBaseAdapter(DatabaseAdapterBase baseAdapter) => _baseAdapter = baseAdapter;
 
     public string TestConnection(string connectionString)
     {

@@ -6,6 +6,11 @@
 
 <h2>PDF 预览</h2>
 
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="error-message">@errorMessage</div>
+}
+
 <div class="toolbar">
     <button @onclick="GeneratePreview" class="btn btn-primary" disabled="@isGenerating">
         @(isGenerating ? "生成中..." : "生成预览")
@@ -27,10 +32,12 @@ else
 @code {
     private byte[]? pdfBytes;
     private bool isGenerating;
+    private string errorMessage = string.Empty;
 
     private async Task GeneratePreview()
     {
         isGenerating = true;
+        errorMessage = string.Empty;
         try
         {
             var template = await TemplateService.GetLatestTemplateAsync();
@@ -39,6 +46,10 @@ else
                 var data = new Dictionary<string, object>();
                 pdfBytes = await PdfService.RenderPdfAsync(templateId, data);
             }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"生成预览失败: {ex.Message}";
         }
         finally
         {

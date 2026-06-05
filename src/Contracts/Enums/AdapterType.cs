@@ -13,7 +13,10 @@ public enum AdapterType
     Database,
 
     /// <summary>API数据适配器</summary>
-    Api
+    Api,
+
+    /// <summary>PDF导出适配器</summary>
+    Export
 }
 
 /// <summary>数据库提供程序枚举</summary>

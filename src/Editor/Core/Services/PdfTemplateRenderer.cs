@@ -4,7 +4,7 @@ using Xinglin.ReportEditor.Rendering.Services;
 
 namespace Xinglin.ReportEditor.Core.Services;
 
-public class PdfTemplateRenderer : IPdfSharpTemplateRenderer
+public class PdfTemplateRenderer : IPdfTemplateRenderer
 {
     private readonly TemplateRenderer _renderer = new();
 

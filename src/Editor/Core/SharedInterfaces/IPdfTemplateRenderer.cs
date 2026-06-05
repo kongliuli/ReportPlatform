@@ -2,7 +2,7 @@ using Xinglin.ReportEditor.Contracts.Models.Template;
 
 namespace Xinglin.ReportEditor.Core.SharedInterfaces;
 
-public interface IPdfSharpTemplateRenderer
+public interface IPdfTemplateRenderer
 {
     /// <summary>Render template JSON to PDF bytes</summary>
     byte[] RenderToPdf(string templateJson);

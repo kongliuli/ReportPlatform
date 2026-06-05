@@ -1,3 +1,4 @@
+using Xinglin.ReportEditor.Contracts.Enums;
 using Xinglin.ReportEditor.Contracts.Models.Adapters;
 using Xinglin.ReportEditor.Contracts.Models.Template;
 
@@ -13,7 +14,7 @@ public class ExportAdapterPlugin : IAdapterPlugin
         _pdfExportService = pdfExportService;
     }
 
-    public string AdapterType => "export";
+    public AdapterType AdapterType => AdapterType.Export;
     public string DisplayName => "PDF 导出适配器";
 
     public IDataAdapter CreateService(TemplateDefinition template)

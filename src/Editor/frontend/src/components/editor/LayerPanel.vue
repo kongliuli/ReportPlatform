@@ -42,7 +42,6 @@ import $t from '@/locales/zh-CN'
 import { computed } from 'vue'
 import { useEditorStore } from '@/stores/editor'
 import { useTemplateStore } from '@/stores/template'
-import { useEditorStore } from '@/stores/editor'
 
 const templateStore = useTemplateStore()
 const editorStore = useEditorStore()

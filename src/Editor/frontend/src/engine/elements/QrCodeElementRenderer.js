@@ -1,4 +1,5 @@
 import { Group, Rect } from 'fabric'
+import QRCode from 'qrcode'
 import { MM_TO_PX, CANVAS_PADDING, round2 } from '@/utils/constants'
 import { BaseElementRenderer } from './BaseElementRenderer'
 
@@ -6,15 +7,17 @@ export class QrCodeElementRenderer extends BaseElementRenderer {
   create(canvas, element, mmToPx) {
     const size = mmToPx(element.size || 100)
     const value = element.value || 'https://example.com'
-    const moduleCount = 25
+    const errorCorrectionLevel = element.errorCorrectionLevel || 'M'
+
+    const qr = QRCode.create(value, { errorCorrectionLevel })
+    const moduleCount = qr.modules.size
     const moduleSize = size / moduleCount
 
     const objects = []
-    const qrMatrix = this._generateQRMatrix(value, moduleCount)
 
     for (let row = 0; row < moduleCount; row++) {
       for (let col = 0; col < moduleCount; col++) {
-        if (qrMatrix[row][col]) {
+        if (qr.modules.data[row * moduleCount + col]) {
           const rect = new Rect({
             left: col * moduleSize,
             top: row * moduleSize,
@@ -36,62 +39,6 @@ export class QrCodeElementRenderer extends BaseElementRenderer {
     })
 
     return group
-  }
-
-  _generateQRMatrix(value, moduleCount) {
-    const matrix = []
-    for (let i = 0; i < moduleCount; i++) {
-      matrix[i] = []
-      for (let j = 0; j < moduleCount; j++) {
-        matrix[i][j] = false
-      }
-    }
-
-    this._addFinderPattern(matrix, 0, 0)
-    this._addFinderPattern(matrix, moduleCount - 7, 0)
-    this._addFinderPattern(matrix, 0, moduleCount - 7)
-
-    const seed = this._hashCode(value)
-    for (let i = 0; i < moduleCount; i++) {
-      for (let j = 0; j < moduleCount; j++) {
-        if (!matrix[i][j] && !this._isInFinderPattern(i, j, moduleCount)) {
-          matrix[i][j] = this._pseudoRandom(seed, i * moduleCount + j) > 0.5
-        }
-      }
-    }
-
-    return matrix
-  }
-
-  _addFinderPattern(matrix, startRow, startCol) {
-    for (let i = 0; i < 7; i++) {
-      for (let j = 0; j < 7; j++) {
-        if (i === 0 || i === 6 || j === 0 || j === 6 ||
-            (i >= 2 && i <= 4 && j >= 2 && j <= 4)) {
-          matrix[startRow + i][startCol + j] = true
-        }
-      }
-    }
-  }
-
-  _isInFinderPattern(row, col, moduleCount) {
-    return (row < 8 && col < 8) ||
-           (row < 8 && col >= moduleCount - 8) ||
-           (row >= moduleCount - 8 && col < 8)
-  }
-
-  _hashCode(str) {
-    let hash = 0
-    for (let i = 0; i < str.length; i++) {
-      hash = ((hash << 5) - hash) + str.charCodeAt(i)
-      hash |= 0
-    }
-    return Math.abs(hash)
-  }
-
-  _pseudoRandom(seed, index) {
-    const x = Math.sin(seed + index) * 10000
-    return x - Math.floor(x)
   }
 
   update(fabricObj, props) {

@@ -1,4 +1,4 @@
-import { Group, Rect, Line, IText } from 'fabric'
+import { Group, Rect, Line, IText, Path } from 'fabric'
 import { MM_TO_PX, CANVAS_PADDING, round2 } from '@/utils/constants'
 import { BaseElementRenderer } from './BaseElementRenderer'
 
@@ -104,6 +104,7 @@ export class ChartElementRenderer extends BaseElementRenderer {
   _drawPieChart(objects, series, width, height) {
     const data = series[0]?.data || [30, 50, 40, 60, 45]
     const total = data.reduce((sum, v) => sum + v, 0)
+    if (total === 0) return
     const centerX = width / 2
     const centerY = height / 2
     const radius = Math.min(width, height) / 3
@@ -120,6 +121,14 @@ export class ChartElementRenderer extends BaseElementRenderer {
       const y2 = centerY + radius * Math.sin(endAngle)
 
       const largeArc = angle > Math.PI ? 1 : 0
+
+      const pathData = `M ${centerX} ${centerY} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`
+      const sector = new Path(pathData, {
+        fill: CHART_COLORS[index % CHART_COLORS.length],
+        stroke: '#ffffff',
+        strokeWidth: 2
+      })
+      objects.push(sector)
 
       startAngle = endAngle
     })

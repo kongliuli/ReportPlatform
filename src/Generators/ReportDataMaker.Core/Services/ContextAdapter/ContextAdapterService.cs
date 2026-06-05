@@ -7,17 +7,28 @@ namespace ReportDataMaker.Services.ContextAdapter;
 
 public class ContextAdapterService : IDataAdapter
 {
+    private TemplateDefinition? _template;
+
     public string AdapterId => "context-default";
     public string AdapterName => "上下文适配器";
     public AdapterType Type => AdapterType.Context;
     public IReadOnlyList<string> TargetDataPaths => Array.Empty<string>();
 
-    public Task<AdapterResult> ReadDataAsync() => throw new NotImplementedException();
+    public Task<AdapterResult> ReadDataAsync()
+    {
+        var data = ExtractContextData(_template);
+        return Task.FromResult(new AdapterResult { Success = true, Data = data });
+    }
+
     public Task<AdapterResult> ReadBatchDataAsync() => throw new NotImplementedException();
+
     public Task<ValidationResult> ValidateConfigAsync() => Task.FromResult(ValidationResult.Success);
 
-    public Dictionary<string, object> ExtractContextData(TemplateDefinition template)
+    public void SetTemplate(TemplateDefinition template) => _template = template;
+
+    public Dictionary<string, object> ExtractContextData(TemplateDefinition? template)
     {
+        _template = template;
         var data = new Dictionary<string, object>();
         if (template?.Elements == null) return data;
 

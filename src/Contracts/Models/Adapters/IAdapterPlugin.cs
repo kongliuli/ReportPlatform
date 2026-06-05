@@ -1,3 +1,4 @@
+using Xinglin.ReportEditor.Contracts.Enums;
 using Xinglin.ReportEditor.Contracts.Models.Template;
 
 namespace Xinglin.ReportEditor.Contracts.Models.Adapters;
@@ -6,7 +7,7 @@ namespace Xinglin.ReportEditor.Contracts.Models.Adapters;
 public interface IAdapterPlugin
 {
     /// <summary>适配器类型标识</summary>
-    string AdapterType { get; }
+    AdapterType AdapterType { get; }
 
     /// <summary>适配器显示名称</summary>
     string DisplayName { get; }

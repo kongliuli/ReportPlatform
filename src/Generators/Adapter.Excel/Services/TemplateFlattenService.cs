@@ -7,14 +7,53 @@ namespace ReportDataMaker.Adapter.Excel.Services;
 
 public class TemplateFlattenService : IDataAdapter
 {
+    private TemplateDefinition? _template;
+    private string? _filePath;
+    private ExcelTemplateSchema? _schema;
+    private readonly ExcelContractReader _contractReader = new();
+
     public string AdapterId => "excel-flatten";
     public string AdapterName => "Excel 模板扁平化适配器";
     public AdapterType Type => AdapterType.Excel;
     public IReadOnlyList<string> TargetDataPaths => Array.Empty<string>();
 
-    public Task<AdapterResult> ReadDataAsync() => throw new NotImplementedException();
-    public Task<AdapterResult> ReadBatchDataAsync() => throw new NotImplementedException();
+    public Task<AdapterResult> ReadDataAsync()
+    {
+        if (!string.IsNullOrEmpty(_filePath) && _schema != null)
+        {
+            var result = _contractReader.ReadByContract(_filePath, _schema);
+            return Task.FromResult(result);
+        }
+
+        var fields = FlattenTemplate(_template!);
+        var data = new Dictionary<string, object>();
+        foreach (var field in fields)
+        {
+            data[field.DataPath] = field;
+        }
+        return Task.FromResult(new AdapterResult { Success = true, Data = data });
+    }
+
+    public Task<AdapterResult> ReadBatchDataAsync()
+    {
+        if (!string.IsNullOrEmpty(_filePath) && _schema != null)
+        {
+            var result = _contractReader.ReadBatchByContract(_filePath, _schema);
+            return Task.FromResult(result);
+        }
+
+        return Task.FromResult(new AdapterResult { Success = false, ErrorMessage = "批量读取需要设置文件路径和模板架构" });
+    }
+
     public Task<ValidationResult> ValidateConfigAsync() => Task.FromResult(ValidationResult.Success);
+
+    public void SetTemplate(TemplateDefinition template) => _template = template;
+
+    public void SetFileConfig(string filePath, ExcelTemplateSchema schema)
+    {
+        _filePath = filePath;
+        _schema = schema;
+    }
 
     public List<FlatField> FlattenTemplate(TemplateDefinition template)
     {

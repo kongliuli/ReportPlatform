@@ -15,7 +15,10 @@ public partial class ExportTabViewModel : MainTabViewModel
     [ObservableProperty] private int _exportProgress;
     [ObservableProperty] private bool _isExporting;
 
-    public ExportTabViewModel(MainViewModel mainViewModel) : base(mainViewModel) { }
+    private readonly IDataBindingService _dataBindingService;
+    private readonly IPdfExportService _pdfExportService;
+
+    public ExportTabViewModel(MainViewModel mainViewModel, IDataBindingService dataBindingService, IPdfExportService pdfExportService) : base(mainViewModel) { _dataBindingService = dataBindingService; _pdfExportService = pdfExportService; }
 
     [RelayCommand]
     private async Task ExportSinglePdf()
@@ -24,8 +27,8 @@ public partial class ExportTabViewModel : MainTabViewModel
         IsExporting = true;
         try
         {
-            var data = MainViewModel._dataBindingService.ExtractData(CurrentTemplate);
-            var pdfBytes = await Task.Run(() => MainViewModel._pdfExportService.RenderToPdf(CurrentTemplate, data));
+            var data = _dataBindingService.ExtractData(CurrentTemplate);
+            var pdfBytes = await Task.Run(() => _pdfExportService.RenderToPdf(CurrentTemplate, data));
             var filePath = Path.Combine(
                 string.IsNullOrEmpty(OutputDirectory) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : OutputDirectory,
                 $"{CurrentTemplate.Name ?? "report"}.pdf");
@@ -48,10 +51,10 @@ public partial class ExportTabViewModel : MainTabViewModel
         {
             var batchData = new List<Dictionary<string, object>>
             {
-                MainViewModel._dataBindingService.ExtractData(CurrentTemplate)
+                _dataBindingService.ExtractData(CurrentTemplate)
             };
             var progress = new Progress<int>(p => ExportProgress = p);
-            var results = await MainViewModel._pdfExportService.BatchExportAsync(
+            var results = await _pdfExportService.BatchExportAsync(
                 CurrentTemplate, batchData,
                 string.IsNullOrEmpty(OutputDirectory) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : OutputDirectory,
                 FileNamePattern, progress);

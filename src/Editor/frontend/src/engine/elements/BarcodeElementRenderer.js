@@ -1,88 +1,68 @@
-import { Group, Rect, IText } from 'fabric'
+import { FabricImage } from 'fabric'
+import JsBarcode from 'jsbarcode'
 import { MM_TO_PX, CANVAS_PADDING, round2 } from '@/utils/constants'
 import { BaseElementRenderer } from './BaseElementRenderer'
-
-const BARCODE_PATTERNS = {
-  CODE128: 'CODE128',
-  CODE39: 'CODE39',
-  EAN13: 'EAN13'
-}
 
 export class BarcodeElementRenderer extends BaseElementRenderer {
   create(canvas, element, mmToPx) {
     const width = mmToPx(element.width)
     const height = mmToPx(element.height || 50)
-    const barWidth = element.barWidth || 2
     const value = element.value || '12345678'
+    const format = this._normalizeFormat(element.format || 'CODE128')
+    const barWidth = element.barWidth || 2
+    const showText = element.showText !== false
+    const barcodeHeight = height - (showText ? 16 : 0)
 
-    const objects = []
-    const bars = this._generateBarcodePattern(value, width, barWidth)
-    
-    bars.forEach(bar => {
-      const rect = new Rect({
-        left: bar.x,
-        top: 0,
-        width: bar.width,
-        height: height - (element.showText ? 16 : 0),
-        fill: '#000000'
+    const tempCanvas = document.createElement('canvas')
+    try {
+      JsBarcode(tempCanvas, value, {
+        format,
+        width: barWidth,
+        height: barcodeHeight,
+        displayValue: showText,
+        fontSize: 12,
+        margin: 0,
+        textMargin: 2
       })
-      objects.push(rect)
-    })
-
-    if (element.showText) {
-      const text = new IText(value, {
-        left: width / 2,
-        top: height - 14,
-        fontSize: 10,
-        fontFamily: 'monospace',
-        fill: '#000000',
-        textAlign: 'center',
-        originX: 'center'
+    } catch (_e) {
+      JsBarcode(tempCanvas, '12345678', {
+        format: 'CODE128',
+        width: barWidth,
+        height: barcodeHeight,
+        displayValue: showText,
+        fontSize: 12,
+        margin: 0,
+        textMargin: 2
       })
-      objects.push(text)
     }
 
-    const group = new Group(objects, {
+    const fabricImage = new FabricImage(tempCanvas, {
       ...this._applyCommonOptions(element, mmToPx),
-      width,
-      height,
+      scaleX: width / (tempCanvas.width || 1),
+      scaleY: height / (tempCanvas.height || 1),
       opacity: element.opacity ?? 1,
       angle: element.rotation || 0
     })
 
-    return group
+    return fabricImage
   }
 
-  _generateBarcodePattern(value, totalWidth, barWidth) {
-    const bars = []
-    const pattern = this._getCode128Pattern(value)
-    let x = 0
-    
-    pattern.forEach((bit, index) => {
-      if (bit === '1') {
-        bars.push({ x, width: barWidth })
-      }
-      x += barWidth
-    })
-    
-    return bars
-  }
-
-  _getCode128Pattern(value) {
-    const pattern = []
-    pattern.push(...'11010000100')
-    for (let i = 0; i < value.length; i++) {
-      const charCode = value.charCodeAt(i)
-      for (let j = 0; j < 11; j++) {
-        pattern.push(Math.random() > 0.5 ? '1' : '0')
-      }
+  _normalizeFormat(format) {
+    const formatMap = {
+      CODE128: 'CODE128',
+      CODE39: 'CODE39',
+      EAN13: 'EAN13',
+      EAN8: 'EAN8',
+      UPC: 'UPC',
+      UPC_E: 'UPC_E',
+      ITF: 'ITF14',
+      CODABAR: 'codabar'
     }
-    pattern.push(...'1100011101011')
-    return pattern
+    return formatMap[format] || 'CODE128'
   }
 
   update(fabricObj, props) {
-    if (props.value !== undefined || props.barWidth !== undefined) {
+    if (props.value !== undefined || props.barWidth !== undefined || props.format !== undefined) {
       fabricObj.dirty = true
     }
     this._applyCommonUpdate(fabricObj, props)

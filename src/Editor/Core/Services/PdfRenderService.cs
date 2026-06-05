@@ -12,9 +12,9 @@ public interface IPdfRenderService
 public class PdfRenderService : IPdfRenderService
 {
     private readonly TemplateDbContext _dbContext;
-    private readonly IPdfSharpTemplateRenderer _renderer;
+    private readonly IPdfTemplateRenderer _renderer;
 
-    public PdfRenderService(TemplateDbContext dbContext, IPdfSharpTemplateRenderer renderer)
+    public PdfRenderService(TemplateDbContext dbContext, IPdfTemplateRenderer renderer)
     {
         _dbContext = dbContext;
         _renderer = renderer;

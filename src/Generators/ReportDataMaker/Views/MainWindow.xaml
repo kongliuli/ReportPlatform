@@ -59,11 +59,10 @@
                 <MenuItem Header="编辑上下文配置" Command="{Binding EditContextCommand}"/>
             </MenuItem>
             <MenuItem Header="导出">
-                <MenuItem Header="导出 PDF" Command="{Binding ExportPdfCommand}"/>
                 <MenuItem Header="批量导出..." Command="{Binding BatchExportCommand}"/>
             </MenuItem>
             <MenuItem Header="视图">
-                <MenuItem Header="切换侧边栏" Command="{Binding ToggleSidePanelCommand}"/>
+                <MenuItem Header="切换侧边栏" Command="{Binding SidePanel.ToggleCommand}"/>
             </MenuItem>
         </Menu>
 
@@ -75,20 +74,20 @@
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0" Background="#F5F5F5" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0">
-                <Grid Width="{Binding IsSidePanelExpanded,
+                <Grid Width="{Binding SidePanel.IsExpanded,
                              Converter={StaticResource BoolToWidthConverter},
                              ConverterParameter='240,48'}">
 
-                    <StackPanel Visibility="{Binding IsSidePanelExpanded,
+                    <StackPanel Visibility="{Binding SidePanel.IsExpanded,
                                            Converter={StaticResource InverseBoolToVisibilityConverter}}"
                                 VerticalAlignment="Top" Margin="0,8,0,0">
-                        <Button Command="{Binding ToggleSidePanelCommand}"
+                        <Button Command="{Binding SidePanel.ToggleCommand}"
                                 Content="▶" Padding="8" Margin="4"/>
                     </StackPanel>
 
-                    <DockPanel Visibility="{Binding IsSidePanelExpanded,
+                    <DockPanel Visibility="{Binding SidePanel.IsExpanded,
                                           Converter={StaticResource BoolToVisibilityConverter}}">
-                        <Button DockPanel.Dock="Top" Command="{Binding ToggleSidePanelCommand}"
+                        <Button DockPanel.Dock="Top" Command="{Binding SidePanel.ToggleCommand}"
                                 Content="◀" HorizontalAlignment="Right" Margin="0,4,4,0" Padding="4"/>
 
                         <ScrollViewer VerticalScrollBarVisibility="Auto">

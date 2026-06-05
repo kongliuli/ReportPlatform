@@ -2,7 +2,8 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReportDataMaker.Services;
-using ReportDataMaker.Adapter.Database.Common.Services;
+using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 using Xinglin.ReportEditor.Contracts.Models.Template;
 
 namespace ReportDataMaker.ViewModels.Tabs;
@@ -15,6 +16,7 @@ public partial class DatabaseAdapterTabViewModel : MainTabViewModel
     [ObservableProperty] private ObservableCollection<string> _selectedColumnNames = new();
 
     private readonly AdapterRegistry _registry;
+    private IDataAdapter? _dataAdapter;
 
     public DatabaseAdapterTabViewModel(MainViewModel mainViewModel, AdapterRegistry registry) : base(mainViewModel) { _registry = registry; }
 
@@ -22,6 +24,8 @@ public partial class DatabaseAdapterTabViewModel : MainTabViewModel
     {
         base.OnTemplateChanged();
         if (CurrentTemplate == null) return;
+
+        _dataAdapter = _registry.GetByType(AdapterType.Database)?.CreateService(CurrentTemplate);
 
         FieldMappings.Clear();
         foreach (var element in CurrentTemplate.Elements)
@@ -43,10 +47,11 @@ public partial class DatabaseAdapterTabViewModel : MainTabViewModel
     }
 
     [RelayCommand]
-    private void ImportFromDatabase()
+    private async Task ImportFromDatabaseAsync()
     {
-        if (CurrentTemplate == null) return;
-        StatusText = "数据库导入功能待实现";
+        if (CurrentTemplate == null || _dataAdapter == null) return;
+        var result = await _dataAdapter.ReadDataAsync();
+        StatusText = result.Success ? "数据库导入完成" : $"导入失败: {result.ErrorMessage}";
     }
 }
 
