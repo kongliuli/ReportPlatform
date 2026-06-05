@@ -56,8 +56,8 @@ public class ElementJsonConverter : JsonConverter<ElementBase>
 
     public override void WriteJson(JsonWriter writer, ElementBase? value, JsonSerializer serializer)
     {
-        var jObject = JObject.FromObject(value, serializer);
-        var shortType = ReverseTypeMap.GetValueOrDefault(value.GetType(), "text");
+        var jObject = JObject.FromObject(value!, serializer);
+        var shortType = ReverseTypeMap.GetValueOrDefault(value!.GetType(), "text");
         jObject["$type"] = $"template.element.{shortType}";
         jObject.WriteTo(writer);
     }

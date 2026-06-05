@@ -1,0 +1,38 @@
+@page "/blazor/editor/{TemplateId:guid}"
+@inject ITemplateService TemplateService
+
+<PageTitle>模板编辑 - 杏林报告平台</PageTitle>
+
+<h2>模板编辑</h2>
+
+@if (template == null)
+{
+    <p>加载模板中...</p>
+}
+else
+{
+    <div class="editor-layout">
+        <div class="editor-main">
+            <h3>@template.Name</h3>
+            <p>模板编辑器（Blazor 版本开发中）</p>
+            <p><em>完整编辑功能请使用 Vue 前端: <a href="http://localhost:5173" target="_blank">打开编辑器</a></em></p>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid TemplateId { get; set; }
+    private TemplateDetailDto? template;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            template = await TemplateService.GetTemplateAsync(TemplateId);
+        }
+        catch
+        {
+            template = null;
+        }
+    }
+}

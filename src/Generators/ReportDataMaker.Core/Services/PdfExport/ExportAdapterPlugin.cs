@@ -1,3 +1,4 @@
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 using Xinglin.ReportEditor.Contracts.Models.Template;
 
 namespace ReportDataMaker.Services.PdfExport;
@@ -15,8 +16,8 @@ public class ExportAdapterPlugin : IAdapterPlugin
     public string AdapterType => "export";
     public string DisplayName => "PDF 导出适配器";
 
-    public object CreateService(TemplateDefinition template)
+    public IDataAdapter CreateService(TemplateDefinition template)
     {
-        return _pdfExportService;
+        return (IDataAdapter)_pdfExportService;
     }
 }

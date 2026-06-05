@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Xinglin.ReportEditor.Rendering</RootNamespace>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <PackageId>Xinglin.ReportEditor.Rendering</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Xinglin</Authors>
+    <Company>杏林</Company>
+    <Product>杏林报告平台</Product>
+    <Description>报告PDF渲染服务 - 统一的PDF元素渲染引擎，支持SkiaSharp绘制和QuestPDF文档生成</Description>
+    <PackageTags>report;pdf;rendering;questpdf;skiasharp</PackageTags>
+    <RepositoryUrl>https://github.com/xinglin/ReportPlatform</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="QuestPDF" Version="2025.1.0" />
+    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+    <PackageReference Include="ZXing.Net" Version="0.16.9" />
+    <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Contracts\Xinglin.WebReportEditor.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

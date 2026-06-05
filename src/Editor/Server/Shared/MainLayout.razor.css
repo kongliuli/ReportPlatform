@@ -1,0 +1,38 @@
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+.sidebar {
+    width: 220px;
+    background: #1e293b;
+    color: white;
+    padding: 1rem;
+}
+.sidebar-header h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+}
+.nav-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.nav-menu li {
+    margin-bottom: 0.25rem;
+}
+.nav-menu a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 4px;
+}
+.nav-menu a:hover, .nav-menu a.active {
+    background: #334155;
+    color: white;
+}
+.main-content {
+    flex: 1;
+    padding: 1.5rem;
+    background: #f8fafc;
+}

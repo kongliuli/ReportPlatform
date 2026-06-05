@@ -43,7 +43,8 @@ public class TemplatesControllerTests
 
         var apiResult = Assert.IsType<ApiResponse<PagedResponse<TemplateDto>>>(result);
         Assert.Equal(200, apiResult.Code);
-        Assert.Equal(2, apiResult.Data.TotalCount);
+        Assert.NotNull(apiResult.Data);
+        Assert.Equal(2, apiResult.Data!.TotalCount);
     }
 
     [Fact]
@@ -57,7 +58,8 @@ public class TemplatesControllerTests
 
         var apiResult = Assert.IsType<ApiResponse<TemplateDetailDto>>(result);
         Assert.Equal(200, apiResult.Code);
-        Assert.Equal("Test Template", apiResult.Data.Name);
+        Assert.NotNull(apiResult.Data);
+        Assert.Equal("Test Template", apiResult.Data!.Name);
     }
 
     [Fact]
@@ -84,7 +86,8 @@ public class TemplatesControllerTests
 
         var apiResult = Assert.IsType<ApiResponse<TemplateDetailDto>>(result);
         Assert.Equal(200, apiResult.Code);
-        Assert.Equal("New Template", apiResult.Data.Name);
+        Assert.NotNull(apiResult.Data);
+        Assert.Equal("New Template", apiResult.Data!.Name);
     }
 
     [Fact]

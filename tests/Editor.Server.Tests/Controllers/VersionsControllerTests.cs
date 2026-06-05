@@ -36,7 +36,8 @@ public class VersionsControllerTests
 
         var apiResult = Assert.IsType<ApiResponse<List<TemplateVersionDto>>>(result);
         Assert.Equal(200, apiResult.Code);
-        Assert.Equal(2, apiResult.Data.Count);
+        Assert.NotNull(apiResult.Data);
+        Assert.Equal(2, apiResult.Data!.Count);
     }
 
     [Fact]
@@ -51,7 +52,8 @@ public class VersionsControllerTests
 
         var apiResult = Assert.IsType<ApiResponse<TemplateVersionDetailDto>>(result);
         Assert.Equal(200, apiResult.Code);
-        Assert.Equal(1, apiResult.Data.VersionNumber);
+        Assert.NotNull(apiResult.Data);
+        Assert.Equal(1, apiResult.Data!.VersionNumber);
     }
 
     [Fact]

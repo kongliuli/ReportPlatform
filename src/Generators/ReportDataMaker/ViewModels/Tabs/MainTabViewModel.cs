@@ -37,6 +37,7 @@ public partial class MainTabViewModel
         PageInfo = $"{PageWidth}×{PageHeight}mm ({Orientation})";
     }
 
+    [RelayCommand]
     public virtual void RefreshPreview()
     {
         MainViewModel.RefreshPreviewCommand.Execute(null);

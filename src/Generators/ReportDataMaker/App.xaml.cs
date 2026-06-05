@@ -4,9 +4,14 @@ using Microsoft.Extensions.DependencyInjection;
 using QuestPDF.Infrastructure;
 using ReportDataMaker.Infrastructure;
 using ReportDataMaker.Services;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 using ReportDataMaker.Services.ContextAdapter;
-using ReportDataMaker.Services.DatabaseAdapter;
-using ReportDataMaker.Services.ExcelAdapter;
+using ReportDataMaker.Adapter.Database.Common.Services;
+using ReportDataMaker.Adapter.Database.MySql.Services;
+using ReportDataMaker.Adapter.Database.PostgreSql.Services;
+using ReportDataMaker.Adapter.Database.Sqlite.Services;
+using ReportDataMaker.Adapter.Database.SqlServer.Services;
+using ReportDataMaker.Adapter.Excel.Services;
 using ReportDataMaker.Services.PdfExport;
 using ReportDataMaker.ViewModels;
 using Xinglin.ReportEditor.Contracts.Enums;
@@ -41,7 +46,15 @@ public partial class App : Application
         services.AddSingleton<IDataBindingService, DataBindingService>();
         services.AddSingleton<SqliteDatabaseService>();
         services.AddSingleton<AdapterConfigStore>();
-        services.AddSingleton<DatabaseProviderRegistry>(sp => DatabaseProviderRegistry.CreateDefault());
+        services.AddSingleton<DatabaseProviderRegistry>(sp =>
+        {
+            var registry = new DatabaseProviderRegistry();
+            registry.Register(new SqlServerProvider());
+            registry.Register(new MySqlProvider());
+            registry.Register(new PostgreSqlProvider());
+            registry.Register(new SqliteProvider());
+            return registry;
+        });
         services.AddSingleton<ConnectionPoolManager>();
         services.AddSingleton<ContextProfileStore>();
         services.AddSingleton<ContextAdapterService>();

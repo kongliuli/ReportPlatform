@@ -1,0 +1,10 @@
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 220px; background: #1e293b; color: white; padding: 1rem; flex-shrink: 0; }
+.sidebar-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+.sidebar-header h3 { margin: 0; font-size: 1rem; }
+.badge { font-size: 0.7rem; background: #3b82f6; padding: 2px 6px; border-radius: 3px; }
+.nav-menu { list-style: none; padding: 0; margin: 0; }
+.nav-menu li { margin-bottom: 0.25rem; }
+.nav-menu a { display: block; padding: 0.5rem 0.75rem; color: #cbd5e1; text-decoration: none; border-radius: 4px; font-size: 0.9rem; }
+.nav-menu a:hover, .nav-menu a.active { background: #334155; color: white; }
+.main-content { flex: 1; padding: 1.5rem; background: #f8fafc; overflow-y: auto; }

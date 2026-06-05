@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\Xinglin.WebReportEditor.Core.csproj" />
     <ProjectReference Include="..\..\Contracts\Xinglin.WebReportEditor.Contracts.csproj" />
+    <ProjectReference Include="..\..\Rendering\Xinglin.ReportEditor.Rendering.csproj" />
   </ItemGroup>
 
 </Project>

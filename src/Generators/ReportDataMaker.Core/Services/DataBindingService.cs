@@ -130,7 +130,7 @@ public class DataBindingService : IDataBindingService
             if (string.IsNullOrEmpty(element.DataPath))
                 continue;
 
-            if (element is ExternalElementBase extElem)
+            if (element is ExternalElementBase extElem && !string.IsNullOrEmpty(extElem.DataPath))
                 data[extElem.DataPath] = extElem.DefaultValue ?? string.Empty;
         }
 

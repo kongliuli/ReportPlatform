@@ -1,0 +1,17 @@
+@inherits LayoutComponentBase
+
+<div class="layout">
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h3>杏林报告平台</h3>
+        </div>
+        <ul class="nav-menu">
+            <li><NavLink href="" Match="NavLinkMatch.All">首页</NavLink></li>
+            <li><NavLink href="templates">模板管理</NavLink></li>
+            <li><NavLink href="preview">预览</NavLink></li>
+        </ul>
+    </nav>
+    <main class="main-content">
+        @Body
+    </main>
+</div>

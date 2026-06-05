@@ -10,21 +10,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ClosedXML" Version="0.105.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.13" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-    <PackageReference Include="MySqlConnector" Version="2.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="Npgsql" Version="8.0.7" />
     <PackageReference Include="QuestPDF" Version="2025.1.0" />
     <PackageReference Include="SkiaSharp" Version="3.116.1" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
-    <PackageReference Include="ZXing.Net.Bindings.Windows.Compatibility" Version="0.16.13" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Xinglin.WebReportEditor.Contracts.csproj" />
+    <ProjectReference Include="..\..\Rendering\Xinglin.ReportEditor.Rendering.csproj" />
+    <ProjectReference Include="..\Adapter.Database.Common\Adapter.Database.Common.csproj" />
+    <ProjectReference Include="..\Adapter.Database.SqlServer\Adapter.Database.SqlServer.csproj" />
+    <ProjectReference Include="..\Adapter.Database.MySql\Adapter.Database.MySql.csproj" />
+    <ProjectReference Include="..\Adapter.Database.PostgreSql\Adapter.Database.PostgreSql.csproj" />
+    <ProjectReference Include="..\Adapter.Database.Sqlite\Adapter.Database.Sqlite.csproj" />
   </ItemGroup>
 
 </Project>

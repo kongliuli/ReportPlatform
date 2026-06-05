@@ -1,0 +1,19 @@
+@inherits LayoutComponentBase
+
+<div class="layout">
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h3>报告数据制作</h3>
+            <span class="badge">Web版</span>
+        </div>
+        <ul class="nav-menu">
+            <li><NavLink href="" Match="NavLinkMatch.All">数据录入</NavLink></li>
+            <li><NavLink href="preview">预览</NavLink></li>
+            <li><NavLink href="export">导出</NavLink></li>
+            <li><NavLink href="adapters">适配器</NavLink></li>
+        </ul>
+    </nav>
+    <main class="main-content">
+        @Body
+    </main>
+</div>

@@ -58,7 +58,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("Jwt:SecretKey is not configured");
+var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is not configured.");
+if (secretKey.Length < 32 || secretKey.StartsWith("${") || secretKey == "SET_VIA_ENVIRONMENT_VARIABLE")
+    throw new InvalidOperationException("JWT SecretKey must be at least 32 characters and properly configured via environment variable.");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -112,6 +114,8 @@ builder.Services.AddRateLimiter(options =>
 });
 
 builder.Services.AddSignalR();
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
 
 var app = builder.Build();
 
@@ -154,5 +158,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapBlazorHub("/blazor/_blazor").AllowAnonymous();
+app.MapFallbackToPage("/blazor/{**catch-all}", "/App").AllowAnonymous();
 
 app.Run();

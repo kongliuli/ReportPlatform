@@ -124,11 +124,11 @@
                 </Grid>
             </Border>
 
-            <TabControl Grid.Column="1" ItemsSource="{Binding Tabs}" SelectedItem="{Binding ActiveTab}" Margin="8" Padding="0,0,0,6">
+            <TabControl Grid.Column="1" ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}" Margin="8" Padding="0,0,0,6">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Title}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Header}" VerticalAlignment="Center"/>
                             <Button Content="×" Command="{Binding CloseCommand}"
                                     Visibility="{Binding IsClosable, Converter={StaticResource BoolToVisibilityConverter}}"
                                     Margin="8,0,0,0" Padding="2" Width="16" Height="16"/>

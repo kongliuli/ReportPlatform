@@ -1,5 +1,5 @@
 using System.Windows.Controls;
-using ReportDataMaker.Services.DatabaseAdapter;
+using ReportDataMaker.Adapter.Database.Common.Services;
 using ReportDataMaker.ViewModels.Tabs;
 
 namespace ReportDataMaker.Views.Tabs;

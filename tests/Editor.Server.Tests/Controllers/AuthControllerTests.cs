@@ -69,7 +69,8 @@ public class AuthControllerTests
 
         var apiResult = Assert.IsType<ApiResponse<RefreshTokenResponse>>(result);
         Assert.Equal(200, apiResult.Code);
-        Assert.Equal("new-token", apiResult.Data.AccessToken);
+        Assert.NotNull(apiResult.Data);
+        Assert.Equal("new-token", apiResult.Data!.AccessToken);
     }
 
     [Fact]

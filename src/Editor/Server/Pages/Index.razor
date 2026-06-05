@@ -1,0 +1,19 @@
+@page "/"
+@page "/blazor"
+@page "/blazor/"
+@page "/blazor/index"
+@page "/blazor/home"
+@inject ITemplateService TemplateService
+
+<PageTitle>首页 - 杏林报告平台</PageTitle>
+
+<h1>杏林报告平台</h1>
+<p>欢迎使用报告模板管理系统。</p>
+
+<div class="dashboard">
+    <div class="card">
+        <h3>模板管理</h3>
+        <p>创建、编辑和管理报告模板。</p>
+        <NavLink href="templates">进入模板管理</NavLink>
+    </div>
+</div>

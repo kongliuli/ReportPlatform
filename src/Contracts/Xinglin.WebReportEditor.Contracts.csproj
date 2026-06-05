@@ -3,6 +3,16 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Xinglin.ReportEditor.Contracts</RootNamespace>
+    <PackageId>Xinglin.ReportEditor.Contracts</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Xinglin</Authors>
+    <Company>杏林</Company>
+    <Product>杏林报告平台</Product>
+    <Description>报告模板编辑器共享契约层 - 包含元素模型、适配器接口、DTO、枚举等</Description>
+    <PackageTags>report;template;editor;contracts</PackageTags>
+    <RepositoryUrl>https://github.com/xinglin/ReportPlatform</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

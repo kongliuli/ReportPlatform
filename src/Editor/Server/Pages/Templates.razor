@@ -1,0 +1,61 @@
+@page "/blazor/templates"
+@inject ITemplateService TemplateService
+
+<PageTitle>模板管理 - 杏林报告平台</PageTitle>
+
+<h2>模板管理</h2>
+
+<div class="toolbar">
+    <button @onclick="LoadTemplates" class="btn btn-primary">刷新</button>
+</div>
+
+@if (templates == null)
+{
+    <p>加载中...</p>
+}
+else if (templates.Count == 0)
+{
+    <p>暂无模板。</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>名称</th>
+                <th>类型</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var t in templates)
+            {
+                <tr>
+                    <td>@t.Name</td>
+                    <td>@t.Type</td>
+                    <td>@t.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        <NavLink href="@($"editor/{t.Id}")">编辑</NavLink>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<TemplateDto>? templates;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTemplates();
+    }
+
+    private async Task LoadTemplates()
+    {
+        var filter = new TemplateFilterRequest { Page = 1, PageSize = 50 };
+        var result = await TemplateService.GetTemplatesAsync(filter);
+        templates = result?.Items?.ToList() ?? new();
+    }
+}

@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReportDataMaker.Services;
-using ReportDataMaker.Services.ExcelAdapter;
+using ReportDataMaker.Adapter.Excel.Services;
 using Xinglin.ReportEditor.Contracts.Models.Template;
 
 namespace ReportDataMaker.ViewModels.Tabs;

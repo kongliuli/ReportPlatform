@@ -1,3 +1,4 @@
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 using Xinglin.ReportEditor.Contracts.Models.Template;
 
 namespace ReportDataMaker.Services.ContextAdapter;
@@ -8,7 +9,7 @@ public class ContextAdapterPlugin : IAdapterPlugin
     public string AdapterType => "context";
     public string DisplayName => "上下文适配器";
 
-    public object CreateService(TemplateDefinition template)
+    public IDataAdapter CreateService(TemplateDefinition template)
     {
         return new ContextAdapterService();
     }

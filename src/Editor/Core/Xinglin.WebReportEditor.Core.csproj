@@ -13,12 +13,11 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="QuestPDF" Version="2025.1.0" />
-    <PackageReference Include="SkiaSharp" Version="3.116.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\Xinglin.WebReportEditor.Contracts.csproj" />
+    <ProjectReference Include="..\..\Rendering\Xinglin.ReportEditor.Rendering.csproj" />
   </ItemGroup>
 
 </Project>

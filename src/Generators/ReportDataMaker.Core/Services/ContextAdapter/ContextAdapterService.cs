@@ -1,11 +1,21 @@
 using Xinglin.ReportEditor.Contracts.Enums;
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
 using Xinglin.ReportEditor.Contracts.Models.Elements;
 using Xinglin.ReportEditor.Contracts.Models.Template;
 
 namespace ReportDataMaker.Services.ContextAdapter;
 
-public class ContextAdapterService
+public class ContextAdapterService : IDataAdapter
 {
+    public string AdapterId => "context-default";
+    public string AdapterName => "上下文适配器";
+    public AdapterType Type => AdapterType.Context;
+    public IReadOnlyList<string> TargetDataPaths => Array.Empty<string>();
+
+    public Task<AdapterResult> ReadDataAsync() => throw new NotImplementedException();
+    public Task<AdapterResult> ReadBatchDataAsync() => throw new NotImplementedException();
+    public Task<ValidationResult> ValidateConfigAsync() => Task.FromResult(ValidationResult.Success);
+
     public Dictionary<string, object> ExtractContextData(TemplateDefinition template)
     {
         var data = new Dictionary<string, object>();

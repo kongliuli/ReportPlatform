@@ -20,8 +20,7 @@ public partial class PreviewTabViewModel : MainTabViewModel
         RefreshPreview();
     }
 
-    [RelayCommand]
-    public void RefreshPreview()
+    public override void RefreshPreview()
     {
         if (CurrentTemplate == null) return;
 

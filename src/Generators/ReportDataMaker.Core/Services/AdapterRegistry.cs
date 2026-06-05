@@ -1,3 +1,5 @@
+using Xinglin.ReportEditor.Contracts.Models.Adapters;
+
 namespace ReportDataMaker.Services;
 
 /// <summary>适配器注册表，管理所有已注册的适配器插件</summary>

@@ -1,0 +1,12 @@
+@page "/blazor/preview"
+@page "/blazor/preview/{TemplateId:guid}"
+
+<PageTitle>预览 - 杏林报告平台</PageTitle>
+
+<h2>模板预览</h2>
+
+<p>PDF 预览功能（开发中）</p>
+
+@code {
+    [Parameter] public Guid? TemplateId { get; set; }
+}
