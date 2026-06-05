@@ -1,0 +1,74 @@
+@page "/"
+@page "/data-entry"
+@inject ITemplateService TemplateService
+
+<PageTitle>数据录入 - 报告数据制作</PageTitle>
+
+<h2>数据录入</h2>
+
+<div class="toolbar">
+    <button @onclick="LoadTemplate" class="btn btn-primary" disabled="@isLoading">
+        @(isLoading ? "加载中..." : "加载模板")
+    </button>
+</div>
+
+@if (template != null)
+{
+    <div class="template-info">
+        <h3>@template.Name</h3>
+        <p>版本: @template.Version | 元素数: @template.Elements.Count</p>
+    </div>
+
+    <EditForm Model="@formData" OnValidSubmit="SubmitData">
+        <div class="form-fields">
+            @foreach (var binding in template.DataBindings.Where(b => !string.IsNullOrEmpty(b.DataPath)))
+            {
+                <div class="form-field">
+                    <label>@binding.DataPath</label>
+                    <input type="text" @bind="formData[binding.DataPath]" placeholder="@binding.DefaultValue" />
+                </div>
+            }
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">提交数据</button>
+        </div>
+    </EditForm>
+}
+else
+{
+    <p class="empty-state">请先加载模板文件。</p>
+}
+
+@code {
+    private TemplateDefinition? template;
+    private Dictionary<string, string> formData = new();
+    private bool isLoading;
+
+    private async Task LoadTemplate()
+    {
+        isLoading = true;
+        try
+        {
+            template = await TemplateService.GetLatestTemplateAsync();
+            if (template != null)
+            {
+                formData = template.DataBindings
+                    .Where(b => !string.IsNullOrEmpty(b.DataPath))
+                    .ToDictionary(b => b.DataPath, b => b.DefaultValue ?? "");
+            }
+        }
+        catch (Exception ex)
+        {
+            formData["__error"] = $"加载失败: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void SubmitData()
+    {
+        // TODO: Submit data to server
+    }
+}

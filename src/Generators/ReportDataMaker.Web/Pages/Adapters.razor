@@ -1,0 +1,16 @@
+@page "/adapters"
+@inject AdapterRegistry Registry
+
+<PageTitle>适配器 - 报告数据制作</PageTitle>
+
+<h2>适配器管理</h2>
+
+<div class="adapter-list">
+    @foreach (var plugin in Registry.GetAllPlugins())
+    {
+        <div class="card">
+            <h3>@plugin.DisplayName</h3>
+            <p>类型: @plugin.AdapterType</p>
+        </div>
+    }
+</div>

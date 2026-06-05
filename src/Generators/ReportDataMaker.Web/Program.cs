@@ -4,7 +4,6 @@ using ReportDataMaker.Web;
 using ReportDataMaker.Web.Services;
 using Xinglin.ReportEditor.Contracts.Models.Adapters;
 using ReportDataMaker.Adapter.Excel.Services;
-using ReportDataMaker.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapter.Database.Sqlite", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginHost", "src\PluginHost\PluginHost.csproj", "{BF83AD14-350F-4F5B-A2C1-A336F88BC7F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportDataMaker.Web", "src\Generators\ReportDataMaker.Web\ReportDataMaker.Web.csproj", "{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -221,6 +223,18 @@ Global
 		{BF83AD14-350F-4F5B-A2C1-A336F88BC7F4}.Release|x64.Build.0 = Release|Any CPU
 		{BF83AD14-350F-4F5B-A2C1-A336F88BC7F4}.Release|x86.ActiveCfg = Release|Any CPU
 		{BF83AD14-350F-4F5B-A2C1-A336F88BC7F4}.Release|x86.Build.0 = Release|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Debug|x64.Build.0 = Debug|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Debug|x86.Build.0 = Debug|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Release|x64.ActiveCfg = Release|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Release|x64.Build.0 = Release|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Release|x86.ActiveCfg = Release|Any CPU
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -244,6 +258,7 @@ Global
 		{FE6F24AD-08F8-48D6-A79E-3781415C8E5C} = {A92F8113-3314-365E-D17E-024E8A6DA8D2}
 		{77546BA6-3327-44E5-85BC-0A2D85497AEF} = {A92F8113-3314-365E-D17E-024E8A6DA8D2}
 		{BF83AD14-350F-4F5B-A2C1-A336F88BC7F4} = {10000000-0000-0000-0000-000000000001}
+		{0DB3B424-9FC4-4E66-8D35-5F98858D09CD} = {A92F8113-3314-365E-D17E-024E8A6DA8D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B872E9A-16EB-497F-A69D-EB9DCF1E5CCB}

@@ -10,6 +10,7 @@ public class PluginHostService : IDisposable
     private readonly Dictionary<string, IPlugin> _plugins = new();
     private readonly Dictionary<string, PluginDescriptor> _descriptors = new();
     private readonly IPluginContext _context;
+    private PluginLoader? _loader;
     private bool _disposed;
 
     public PluginHostService(IPluginContext context)
@@ -131,10 +132,43 @@ public class PluginHostService : IDisposable
         return results;
     }
 
+    /// <summary>启用插件热加载</summary>
+    public void EnableHotLoading(string pluginDirectory)
+    {
+        _loader = new PluginLoader(pluginDirectory, _context);
+        _loader.PluginDirectoryChanged += OnPluginDirectoryChanged;
+        _loader.LoadAllPlugins(this);
+        _context.LogInformation($"插件热加载已启用，监视目录: {pluginDirectory}");
+    }
+
+    /// <summary>禁用插件热加载</summary>
+    public void DisableHotLoading()
+    {
+        if (_loader == null) return;
+        _loader.PluginDirectoryChanged -= OnPluginDirectoryChanged;
+        _loader.Dispose();
+        _loader = null;
+        _context.LogInformation("插件热加载已禁用");
+    }
+
+    private async void OnPluginDirectoryChanged(object? sender, PluginDirectoryChangedEventArgs e)
+    {
+        if (e.ChangeType == WatcherChangeTypes.Created || e.ChangeType == WatcherChangeTypes.Changed)
+        {
+            _context.LogInformation($"检测到插件变更: {e.Path}");
+            // 延迟加载，避免文件写入过程中加载
+            await Task.Delay(500);
+            _loader?.LoadPlugin(e.Path, this);
+        }
+    }
+
     public void Dispose()
     {
         if (_disposed) return;
         _disposed = true;
+
+        _loader?.Dispose();
+
         foreach (var plugin in _plugins.Values)
             plugin.Dispose();
         _plugins.Clear();
