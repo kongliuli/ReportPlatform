@@ -1,3 +1,4 @@
+using System.IO;
 using System.Reflection;
 using Xinglin.ReportEditor.PluginHost.Abstractions;
 using Xinglin.ReportEditor.PluginHost.Models;
@@ -156,9 +157,14 @@ public class PluginHostService : IDisposable
         if (e.ChangeType == WatcherChangeTypes.Created || e.ChangeType == WatcherChangeTypes.Changed)
         {
             _context.LogInformation($"检测到插件变更: {e.Path}");
-            // 延迟加载，避免文件写入过程中加载
             await Task.Delay(500);
             _loader?.LoadPlugin(e.Path, this);
+        }
+        else if (e.ChangeType == WatcherChangeTypes.Deleted)
+        {
+            _context.LogInformation($"检测到插件删除: {e.Path}");
+            var pluginId = Path.GetFileNameWithoutExtension(e.Path);
+            UnloadPlugin(pluginId);
         }
     }
 

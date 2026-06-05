@@ -6,6 +6,11 @@
 
 <h2>数据录入</h2>
 
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="error-message">@errorMessage</div>
+}
+
 <div class="toolbar">
     <button @onclick="LoadTemplate" class="btn btn-primary" disabled="@isLoading">
         @(isLoading ? "加载中..." : "加载模板")
@@ -43,10 +48,12 @@ else
     private TemplateDefinition? template;
     private Dictionary<string, string> formData = new();
     private bool isLoading;
+    private string errorMessage = string.Empty;
 
     private async Task LoadTemplate()
     {
         isLoading = true;
+        errorMessage = string.Empty;
         try
         {
             template = await TemplateService.GetLatestTemplateAsync();
@@ -59,7 +66,7 @@ else
         }
         catch (Exception ex)
         {
-            formData["__error"] = $"加载失败: {ex.Message}";
+            errorMessage = $"加载失败: {ex.Message}";
         }
         finally
         {

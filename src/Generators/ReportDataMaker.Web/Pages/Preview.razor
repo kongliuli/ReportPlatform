@@ -6,7 +6,11 @@
 
 <h2>PDF 预览</h2>
 
-<p>预览功能需要连接后端服务。</p>
+<div class="toolbar">
+    <button @onclick="GeneratePreview" class="btn btn-primary" disabled="@isGenerating">
+        @(isGenerating ? "生成中..." : "生成预览")
+    </button>
+</div>
 
 @if (pdfBytes != null)
 {
@@ -22,4 +26,23 @@ else
 
 @code {
     private byte[]? pdfBytes;
+    private bool isGenerating;
+
+    private async Task GeneratePreview()
+    {
+        isGenerating = true;
+        try
+        {
+            var template = await TemplateService.GetLatestTemplateAsync();
+            if (template != null && Guid.TryParse(template.Id, out var templateId))
+            {
+                var data = new Dictionary<string, object>();
+                pdfBytes = await PdfService.RenderPdfAsync(templateId, data);
+            }
+        }
+        finally
+        {
+            isGenerating = false;
+        }
+    }
 }
