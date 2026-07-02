@@ -1,0 +1,39 @@
+{
+  "title": "尿液检查报告",
+  "subtitle": "尿液常规检验结果",
+  "header": {
+    "patientName": "患者姓名",
+    "patientId": "病历号",
+    "gender": "性别",
+    "age": "年龄",
+    "testDate": "检验日期"
+  },
+  "footer": {
+    "doctor": "申请医生",
+    "technician": "检验技师",
+    "reportDoctor": "报告医生",
+    "reportDate": "报告日期",
+    "hospitalName": "医学检验中心",
+    "contact": "联系电话: 0123-4567890"
+  },
+  "pageSize": "A4",
+  "orientation": "portrait",
+  "margin": {
+    "top": 20,
+    "right": 20,
+    "bottom": 20,
+    "left": 20
+  },
+  "font": {
+    "title": "微软雅黑",
+    "subtitle": "微软雅黑",
+    "content": "宋体"
+  },
+  "fontSize": {
+    "title": 16,
+    "subtitle": 12,
+    "header": 10,
+    "content": 10,
+    "footer": 9
+  }
+}

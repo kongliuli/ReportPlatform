@@ -1,0 +1,99 @@
+{
+  "TemplateId": "a4-h-comp-002",
+  "Name": "A4横向-综合检验报告单",
+  "Description": "适用于包含大量检验项或需要并排显示多组数据的综合报告",
+  "CreatedDate": "2026-02-08T10:00:00",
+  "ModifiedDate": "2026-02-08T10:00:00",
+  "Layout": {
+    "PaperType": 0,
+    "IsLandscape": true,
+    "PaperWidth": 297.0,
+    "PaperHeight": 210.0,
+    "MarginLeft": 15.0,
+    "MarginRight": 15.0,
+    "MarginTop": 15.0,
+    "MarginBottom": 15.0,
+    "FixedElements": [
+      {
+        "ElementId": "header-title",
+        "Type": 0,
+        "DisplayName": "医院名称",
+        "X": 0,
+        "Y": 10,
+        "Width": 267,
+        "Height": 40,
+        "Value": "XX大学附属医院",
+        "FontSize": 26.0,
+        "FontWeight": "Bold",
+        "HorizontalAlignment": 1
+      },
+      {
+        "ElementId": "report-type",
+        "Type": 0,
+        "DisplayName": "报告单类型",
+        "X": 0,
+        "Y": 50,
+        "Width": 267,
+        "Height": 30,
+        "Value": "综合检验诊断报告",
+        "FontSize": 20.0,
+        "HorizontalAlignment": 1
+      }
+    ],
+    "EditableElements": [
+      {
+        "ElementId": "patient-info-box",
+        "Type": 3,
+        "X": 0,
+        "Y": 85,
+        "Width": 267,
+        "Height": 40
+      },
+      {
+        "ElementId": "patient-name",
+        "Type": 1,
+        "DisplayName": "姓名",
+        "X": 10,
+        "Y": 95,
+        "Width": 60,
+        "Height": 20,
+        "BindingPath": "Patient.Name",
+        "Value": "姓名：{Value}"
+      },
+      {
+        "ElementId": "patient-id",
+        "Type": 1,
+        "DisplayName": "病历号",
+        "X": 80,
+        "Y": 95,
+        "Width": 80,
+        "Height": 20,
+        "BindingPath": "Patient.PatientId",
+        "Value": "病历号：{Value}"
+      },
+      {
+        "ElementId": "test-table",
+        "Type": 4,
+        "DisplayName": "检验项表格",
+        "X": 0,
+        "Y": 135,
+        "Width": 267,
+        "Height": 350,
+        "BindingPath": "Results",
+        "Columns": [
+          { "Name": "项目编号", "Width": 30, "BindingPath": "ItemId" },
+          { "Name": "项目名称", "Width": 80, "BindingPath": "ItemName" },
+          { "Name": "结果值", "Width": 40, "BindingPath": "Value" },
+          { "Name": "标志", "Width": 20, "BindingPath": "Mark" },
+          { "Name": "单位", "Width": 40, "BindingPath": "Unit" },
+          { "Name": "医学参考区间", "Width": 57, "BindingPath": "ReferenceRange" }
+        ]
+      }
+    ]
+  },
+  "Config": {
+    "Version": "1.0",
+    "Author": "Manus",
+    "Category": "标准模板"
+  }
+}

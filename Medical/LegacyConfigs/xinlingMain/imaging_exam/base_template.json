@@ -1,0 +1,150 @@
+{
+  "id": "imaging_exam_base",
+  "title": "影像学检查",
+  "controls": [
+    {
+      "id": "patient_name",
+      "type": "TextBox",
+      "label": "姓名",
+      "required": true,
+      "placeholder": "请输入患者姓名",
+      "width": "150"
+    },
+    {
+      "id": "patient_id",
+      "type": "TextBox",
+      "label": "病历号",
+      "required": true,
+      "placeholder": "请输入病历号",
+      "width": "150"
+    },
+    {
+      "id": "patient_gender",
+      "type": "ComboBox",
+      "label": "性别",
+      "required": true,
+      "options": [
+        {"value": "男", "text": "男"},
+        {"value": "女", "text": "女"}
+      ],
+      "width": "100"
+    },
+    {
+      "id": "patient_age",
+      "type": "TextBox",
+      "label": "年龄",
+      "required": true,
+      "placeholder": "请输入年龄",
+      "width": "80",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "exam_date",
+      "type": "DatePicker",
+      "label": "检查日期",
+      "required": true,
+      "defaultValue": "2025-09-26",
+      "width": "150"
+    },
+    {
+      "id": "doctor",
+      "type": "TextBox",
+      "label": "申请医生",
+      "placeholder": "请输入申请医生姓名",
+      "width": "150"
+    },
+    {
+      "id": "exam_type",
+      "type": "ComboBox",
+      "label": "检查类型",
+      "required": true,
+      "options": [
+        {"value": "X光片", "text": "X光片"},
+        {"value": "CT", "text": "CT"},
+        {"value": "MRI", "text": "MRI"},
+        {"value": "超声", "text": "超声"},
+        {"value": "其他", "text": "其他"}
+      ],
+      "width": "120"
+    },
+    {
+      "id": "exam_part",
+      "type": "ComboBox",
+      "label": "检查部位",
+      "required": true,
+      "options": [
+        {"value": "胸部", "text": "胸部"},
+        {"value": "腹部", "text": "腹部"},
+        {"value": "头部", "text": "头部"},
+        {"value": "脊柱", "text": "脊柱"},
+        {"value": "四肢", "text": "四肢"},
+        {"value": "其他", "text": "其他"}
+      ],
+      "width": "120"
+    },
+    {
+      "id": "clinical_diagnosis",
+      "type": "TextBox",
+      "label": "临床诊断",
+      "placeholder": "请输入临床诊断",
+      "width": "300",
+      "multiline": false
+    },
+    {
+      "id": "exam_technician",
+      "type": "TextBox",
+      "label": "检查技师",
+      "placeholder": "请输入检查技师姓名",
+      "width": "150"
+    },
+    {
+      "id": "report_doctor",
+      "type": "TextBox",
+      "label": "报告医生",
+      "placeholder": "请输入报告医生姓名",
+      "width": "150"
+    },
+    {
+      "id": "report_date",
+      "type": "DatePicker",
+      "label": "报告日期",
+      "defaultValue": "2025-09-26",
+      "width": "150"
+    },
+    {
+      "id": "findings",
+      "type": "TextBox",
+      "label": "影像学表现",
+      "placeholder": "请输入影像学表现",
+      "width": "400",
+      "height": "120",
+      "multiline": true
+    },
+    {
+      "id": "conclusion",
+      "type": "TextBox",
+      "label": "诊断结论",
+      "placeholder": "请输入诊断结论",
+      "width": "400",
+      "height": "120",
+      "multiline": true
+    },
+    {
+      "id": "recommendation",
+      "type": "TextBox",
+      "label": "建议",
+      "placeholder": "请输入建议",
+      "width": "400",
+      "height": "80",
+      "multiline": true
+    },
+    {
+      "id": "urgent",
+      "type": "CheckBox",
+      "label": "加急处理",
+      "defaultValue": false
+    }
+  ]
+}

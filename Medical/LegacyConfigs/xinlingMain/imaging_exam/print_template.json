@@ -1,0 +1,67 @@
+{
+  "id": "imaging_exam_print",
+  "title": "影像学检查报告",
+  "sections": [
+    {
+      "id": "patient_info",
+      "title": "患者信息",
+      "fields": [
+        {"label": "姓名", "field": "patient_name"},
+        {"label": "病历号", "field": "patient_id"},
+        {"label": "性别", "field": "patient_gender"},
+        {"label": "年龄", "field": "patient_age"},
+        {"label": "检查日期", "field": "exam_date"}
+      ],
+      "layout": "horizontal",
+      "columns": 2
+    },
+    {
+      "id": "exam_details",
+      "title": "检查详情",
+      "fields": [
+        {"label": "检查类型", "field": "exam_type"},
+        {"label": "检查部位", "field": "exam_part"},
+        {"label": "临床诊断", "field": "clinical_diagnosis"}
+      ],
+      "layout": "horizontal",
+      "columns": 2
+    },
+    {
+      "id": "imaging_findings",
+      "title": "影像学表现",
+      "fields": [
+        {"label": "描述", "field": "findings", "multiline": true}
+      ],
+      "layout": "vertical",
+      "columns": 1
+    },
+    {
+      "id": "diagnostic_conclusion",
+      "title": "诊断结论",
+      "fields": [
+        {"label": "结论", "field": "conclusion", "multiline": true}
+      ],
+      "layout": "vertical",
+      "columns": 1
+    },
+    {
+      "id": "recommendations",
+      "title": "建议",
+      "fields": [
+        {"label": "后续检查", "field": "recommendation", "multiline": true}
+      ],
+      "layout": "vertical",
+      "columns": 1
+    }
+  ],
+  "footer": {
+    "fields": [
+      {"label": "申请医生", "field": "doctor"},
+      {"label": "检查技师", "field": "exam_technician"},
+      {"label": "报告医生", "field": "report_doctor"},
+      {"label": "报告日期", "field": "report_date"}
+    ],
+    "layout": "horizontal",
+    "columns": 2
+  }
+}

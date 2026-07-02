@@ -1,0 +1,37 @@
+{
+  "title": "基础健康检查表",
+  "subtitle": "患者健康信息记录",
+  "header": {
+    "patientName": "患者姓名",
+    "patientId": "病历号",
+    "gender": "性别",
+    "age": "年龄",
+    "checkDate": "检查日期"
+  },
+  "footer": {
+    "doctor": "检查医生",
+    "reportDate": "报告日期",
+    "hospitalName": "健康体检中心",
+    "contact": "联系电话: 0123-4567890"
+  },
+  "pageSize": "A4",
+  "orientation": "portrait",
+  "margin": {
+    "top": 20,
+    "right": 20,
+    "bottom": 20,
+    "left": 20
+  },
+  "font": {
+    "title": "微软雅黑",
+    "subtitle": "微软雅黑",
+    "content": "宋体"
+  },
+  "fontSize": {
+    "title": 16,
+    "subtitle": 12,
+    "header": 10,
+    "content": 10,
+    "footer": 9
+  }
+}

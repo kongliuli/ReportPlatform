@@ -1,0 +1,151 @@
+{
+  "id": "basic_health_check_base",
+  "title": "基础健康检查",
+  "controls": [
+    {
+      "id": "patient_name",
+      "type": "TextBox",
+      "label": "姓名",
+      "required": true,
+      "placeholder": "请输入患者姓名",
+      "width": "150"
+    },
+    {
+      "id": "patient_id",
+      "type": "TextBox",
+      "label": "病历号",
+      "required": true,
+      "placeholder": "请输入病历号",
+      "width": "150"
+    },
+    {
+      "id": "patient_gender",
+      "type": "ComboBox",
+      "label": "性别",
+      "required": true,
+      "options": [
+        {"value": "男", "text": "男"},
+        {"value": "女", "text": "女"}
+      ],
+      "width": "100"
+    },
+    {
+      "id": "patient_age",
+      "type": "TextBox",
+      "label": "年龄",
+      "required": true,
+      "placeholder": "请输入年龄",
+      "width": "80",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "patient_dept",
+      "type": "TextBox",
+      "label": "科室",
+      "placeholder": "请输入科室",
+      "width": "150"
+    },
+    {
+      "id": "patient_bed",
+      "type": "TextBox",
+      "label": "床位",
+      "placeholder": "请输入床位号",
+      "width": "80"
+    },
+    {
+      "id": "check_date",
+      "type": "DatePicker",
+      "label": "检查日期",
+      "required": true,
+      "defaultValue": "2025-09-26",
+      "width": "150"
+    },
+    {
+      "id": "doctor",
+      "type": "TextBox",
+      "label": "医生",
+      "placeholder": "请输入医生姓名",
+      "width": "150"
+    },
+    {
+      "id": "weight",
+      "type": "TextBox",
+      "label": "体重(kg)",
+      "placeholder": "请输入体重",
+      "width": "100",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "height",
+      "type": "TextBox",
+      "label": "身高(cm)",
+      "placeholder": "请输入身高",
+      "width": "100",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "blood_pressure",
+      "type": "TextBox",
+      "label": "血压(mmHg)",
+      "placeholder": "如：120/80",
+      "width": "120"
+    },
+    {
+      "id": "heart_rate",
+      "type": "TextBox",
+      "label": "心率(bpm)",
+      "placeholder": "请输入心率",
+      "width": "100",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "body_temperature",
+      "type": "TextBox",
+      "label": "体温(°C)",
+      "placeholder": "请输入体温",
+      "width": "100",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "respiratory_rate",
+      "type": "TextBox",
+      "label": "呼吸频率(次/分)",
+      "placeholder": "请输入呼吸频率",
+      "width": "120",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "check_status",
+      "type": "ComboBox",
+      "label": "检查状态",
+      "required": true,
+      "options": [
+        {"value": "正常", "text": "正常"},
+        {"value": "异常", "text": "异常"},
+        {"value": "待复查", "text": "待复查"}
+      ],
+      "width": "120"
+    },
+    {
+      "id": "check_comments",
+      "type": "TextBox",
+      "label": "检查备注",
+      "placeholder": "请输入检查备注",
+      "width": "300",
+      "height": "80",
+      "multiline": true
+    }
+  ]
+}

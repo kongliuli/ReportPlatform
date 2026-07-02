@@ -54,7 +54,7 @@ public class DataBindingEngine : IDataBindingEngine
             ApplyElementValue(element, resolved);
         }
 
-        return templateDef;
+        return;
     }
 
     private static string? ResolveDataPath(Dictionary<string, object> data, string path)

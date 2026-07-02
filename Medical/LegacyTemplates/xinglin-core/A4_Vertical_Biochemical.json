@@ -1,0 +1,144 @@
+{
+  "TemplateId": "a4-v-bio-001",
+  "Name": "A4竖向-标准生化报告单",
+  "Description": "适用于常规生化、血常规等检验项目，含页眉患者信息及动态结果表格",
+  "CreatedDate": "2026-02-08T10:00:00",
+  "ModifiedDate": "2026-02-08T10:00:00",
+  "Layout": {
+    "PaperType": 0,
+    "IsLandscape": false,
+    "PaperWidth": 210.0,
+    "PaperHeight": 297.0,
+    "MarginLeft": 15.0,
+    "MarginRight": 15.0,
+    "MarginTop": 15.0,
+    "MarginBottom": 15.0,
+    "FixedElements": [
+      {
+        "ElementId": "header-title",
+        "Type": 0,
+        "DisplayName": "医院名称",
+        "X": 0,
+        "Y": 10,
+        "Width": 180,
+        "Height": 40,
+        "Value": "XX市第一人民医院",
+        "FontSize": 24.0,
+        "FontWeight": "Bold",
+        "HorizontalAlignment": 1
+      },
+      {
+        "ElementId": "report-type",
+        "Type": 0,
+        "DisplayName": "报告单类型",
+        "X": 0,
+        "Y": 50,
+        "Width": 180,
+        "Height": 30,
+        "Value": "检验报告单（生化类）",
+        "FontSize": 18.0,
+        "HorizontalAlignment": 1
+      },
+      {
+        "ElementId": "line-top",
+        "Type": 2,
+        "X": 0,
+        "Y": 85,
+        "Width": 180,
+        "Height": 2
+      }
+    ],
+    "EditableElements": [
+      {
+        "ElementId": "patient-name",
+        "Type": 1,
+        "DisplayName": "姓名",
+        "X": 5,
+        "Y": 95,
+        "Width": 50,
+        "Height": 20,
+        "BindingPath": "Patient.Name",
+        "Value": "姓名：{Value}",
+        "FontSize": 12.0
+      },
+      {
+        "ElementId": "patient-sex",
+        "Type": 1,
+        "DisplayName": "性别",
+        "X": 60,
+        "Y": 95,
+        "Width": 30,
+        "Height": 20,
+        "BindingPath": "Patient.Sex",
+        "Value": "性别：{Value}",
+        "FontSize": 12.0
+      },
+      {
+        "ElementId": "patient-age",
+        "Type": 1,
+        "DisplayName": "年龄",
+        "X": 100,
+        "Y": 95,
+        "Width": 30,
+        "Height": 20,
+        "BindingPath": "Patient.Age",
+        "Value": "年龄：{Value}",
+        "FontSize": 12.0
+      },
+      {
+        "ElementId": "test-table",
+        "Type": 4,
+        "DisplayName": "检验结果表",
+        "X": 0,
+        "Y": 130,
+        "Width": 180,
+        "Height": 500,
+        "BindingPath": "Results",
+        "Columns": [
+          { "Name": "项目名称", "Width": 60, "BindingPath": "ItemName" },
+          { "Name": "结果", "Width": 30, "BindingPath": "Value" },
+          { "Name": "状态", "Width": 20, "BindingPath": "Mark" },
+          { "Name": "单位", "Width": 30, "BindingPath": "Unit" },
+          { "Name": "参考值", "Width": 40, "BindingPath": "ReferenceRange" }
+        ]
+      },
+      {
+        "ElementId": "line-bottom",
+        "Type": 2,
+        "X": 0,
+        "Y": 650,
+        "Width": 180,
+        "Height": 2
+      },
+      {
+        "ElementId": "footer-tester",
+        "Type": 1,
+        "DisplayName": "检验人",
+        "X": 5,
+        "Y": 660,
+        "Width": 50,
+        "Height": 20,
+        "BindingPath": "Footer.Tester",
+        "Value": "检验人：{Value}",
+        "FontSize": 10.0
+      },
+      {
+        "ElementId": "footer-checker",
+        "Type": 1,
+        "DisplayName": "审核人",
+        "X": 60,
+        "Y": 660,
+        "Width": 50,
+        "Height": 20,
+        "BindingPath": "Footer.Checker",
+        "Value": "审核人：{Value}",
+        "FontSize": 10.0
+      }
+    ]
+  },
+  "Config": {
+    "Version": "1.0",
+    "Author": "Manus",
+    "Category": "标准模板"
+  }
+}

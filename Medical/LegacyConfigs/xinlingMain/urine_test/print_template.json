@@ -1,0 +1,71 @@
+{
+  "id": "urine_test_print",
+  "title": "尿液检查报告",
+  "sections": [
+    {
+      "id": "patient_info",
+      "title": "患者信息",
+      "fields": [
+        {"label": "姓名", "field": "patient_name"},
+        {"label": "病历号", "field": "patient_id"},
+        {"label": "性别", "field": "patient_gender"},
+        {"label": "年龄", "field": "patient_age"},
+        {"label": "检验日期", "field": "test_date"}
+      ],
+      "layout": "horizontal",
+      "columns": 2
+    },
+    {
+      "id": "physical_examination",
+      "title": "物理检查",
+      "fields": [
+        {"label": "颜色", "field": "urine_color"},
+        {"label": "透明度", "field": "urine_transparency"},
+        {"label": "pH值", "field": "ph_value"}
+      ],
+      "layout": "horizontal",
+      "columns": 3
+    },
+    {
+      "id": "chemical_examination",
+      "title": "化学检查",
+      "fields": [
+        {"label": "蛋白质", "field": "protein"},
+        {"label": "葡萄糖", "field": "glucose"},
+        {"label": "酮体", "field": "ketone_bodies"}
+      ],
+      "layout": "horizontal",
+      "columns": 3
+    },
+    {
+      "id": "microscopic_examination",
+      "title": "显微镜检查",
+      "fields": [
+        {"label": "红细胞(个/HPF)", "field": "red_blood_cells"},
+        {"label": "白细胞(个/HPF)", "field": "white_blood_cells"}
+      ],
+      "layout": "horizontal",
+      "columns": 2
+    },
+    {
+      "id": "test_conclusion",
+      "title": "检验结论及建议",
+      "fields": [
+        {"label": "检验结果", "field": "test_result"},
+        {"label": "检验备注", "field": "test_comments", "multiline": true}
+      ],
+      "layout": "vertical",
+      "columns": 1
+    }
+  ],
+  "footer": {
+    "fields": [
+      {"label": "申请医生", "field": "doctor"},
+      {"label": "检验技师", "field": "technician"},
+      {"label": "报告医生", "field": "report_doctor"},
+      {"label": "报告日期", "field": "report_date"}
+    ],
+    "layout": "horizontal",
+    "columns": 2
+  }
+}

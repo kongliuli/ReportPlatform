@@ -1,0 +1,66 @@
+{
+  "id": "basic_health_check_print",
+  "title": "基础健康检查报告",
+  "sections": [
+    {
+      "id": "patient_info",
+      "title": "患者信息",
+      "fields": [
+        {"label": "姓名", "field": "patient_name"},
+        {"label": "病历号", "field": "patient_id"},
+        {"label": "性别", "field": "patient_gender"},
+        {"label": "年龄", "field": "patient_age"},
+        {"label": "检查日期", "field": "check_date"}
+      ],
+      "layout": "horizontal",
+      "columns": 2
+    },
+    {
+      "id": "vital_signs",
+      "title": "生命体征",
+      "fields": [
+        {"label": "身高(cm)", "field": "height"},
+        {"label": "体重(kg)", "field": "weight"},
+        {"label": "血压(mmHg)", "field": "blood_pressure"},
+        {"label": "心率(bpm)", "field": "heart_rate"},
+        {"label": "呼吸频率(bpm)", "field": "respiratory_rate"},
+        {"label": "体温(°C)", "field": "temperature"}
+      ],
+      "layout": "horizontal",
+      "columns": 3
+    },
+    {
+      "id": "physical_exam",
+      "title": "体格检查",
+      "fields": [
+        {"label": "一般情况", "field": "general_condition"},
+        {"label": "皮肤黏膜", "field": "skin_mucosa"},
+        {"label": "头部颈部", "field": "head_neck"},
+        {"label": "胸部心肺", "field": "chest_lungs_heart"},
+        {"label": "腹部", "field": "abdomen"},
+        {"label": "四肢脊柱", "field": "limbs_spine"}
+      ],
+      "layout": "vertical",
+      "columns": 1
+    },
+    {
+      "id": "conclusion",
+      "title": "检查结论及建议",
+      "fields": [
+        {"label": "检查结论", "field": "check_conclusion", "multiline": true},
+        {"label": "健康建议", "field": "health_suggestions", "multiline": true},
+        {"label": "复查时间", "field": "review_time"}
+      ],
+      "layout": "vertical",
+      "columns": 1
+    }
+  ],
+  "footer": {
+    "fields": [
+      {"label": "检查医生", "field": "check_doctor"},
+      {"label": "报告日期", "field": "report_date"}
+    ],
+    "layout": "horizontal",
+    "columns": 2
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "TemplateId": "a5-h-spec-004",
+  "Name": "A5横向-特殊检查单",
+  "Description": "适用于项目较少但需要详细说明或宽幅展示的特殊检查",
+  "CreatedDate": "2026-02-08T10:00:00",
+  "ModifiedDate": "2026-02-08T10:00:00",
+  "Layout": {
+    "PaperType": 1,
+    "IsLandscape": true,
+    "PaperWidth": 210.0,
+    "PaperHeight": 148.0,
+    "MarginLeft": 10.0,
+    "MarginRight": 10.0,
+    "MarginTop": 10.0,
+    "MarginBottom": 10.0,
+    "FixedElements": [
+      {
+        "ElementId": "header-title",
+        "Type": 0,
+        "DisplayName": "医院名称",
+        "X": 0,
+        "Y": 5,
+        "Width": 190,
+        "Height": 25,
+        "Value": "XX市中心医院",
+        "FontSize": 18.0,
+        "FontWeight": "Bold",
+        "HorizontalAlignment": 1
+      }
+    ],
+    "EditableElements": [
+      {
+        "ElementId": "patient-name",
+        "Type": 1,
+        "DisplayName": "姓名",
+        "X": 10,
+        "Y": 40,
+        "Width": 60,
+        "Height": 20,
+        "BindingPath": "Patient.Name",
+        "Value": "患者姓名：{Value}"
+      },
+      {
+        "ElementId": "test-table",
+        "Type": 4,
+        "DisplayName": "检验结果",
+        "X": 0,
+        "Y": 70,
+        "Width": 190,
+        "Height": 180,
+        "BindingPath": "Results",
+        "Columns": [
+          { "Name": "检查项目", "Width": 80, "BindingPath": "ItemName" },
+          { "Name": "检查结果", "Width": 60, "BindingPath": "Value" },
+          { "Name": "单位", "Width": 50, "BindingPath": "Unit" }
+        ]
+      }
+    ]
+  },
+  "Config": {
+    "Version": "1.0",
+    "Author": "Manus",
+    "Category": "标准模板"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "name": "Xinglin Medical Lab Report",
+  "type": "MedicalLabReport",
+  "version": "1",
+  "pageWidth": 210,
+  "pageHeight": 297,
+  "orientation": "Portrait",
+  "marginLeft": 15,
+  "marginRight": 15,
+  "marginTop": 12,
+  "marginBottom": 12,
+  "backgroundColor": "#FFFFFF",
+  "globalFontSize": 10,
+  "elements": [
+    {
+      "id": "medical_title",
+      "$type": "template.element.text",
+      "x": 15,
+      "y": 12,
+      "width": 180,
+      "height": 12,
+      "text": "检验报告单",
+      "dataPath": "Header.ReportTitle",
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "textAlignment": "center"
+    },
+    {
+      "id": "medical_hospital",
+      "$type": "template.element.text",
+      "x": 15,
+      "y": 26,
+      "width": 180,
+      "height": 8,
+      "label": "医院",
+      "dataPath": "Header.HospitalName",
+      "textAlignment": "center"
+    },
+    {
+      "id": "medical_patient_name",
+      "$type": "template.element.text",
+      "x": 15,
+      "y": 42,
+      "width": 55,
+      "height": 8,
+      "label": "姓名",
+      "dataPath": "Patient.PatientName"
+    },
+    {
+      "id": "medical_patient_gender",
+      "$type": "template.element.dropdown",
+      "x": 80,
+      "y": 42,
+      "width": 30,
+      "height": 8,
+      "label": "性别",
+      "dataPath": "Patient.Gender",
+      "options": ["男", "女"]
+    },
+    {
+      "id": "medical_patient_age",
+      "$type": "template.element.number",
+      "x": 125,
+      "y": 42,
+      "width": 30,
+      "height": 8,
+      "label": "年龄",
+      "dataPath": "Patient.Age",
+      "unit": "岁",
+      "decimalPlaces": 0
+    },
+    {
+      "id": "medical_result_table",
+      "$type": "template.element.table",
+      "x": 15,
+      "y": 62,
+      "width": 180,
+      "height": 140,
+      "dataPath": "Results",
+      "rows": 6,
+      "columns": 4,
+      "hasHeader": true,
+      "cellPadding": 3,
+      "cellData": [
+        ["项目", "结果", "单位", "参考范围"],
+        ["白细胞", "", "10^9/L", "3.5-9.5"],
+        ["红细胞", "", "10^12/L", "4.3-5.8"],
+        ["血红蛋白", "", "g/L", "130-175"],
+        ["总胆红素", "", "umol/L", "3.4-17.1"],
+        ["谷丙转氨酶", "", "U/L", "9-50"]
+      ]
+    },
+    {
+      "id": "medical_technician",
+      "$type": "template.element.text",
+      "x": 105,
+      "y": 270,
+      "width": 45,
+      "height": 8,
+      "label": "检验者",
+      "dataPath": "Footer.Technician",
+      "textAlignment": "right"
+    },
+    {
+      "id": "medical_reviewer",
+      "$type": "template.element.text",
+      "x": 150,
+      "y": 270,
+      "width": 45,
+      "height": 8,
+      "label": "审核者",
+      "dataPath": "Footer.Reviewer",
+      "textAlignment": "right"
+    }
+  ]
+}

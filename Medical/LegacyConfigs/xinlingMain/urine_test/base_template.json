@@ -1,0 +1,173 @@
+{
+  "id": "urine_test_base",
+  "title": "尿液检查",
+  "controls": [
+    {
+      "id": "patient_name",
+      "type": "TextBox",
+      "label": "姓名",
+      "required": true,
+      "placeholder": "请输入患者姓名",
+      "width": "150"
+    },
+    {
+      "id": "patient_id",
+      "type": "TextBox",
+      "label": "病历号",
+      "required": true,
+      "placeholder": "请输入病历号",
+      "width": "150"
+    },
+    {
+      "id": "patient_gender",
+      "type": "ComboBox",
+      "label": "性别",
+      "required": true,
+      "options": [
+        {"value": "男", "text": "男"},
+        {"value": "女", "text": "女"}
+      ],
+      "width": "100"
+    },
+    {
+      "id": "patient_age",
+      "type": "TextBox",
+      "label": "年龄",
+      "required": true,
+      "placeholder": "请输入年龄",
+      "width": "80",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "test_date",
+      "type": "DatePicker",
+      "label": "检验日期",
+      "required": true,
+      "defaultValue": "2025-09-26",
+      "width": "150"
+    },
+    {
+      "id": "doctor",
+      "type": "TextBox",
+      "label": "申请医生",
+      "placeholder": "请输入申请医生姓名",
+      "width": "150"
+    },
+    {
+      "id": "urine_color",
+      "type": "ComboBox",
+      "label": "颜色",
+      "options": [
+        {"value": "淡黄色", "text": "淡黄色"},
+        {"value": "深黄色", "text": "深黄色"},
+        {"value": "无色", "text": "无色"},
+        {"value": "红色", "text": "红色"},
+        {"value": "其他", "text": "其他"}
+      ],
+      "width": "100"
+    },
+    {
+      "id": "urine_transparency",
+      "type": "ComboBox",
+      "label": "透明度",
+      "options": [
+        {"value": "透明", "text": "透明"},
+        {"value": "微浊", "text": "微浊"},
+        {"value": "浑浊", "text": "浑浊"}
+      ],
+      "width": "100"
+    },
+    {
+      "id": "ph_value",
+      "type": "TextBox",
+      "label": "pH值",
+      "placeholder": "请输入pH值",
+      "width": "80",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "protein",
+      "type": "ComboBox",
+      "label": "蛋白质",
+      "options": [
+        {"value": "阴性", "text": "阴性"},
+        {"value": "弱阳性", "text": "弱阳性"},
+        {"value": "1+", "text": "1+"},
+        {"value": "2+", "text": "2+"},
+        {"value": "3+", "text": "3+"}
+      ],
+      "width": "100"
+    },
+    {
+      "id": "glucose",
+      "type": "ComboBox",
+      "label": "葡萄糖",
+      "options": [
+        {"value": "阴性", "text": "阴性"},
+        {"value": "弱阳性", "text": "弱阳性"},
+        {"value": "1+", "text": "1+"},
+        {"value": "2+", "text": "2+"},
+        {"value": "3+", "text": "3+"}
+      ],
+      "width": "100"
+    },
+    {
+      "id": "ketone_bodies",
+      "type": "ComboBox",
+      "label": "酮体",
+      "options": [
+        {"value": "阴性", "text": "阴性"},
+        {"value": "弱阳性", "text": "弱阳性"},
+        {"value": "1+", "text": "1+"},
+        {"value": "2+", "text": "2+"},
+        {"value": "3+", "text": "3+"}
+      ],
+      "width": "100"
+    },
+    {
+      "id": "red_blood_cells",
+      "type": "TextBox",
+      "label": "红细胞(个/HPF)",
+      "placeholder": "请输入红细胞数",
+      "width": "120",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "white_blood_cells",
+      "type": "TextBox",
+      "label": "白细胞(个/HPF)",
+      "placeholder": "请输入白细胞数",
+      "width": "120",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "test_result",
+      "type": "ComboBox",
+      "label": "检验结果",
+      "required": true,
+      "options": [
+        {"value": "正常", "text": "正常"},
+        {"value": "异常", "text": "异常"},
+        {"value": "临界值", "text": "临界值"}
+      ],
+      "width": "120"
+    },
+    {
+      "id": "test_comments",
+      "type": "TextBox",
+      "label": "检验备注",
+      "placeholder": "请输入检验备注",
+      "width": "300",
+      "height": "80",
+      "multiline": true
+    }
+  ]
+}

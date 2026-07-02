@@ -1,0 +1,163 @@
+{
+  "id": "blood_test_base",
+  "title": "血液检查",
+  "controls": [
+    {
+      "id": "patient_name",
+      "type": "TextBox",
+      "label": "姓名",
+      "required": true,
+      "placeholder": "请输入患者姓名",
+      "width": "150"
+    },
+    {
+      "id": "patient_id",
+      "type": "TextBox",
+      "label": "病历号",
+      "required": true,
+      "placeholder": "请输入病历号",
+      "width": "150"
+    },
+    {
+      "id": "patient_gender",
+      "type": "ComboBox",
+      "label": "性别",
+      "required": true,
+      "options": [
+        {"value": "男", "text": "男"},
+        {"value": "女", "text": "女"}
+      ],
+      "width": "100"
+    },
+    {
+      "id": "patient_age",
+      "type": "TextBox",
+      "label": "年龄",
+      "required": true,
+      "placeholder": "请输入年龄",
+      "width": "80",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "test_date",
+      "type": "DatePicker",
+      "label": "检验日期",
+      "required": true,
+      "defaultValue": "2025-09-26",
+      "width": "150"
+    },
+    {
+      "id": "doctor",
+      "type": "TextBox",
+      "label": "申请医生",
+      "placeholder": "请输入申请医生姓名",
+      "width": "150"
+    },
+    {
+      "id": "hemoglobin",
+      "type": "TextBox",
+      "label": "血红蛋白(Hb)(g/L)",
+      "placeholder": "请输入血红蛋白值",
+      "width": "120",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "white_blood_cells",
+      "type": "TextBox",
+      "label": "白细胞计数(WBC)(×10^9/L)",
+      "placeholder": "请输入白细胞计数",
+      "width": "150",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "red_blood_cells",
+      "type": "TextBox",
+      "label": "红细胞计数(RBC)(×10^12/L)",
+      "placeholder": "请输入红细胞计数",
+      "width": "150",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "platelets",
+      "type": "TextBox",
+      "label": "血小板计数(PLT)(×10^9/L)",
+      "placeholder": "请输入血小板计数",
+      "width": "150",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "glucose",
+      "type": "TextBox",
+      "label": "血糖(GLU)(mmol/L)",
+      "placeholder": "请输入血糖值",
+      "width": "120",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "cholesterol",
+      "type": "TextBox",
+      "label": "胆固醇(TC)(mmol/L)",
+      "placeholder": "请输入胆固醇值",
+      "width": "120",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "triglycerides",
+      "type": "TextBox",
+      "label": "甘油三酯(TG)(mmol/L)",
+      "placeholder": "请输入甘油三酯值",
+      "width": "120",
+      "validationRules": [
+        {"type": "number", "errorMessage": "请输入有效数字"}
+      ]
+    },
+    {
+      "id": "blood_type",
+      "type": "ComboBox",
+      "label": "血型",
+      "options": [
+        {"value": "A", "text": "A"},
+        {"value": "B", "text": "B"},
+        {"value": "O", "text": "O"},
+        {"value": "AB", "text": "AB"},
+        {"value": "未知", "text": "未知"}
+      ],
+      "width": "100"
+    },
+    {
+      "id": "test_result",
+      "type": "ComboBox",
+      "label": "检验结果",
+      "required": true,
+      "options": [
+        {"value": "正常", "text": "正常"},
+        {"value": "异常", "text": "异常"},
+        {"value": "临界值", "text": "临界值"}
+      ],
+      "width": "120"
+    },
+    {
+      "id": "test_comments",
+      "type": "TextBox",
+      "label": "检验备注",
+      "placeholder": "请输入检验备注",
+      "width": "300",
+      "height": "80",
+      "multiline": true
+    }
+  ]
+}

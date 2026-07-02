@@ -1,0 +1,70 @@
+{
+  "id": "blood_test_print",
+  "title": "血液检查报告",
+  "sections": [
+    {
+      "id": "patient_info",
+      "title": "患者信息",
+      "fields": [
+        {"label": "姓名", "field": "patient_name"},
+        {"label": "病历号", "field": "patient_id"},
+        {"label": "性别", "field": "patient_gender"},
+        {"label": "年龄", "field": "patient_age"},
+        {"label": "检验日期", "field": "test_date"}
+      ],
+      "layout": "horizontal",
+      "columns": 2
+    },
+    {
+      "id": "blood_chemistry",
+      "title": "血液生化指标",
+      "fields": [
+        {"label": "血红蛋白(g/L)", "field": "hemoglobin"},
+        {"label": "红细胞计数(10^12/L)", "field": "red_blood_cells"},
+        {"label": "白细胞计数(10^9/L)", "field": "white_blood_cells"},
+        {"label": "血小板计数(10^9/L)", "field": "platelets"},
+        {"label": "血糖(mmol/L)", "field": "blood_glucose"},
+        {"label": "总胆固醇(mmol/L)", "field": "total_cholesterol"},
+        {"label": "甘油三酯(mmol/L)", "field": "triglycerides"},
+        {"label": "尿酸(μmol/L)", "field": "uric_acid"}
+      ],
+      "layout": "horizontal",
+      "columns": 2
+    },
+    {
+      "id": "liver_function",
+      "title": "肝功能指标",
+      "fields": [
+        {"label": "丙氨酸转氨酶(U/L)", "field": "alt"},
+        {"label": "天冬氨酸转氨酶(U/L)", "field": "ast"},
+        {"label": "总胆红素(μmol/L)", "field": "total_bilirubin"},
+        {"label": "直接胆红素(μmol/L)", "field": "direct_bilirubin"},
+        {"label": "总蛋白(g/L)", "field": "total_protein"},
+        {"label": "白蛋白(g/L)", "field": "albumin"}
+      ],
+      "layout": "horizontal",
+      "columns": 2
+    },
+    {
+      "id": "test_conclusion",
+      "title": "检验结论及建议",
+      "fields": [
+        {"label": "检验结果", "field": "test_result"},
+        {"label": "异常项目", "field": "abnormal_items", "multiline": true},
+        {"label": "检验备注", "field": "test_comments", "multiline": true}
+      ],
+      "layout": "vertical",
+      "columns": 1
+    }
+  ],
+  "footer": {
+    "fields": [
+      {"label": "申请医生", "field": "doctor"},
+      {"label": "检验技师", "field": "technician"},
+      {"label": "报告医生", "field": "report_doctor"},
+      {"label": "报告日期", "field": "report_date"}
+    ],
+    "layout": "horizontal",
+    "columns": 2
+  }
+}
